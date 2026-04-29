@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import ChatWidget from "./ChatWidget";
+import LiveTicker from "./LiveTicker";
 import MockDashboard from "./MockDashboard";
 import PhoneWidget from "./PhoneWidget";
 
@@ -44,23 +45,26 @@ export default function HomePage() {
       <main>
         {/* HERO */}
         <section className="shell hero">
-          <span className="hero-eyebrow">
-            <span className="dot" /> For HVAC · Plumbing · Roofing · Solar · Reno
+          <span className="hero-meet">
+            <span className="hero-meet-avatar">A</span>
+            <span>Meet Anna · your AI front desk</span>
+            <span className="dot-pulse" aria-hidden />
           </span>
           <h1 className="hero-title">
-            The AI Communication Hub<br />for Home Services.
+            From first ring<br />
+            to <span className="hero-title-em">final invoice.</span>
           </h1>
           <p className="hero-sub">
-            Automate your entire customer flow. Hearthline handles 24/7 inbound calls,
-            qualifies leads instantly, and generates precise quotes in seconds —
-            empowering your team to close more deals with less effort.
+            Hearthline runs your customer flow end to end — 24/7, in your brand voice.
           </p>
           <div className="hero-actions">
             <Link href="/dashboard" className="btn btn-primary">
-              Talk with our AI receptionist <span aria-hidden>→</span>
+              Talk with Anna <span aria-hidden>→</span>
             </Link>
             <a href={DEMO_URL} target="_blank" rel="noreferrer" className="btn btn-ghost">Book a demo</a>
           </div>
+
+          <LiveTicker />
 
           {/* Animated dashboard preview */}
           <MockDashboard />

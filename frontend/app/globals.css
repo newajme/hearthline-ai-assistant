@@ -173,6 +173,82 @@ img { max-width: 100%; display: block; }
   background: var(--brand);
   display: inline-block;
 }
+
+/* "Meet Anna" hero pill — replaces generic eyebrow */
+.hero-meet {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border: 1px solid var(--border);
+  padding: 5px 14px 5px 5px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+.hero-meet .dot-pulse { width: 6px; height: 6px; }
+.hero-meet-avatar {
+  width: 26px; height: 26px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #d2532b 0%, #f08a3e 100%);
+  color: white;
+  display: grid; place-items: center;
+  font-weight: 700;
+  font-size: 11.5px;
+  box-shadow: 0 2px 6px rgba(255,87,34,0.3);
+}
+
+/* Hero title gradient/accent on the second line */
+.hero-title-em {
+  background: linear-gradient(135deg, #d2532b 0%, #f08a3e 60%, #ffb27a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-style: italic;
+  font-weight: 700;
+}
+
+/* What-she-does verb chips under the CTAs */
+.hero-verbs {
+  list-style: none;
+  margin: 24px auto 0;
+  padding: 0;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  max-width: 720px;
+}
+.hero-verbs li {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--ink-2);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 999px;
+  letter-spacing: -0.005em;
+  transition: border-color .15s ease, color .15s ease, background .15s ease;
+}
+.hero-verbs li::before {
+  content: "";
+  display: inline-block;
+  width: 4px; height: 4px;
+  border-radius: 999px;
+  background: var(--brand);
+  margin-right: 7px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+.hero-verbs li:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: white;
+}
 .hero-title {
   font-size: clamp(42px, 7vw, 80px);
   font-weight: 700;
@@ -185,8 +261,8 @@ img { max-width: 100%; display: block; }
 .hero-sub {
   font-size: clamp(16px, 1.6vw, 19px);
   color: var(--muted);
-  max-width: 640px;
-  margin: 0 auto 32px;
+  max-width: 560px;
+  margin: 0 auto 28px;
   line-height: 1.5;
 }
 .hero-actions {
@@ -195,6 +271,97 @@ img { max-width: 100%; display: block; }
   flex-wrap: wrap;
   justify-content: center;
 }
+/* Live activity ticker (under hero CTAs) */
+.ticker-wrap {
+  margin: 36px auto 0;
+  max-width: 980px;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 6px 6px 18px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.ticker-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-right: 14px;
+  border-right: 1px solid var(--border);
+}
+.ticker-stat strong {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.ticker-stat span:last-child { color: var(--muted); }
+.ticker-pulse {
+  width: 7px; height: 7px;
+  border-radius: 999px;
+  background: #16a34a;
+  flex-shrink: 0;
+  animation: pulse-glow 1.6s ease-in-out infinite;
+}
+.ticker-track-mask {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, black 40px, black calc(100% - 40px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, black 40px, black calc(100% - 40px), transparent 100%);
+}
+.ticker-track {
+  display: inline-flex;
+  gap: 12px;
+  padding: 0 18px;
+  white-space: nowrap;
+  animation: ticker-scroll 42s linear infinite;
+  width: max-content;
+}
+.ticker-track:hover { animation-play-state: paused; }
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 5px 12px 5px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ticker-dot {
+  display: inline-grid;
+  place-items: center;
+  width: 16px; height: 16px;
+  border-radius: 999px;
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+@media (max-width: 720px) {
+  .ticker-wrap { padding: 6px 6px 6px 14px; }
+  .ticker-stat { font-size: 12px; padding-right: 10px; }
+  .ticker-item { font-size: 12px; }
+}
+
 .hero-meta {
   list-style: none;
   margin: 32px 0 0;
