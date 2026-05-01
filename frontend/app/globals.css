@@ -6194,6 +6194,117 @@ select.text-input { cursor: pointer; appearance: none; background-image: url("da
 }
 
 /* ============================================================
+   Google Translate Element — hide its UI, keep our switcher
+   ============================================================ */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-tooltip,
+.goog-tooltip:hover,
+.goog-text-highlight {
+  display: none !important;
+  visibility: hidden !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+body { top: 0 !important; }
+#google_translate_element,
+.skiptranslate > iframe { display: none !important; }
+font[style*="background-color"] { background: transparent !important; box-shadow: none !important; }
+
+/* ============================================================
+   Language switcher
+   ============================================================ */
+.lang-switch {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.lang-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: border-color .14s ease, background .14s ease;
+}
+.lang-switch-btn:hover { border-color: var(--border-strong); }
+.lang-switch-flag { font-size: 14px; line-height: 1; }
+.lang-switch-code { font-variant-caps: all-small-caps; }
+
+.lang-switch-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 50;
+  min-width: 200px;
+  max-height: 360px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.06);
+}
+.lang-switch-item {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 13px;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .12s ease;
+}
+.lang-switch-item:hover { background: var(--surface-2); }
+.lang-switch-item.is-active { background: var(--surface-2); font-weight: 600; }
+.lang-switch-native { font-weight: 500; }
+.lang-switch-en {
+  font-size: 11.5px;
+  color: var(--ink-muted);
+  font-weight: 400;
+}
+
+[data-theme="dark"] .lang-switch-btn {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+}
+[data-theme="dark"] .lang-switch-menu {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+}
+
+/* RTL placement for menu */
+html[dir="rtl"] .lang-switch-menu { right: auto; left: 0; }
+
+/* RTL: keep numerals + brand left-to-right inside RTL flow */
+html[dir="rtl"] .feature-num,
+html[dir="rtl"] .stats-card-num,
+html[dir="rtl"] .pipeline-num { direction: ltr; unicode-bidi: isolate; }
+
+@media (max-width: 760px) {
+  .lang-switch-btn { height: 30px; padding: 0 8px; font-size: 12px; }
+  .lang-switch-en { display: none; }
+}
+
+/* ============================================================
    Docs page — mobile + readability polish
    ============================================================ */
 @media (max-width: 760px) {
@@ -6692,3 +6803,529 @@ select.text-input { cursor: pointer; appearance: none; background-image: url("da
   border-color: var(--border);
   color: var(--ink-2);
 }
+
+/* ============================================================
+   Footer + creator credit — dark mode
+   ============================================================ */
+[data-theme="dark"] .footer { border-top-color: var(--border); }
+[data-theme="dark"] .footer h5 { color: var(--muted); }
+[data-theme="dark"] .footer-col a { color: var(--ink-2); }
+[data-theme="dark"] .footer-col a:hover { color: var(--ember); }
+[data-theme="dark"] .footer-tag { color: var(--muted); }
+[data-theme="dark"] .footer-bottom { border-top-color: var(--border); color: var(--muted); }
+[data-theme="dark"] .footer-bottom a { color: var(--ink); }
+[data-theme="dark"] .footer-bottom a:hover { color: var(--ember); }
+
+[data-theme="dark"] .creator-credit { border-top-color: var(--border); }
+[data-theme="dark"] .creator-credit-eyebrow { color: var(--muted); }
+[data-theme="dark"] .creator-credit-name { color: var(--ink); }
+[data-theme="dark"] .creator-credit-name span { color: var(--ember); }
+[data-theme="dark"] .creator-credit-name:hover span { color: var(--brand); }
+[data-theme="dark"] .creator-credit-bio { color: var(--muted); }
+
+[data-theme="dark"] .social-btn {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--ink);
+}
+[data-theme="dark"] .social-btn:hover {
+  background: linear-gradient(160deg, var(--brand) 0%, var(--ember) 100%);
+  border-color: var(--brand);
+  color: white;
+  box-shadow: 0 4px 14px var(--brand-glow);
+}
+
+/* ============================================================
+   Hero CTA buttons — proper dark theme
+   ============================================================ */
+[data-theme="dark"] .btn-anna {
+  background: linear-gradient(160deg, var(--brand) 0%, var(--ember) 100%);
+  border-color: var(--brand);
+  color: white;
+  box-shadow: 0 6px 20px var(--brand-glow);
+}
+[data-theme="dark"] .btn-anna:hover {
+  background: linear-gradient(160deg, var(--ember) 0%, var(--brand) 100%);
+  border-color: var(--ember);
+  color: white;
+}
+[data-theme="dark"] .btn-anna .btn-anna-dot {
+  background: white;
+  box-shadow: 0 0 8px white;
+}
+[data-theme="dark"] .btn-anna-onDark {
+  background: white;
+  color: var(--bg);
+  border-color: white;
+}
+[data-theme="dark"] .btn-anna-onDark .btn-anna-dot { background: var(--ember); box-shadow: 0 0 8px var(--ember); }
+
+/* Hero "Book a demo" ghost CTA */
+[data-theme="dark"] .hero-actions .btn-ghost,
+[data-theme="dark"] .final-cta-actions .btn-ghost {
+  background: var(--surface);
+  border-color: var(--border-strong);
+  color: var(--ink);
+}
+[data-theme="dark"] .hero-actions .btn-ghost:hover,
+[data-theme="dark"] .final-cta-actions .btn-ghost:hover {
+  background: var(--surface-2);
+  border-color: var(--ember);
+  color: var(--ember);
+}
+
+/* ============================================================
+   Dashboard tables (leads / calls / customers / quotes) — dark mode
+   ============================================================ */
+[data-theme="dark"] .app-pagebar {
+  background: var(--surface);
+  border-bottom-color: var(--border);
+  color: var(--ink);
+}
+[data-theme="dark"] .app-pagebar h1 { color: var(--ink); }
+[data-theme="dark"] .app-pagebar p { color: var(--muted); }
+[data-theme="dark"] .app-content { background: var(--bg); color: var(--ink); }
+
+[data-theme="dark"] .search-input {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--ink);
+}
+[data-theme="dark"] .search-input::placeholder { color: var(--muted-2); }
+[data-theme="dark"] .search-input:focus { border-color: var(--ember); }
+
+[data-theme="dark"] .empty-card {
+  background: var(--surface);
+  border-color: var(--border-strong);
+  color: var(--muted);
+}
+[data-theme="dark"] .empty-card h3 { color: var(--ink); }
+[data-theme="dark"] .empty-card code {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--ink-2);
+}
+
+[data-theme="dark"] .app-table {
+  background: var(--surface);
+  border-color: var(--border);
+}
+[data-theme="dark"] .app-table-head {
+  background: var(--surface-2);
+  border-bottom-color: var(--border);
+  color: var(--muted);
+}
+[data-theme="dark"] .app-table-row {
+  border-bottom-color: var(--border);
+  color: var(--ink-2);
+}
+[data-theme="dark"] .app-table-row:hover {
+  background: rgba(240, 138, 74, 0.06);
+  color: var(--ink);
+}
+[data-theme="dark"] .app-row-title { color: var(--ink); }
+[data-theme="dark"] .app-row-title-soft { color: var(--ink-2); }
+[data-theme="dark"] .app-row-sub { color: var(--muted); }
+[data-theme="dark"] .app-row-value { color: var(--ink); }
+[data-theme="dark"] .app-row-avatar {
+  background: linear-gradient(135deg, rgba(210, 83, 43, 0.32), rgba(240, 138, 62, 0.18));
+  color: #ffc8a3;
+  border-color: rgba(210, 83, 43, 0.32);
+}
+
+/* Detail cards (lead / call / quote detail) */
+[data-theme="dark"] .detail-card {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--ink);
+}
+[data-theme="dark"] .detail-card-label { color: var(--muted); }
+[data-theme="dark"] .detail-card-value { color: var(--ink); }
+
+/* KV (key-value) lists */
+[data-theme="dark"] .kv-list > div { border-bottom-color: var(--border); }
+[data-theme="dark"] .kv-list dt,
+[data-theme="dark"] .kv-list .kv-key { color: var(--muted); }
+[data-theme="dark"] .kv-list dd,
+[data-theme="dark"] .kv-list .kv-value { color: var(--ink); }
+[data-theme="dark"] .kv-list .kv-value-muted { color: var(--muted); }
+
+/* Conversation thread (lead detail) */
+[data-theme="dark"] .convo-thread { color: var(--ink); }
+[data-theme="dark"] .convo-bubble {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--ink-2);
+}
+[data-theme="dark"] .convo-msg.convo-out .convo-bubble {
+  background: linear-gradient(160deg, var(--brand) 0%, var(--ember) 100%);
+  color: white;
+  border-color: var(--brand);
+}
+[data-theme="dark"] .convo-meta { color: var(--muted); }
+
+/* Lineitems table (quotes) */
+[data-theme="dark"] .lineitems th {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+[data-theme="dark"] .lineitems td { border-bottom-color: var(--border); color: var(--ink-2); }
+[data-theme="dark"] .lineitems .num { color: var(--ink); }
+
+/* Status / brand tags */
+[data-theme="dark"] .tag {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--ink-2);
+}
+[data-theme="dark"] .tag.brand {
+  background: linear-gradient(160deg, var(--brand) 0%, var(--ember) 100%);
+  border-color: var(--brand);
+  color: white;
+}
+[data-theme="dark"] .tag-chip {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--ink-2);
+}
+[data-theme="dark"] .tag-chip:hover { background: var(--surface-2); color: var(--ink); }
+[data-theme="dark"] .tag-chip.active {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+/* mock-thead used inside dashboard tables */
+[data-theme="dark"] .mock-thead {
+  background: var(--surface-2) !important;
+  color: var(--muted);
+  border-color: var(--border) !important;
+}
+
+/* Pagebar action ghost buttons */
+[data-theme="dark"] .app-pagebar .btn-ghost {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--ink);
+}
+[data-theme="dark"] .app-pagebar .btn-ghost:hover {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+}
+
+/* ============================================================
+   FINAL COMPREHENSIVE DARK-THEME PASS
+   Targets the actual class names used in components — overrides
+   any earlier rules that referenced wrong classnames.
+   ============================================================ */
+
+/* ---- ChatWidget (Live chat support) ---- */
+[data-theme="dark"] .chat-fab {
+  background: linear-gradient(160deg, var(--brand) 0%, var(--ember) 100%);
+  border: 1px solid var(--brand);
+  box-shadow: 0 12px 32px var(--brand-glow), 0 0 0 1px rgba(255,255,255,0.04);
+  color: white;
+}
+[data-theme="dark"] .chat-fab-pulse { border-color: var(--ember); }
+
+[data-theme="dark"] .chat-teaser {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+}
+[data-theme="dark"] .chat-teaser-title { color: var(--ink); }
+[data-theme="dark"] .chat-teaser-body { color: var(--ink-2); }
+[data-theme="dark"] .chat-teaser-close { color: var(--muted); }
+[data-theme="dark"] .chat-teaser-close:hover { background: var(--surface-2); color: var(--ink); }
+
+[data-theme="dark"] .chat-panel {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  color: var(--ink);
+}
+[data-theme="dark"] .chat-head {
+  background: linear-gradient(160deg, #0d0e10 0%, #15171a 100%);
+  color: white;
+  border-bottom: 1px solid var(--border);
+}
+[data-theme="dark"] .chat-name { color: white; }
+[data-theme="dark"] .chat-role { color: rgba(255,255,255,0.55); }
+[data-theme="dark"] .chat-close { background: rgba(255,255,255,0.06); color: white; }
+[data-theme="dark"] .chat-close:hover { background: rgba(255,255,255,0.16); }
+
+[data-theme="dark"] .chat-messages { background: var(--bg); }
+[data-theme="dark"] .chat-msg-bubble {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--ink);
+}
+[data-theme="dark"] .chat-msg.user .chat-msg-bubble {
+  background: linear-gradient(160deg, var(--brand) 0%, var(--ember) 100%);
+  border-color: var(--brand);
+  color: white;
+  box-shadow: 0 4px 14px var(--brand-glow);
+}
+[data-theme="dark"] .chat-msg-bubble.typing .typing-dots i { background: var(--muted); }
+
+[data-theme="dark"] .chat-quick {
+  background: var(--surface);
+  border-top-color: var(--border);
+}
+[data-theme="dark"] .chat-quick button {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--ink-2);
+}
+[data-theme="dark"] .chat-quick button:hover {
+  background: var(--surface-3);
+  border-color: var(--ember);
+  color: var(--ember);
+}
+
+[data-theme="dark"] .chat-input {
+  background: var(--surface);
+  border-top-color: var(--border);
+}
+[data-theme="dark"] .chat-input input {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--ink);
+}
+[data-theme="dark"] .chat-input input::placeholder { color: var(--muted-2); }
+[data-theme="dark"] .chat-input input:focus { border-color: var(--ember); }
+[data-theme="dark"] .chat-input button {
+  background: linear-gradient(160deg, var(--brand) 0%, var(--ember) 100%);
+  color: white;
+  box-shadow: 0 2px 8px var(--brand-glow);
+}
+[data-theme="dark"] .chat-input button:hover { filter: brightness(1.1); }
+
+/* ---- Action pills (table status badges) ---- */
+[data-theme="dark"] .action-pill {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--ink-2);
+}
+[data-theme="dark"] .action-pill.won {
+  background: rgba(22, 163, 74, 0.14);
+  color: #4ade80;
+  border-color: rgba(22, 163, 74, 0.32);
+}
+[data-theme="dark"] .action-pill.quote {
+  background: rgba(124, 58, 237, 0.14);
+  color: #c4b5fd;
+  border-color: rgba(124, 58, 237, 0.32);
+}
+[data-theme="dark"] .action-pill.booked {
+  background: rgba(37, 99, 235, 0.14);
+  color: #93c5fd;
+  border-color: rgba(37, 99, 235, 0.32);
+}
+[data-theme="dark"] .action-pill.subsidy {
+  background: rgba(210, 83, 43, 0.18);
+  color: #f5b388;
+  border-color: rgba(210, 83, 43, 0.32);
+}
+[data-theme="dark"] .action-pill.status {
+  background: var(--surface-2);
+  color: var(--muted);
+  border-color: var(--border);
+}
+
+/* ---- Trusted-by legacy strip (if surfaced) ---- */
+[data-theme="dark"] .trusted-label,
+[data-theme="dark"] .trusted-logos { color: var(--muted); }
+
+/* ---- Final-cta-actions ghost variant on dark cta band ---- */
+[data-theme="dark"] .btn-onDark {
+  background: white;
+  color: var(--bg);
+  border-color: white;
+}
+[data-theme="dark"] .btn-onDark:hover { background: #f6f6f4; }
+[data-theme="dark"] .btn-onDark-ghost {
+  color: white;
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.04);
+}
+[data-theme="dark"] .btn-onDark-ghost:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+/* ---- Quote line items + lineitem inputs in /quotes/new ---- */
+[data-theme="dark"] .lineitems input,
+[data-theme="dark"] .lineitems select {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--ink);
+}
+
+/* ---- bubble-in animation safe — ensure backgrounds don't flash white ---- */
+[data-theme="dark"] @keyframes bubble-in-dark { from { background: var(--surface); } }
+
+/* ---- Print / fallback safety: leave .pill rule but un-force color ---- */
+[data-theme="dark"] .pill,
+[data-theme="dark"] .tag {
+  background: var(--surface-2) !important;
+  color: var(--ink-2) !important;
+  border-color: var(--border) !important;
+}
+
+/* ---- Auth / login form polish ---- */
+[data-theme="dark"] .auth-shell { background: var(--bg); }
+[data-theme="dark"] .auth-page-bg { background: var(--bg); }
+[data-theme="dark"] .auth-title { color: var(--ink); }
+[data-theme="dark"] .auth-sub { color: var(--muted); }
+[data-theme="dark"] .auth-label { color: var(--ink-2); }
+[data-theme="dark"] .auth-back a { color: var(--muted); }
+[data-theme="dark"] .auth-back a:hover { color: var(--ember); }
+[data-theme="dark"] .auth-error {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #fca5a5;
+}
+
+/* ---- Hero pipeline cartoon strip ---- */
+[data-theme="dark"] .hpipe-stage,
+[data-theme="dark"] .hpipe-arrow,
+[data-theme="dark"] .hpipe-label { color: var(--ink-2); }
+[data-theme="dark"] .hpipe-arrow svg { color: var(--muted); }
+[data-theme="dark"] .hpipe-icon {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--ember);
+}
+
+/* ---- Industries-grid cards more contrast ---- */
+[data-theme="dark"] .industry-card h3 { color: var(--ink); }
+[data-theme="dark"] .industry-card p { color: var(--muted); }
+[data-theme="dark"] .industry-sketch { color: var(--muted); }
+[data-theme="dark"] .industry-card:hover { border-color: var(--ember); }
+
+/* ---- Stack card highlights ---- */
+[data-theme="dark"] .stack-card:hover { border-color: var(--ember); }
+[data-theme="dark"] .stack-title { color: var(--ink); }
+[data-theme="dark"] .stack-body { color: var(--ink-2); }
+
+/* ---- Roadmap done/wip/todo ---- */
+[data-theme="dark"] .tone-done .roadmap-bullet { color: #4ade80; }
+[data-theme="dark"] .tone-wip .roadmap-bullet { color: var(--ember); }
+[data-theme="dark"] .tone-todo .roadmap-bullet { color: var(--muted); }
+[data-theme="dark"] .roadmap-col li { color: var(--ink-2); }
+[data-theme="dark"] .roadmap-col h3 { color: var(--ink); }
+
+/* ---- Configurability band ---- */
+[data-theme="dark"] .config-band-title { color: var(--ink); }
+[data-theme="dark"] .config-band-body { color: var(--ink-2); }
+[data-theme="dark"] .config-knobs li {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--ink-2);
+}
+[data-theme="dark"] .config-knobs li span { color: var(--muted); }
+[data-theme="dark"] .config-knobs li strong { color: var(--ink); }
+
+/* ---- Feature split (left side feature description) ---- */
+[data-theme="dark"] .feature-active-name { color: var(--ink); }
+[data-theme="dark"] .feature-active-body { color: var(--ink-2); }
+[data-theme="dark"] .feature-name { color: var(--ink); }
+[data-theme="dark"] .feature-num { color: var(--muted); }
+[data-theme="dark"] .feature-num-active { color: var(--ember); }
+[data-theme="dark"] .feature-cta { color: var(--ember); }
+[data-theme="dark"] .feature-cta:hover { color: var(--brand); }
+
+/* ---- Section headings (catch-all) ---- */
+[data-theme="dark"] .section-title { color: var(--ink); }
+[data-theme="dark"] .section-sub { color: var(--muted); }
+
+/* ---- Stats-band (dark band content text) ---- */
+[data-theme="dark"] .stats-band-title { color: white; }
+[data-theme="dark"] .stats-band-body { color: rgba(255,255,255,0.7); }
+[data-theme="dark"] .stats-band li { color: rgba(255,255,255,0.85); }
+[data-theme="dark"] .stats-card-num { color: white; }
+[data-theme="dark"] .stats-card-label { color: rgba(255,255,255,0.55); }
+
+/* ---- Final CTA copy (dark band) ---- */
+[data-theme="dark"] .final-cta-title { color: white; }
+[data-theme="dark"] .final-cta-sub { color: rgba(255,255,255,0.7); }
+
+/* ---- Workflow conversation header ---- */
+[data-theme="dark"] .workflow-convo {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+[data-theme="dark"] .workflow-convo-head { border-bottom-color: var(--border); }
+[data-theme="dark"] .workflow-convo-head h3 { color: var(--ink); }
+[data-theme="dark"] .workflow-convo-head p { color: var(--muted); }
+[data-theme="dark"] .workflow-convo-icon {
+  background: linear-gradient(160deg, var(--brand) 0%, var(--ember) 100%);
+  color: white;
+}
+[data-theme="dark"] .workflow-output-label { color: var(--muted); }
+
+/* ---- Hero meta on docs ---- */
+[data-theme="dark"] .hero-meta { color: var(--ink-2); }
+[data-theme="dark"] .hero-meta strong { color: var(--ink); }
+[data-theme="dark"] .hero-eyebrow .dot { background: var(--ember); }
+
+/* ---- Anna modal title text + footer note ---- */
+[data-theme="dark"] .anna-modal-title { color: var(--ink); }
+[data-theme="dark"] .anna-modal-foot { border-top-color: var(--border); }
+[data-theme="dark"] .anna-modal-foot-note { color: var(--muted); }
+[data-theme="dark"] .anna-modal-eyebrow {
+  background: rgba(210, 83, 43, 0.18);
+  color: var(--ember);
+}
+[data-theme="dark"] .anna-feed-summary-title { color: var(--ember); }
+[data-theme="dark"] .anna-phone-name { color: white; }
+
+/* ---- LiveTicker numbers / labels ---- */
+[data-theme="dark"] .ticker-stat strong { color: var(--ink); }
+[data-theme="dark"] .ticker-stat span:last-child { color: var(--muted); }
+[data-theme="dark"] .ticker-pulse { color: #4ade80; }
+[data-theme="dark"] .ticker-item { color: var(--ink-2); }
+[data-theme="dark"] .ticker-dot { background: var(--ember); }
+
+/* ---- Dashboard sidebar nav ---- */
+[data-theme="dark"] .sidebar-nav-link,
+[data-theme="dark"] .sidebar-nav button,
+[data-theme="dark"] .app-sidebar nav a { color: var(--ink-2); }
+[data-theme="dark"] .sidebar-nav-link:hover,
+[data-theme="dark"] .app-sidebar nav a:hover { background: var(--surface-2); color: var(--ink); }
+[data-theme="dark"] .sidebar-nav-link.active,
+[data-theme="dark"] .app-sidebar nav a.active,
+[data-theme="dark"] .app-sidebar nav a[aria-current="page"] {
+  background: var(--surface-2);
+  color: var(--ember);
+}
+[data-theme="dark"] .sidebar-nav-count {
+  background: var(--surface-3);
+  color: var(--ink-2);
+}
+
+/* ---- Dashboard quote view ---- */
+[data-theme="dark"] .quote-summary,
+[data-theme="dark"] .quote-totals,
+[data-theme="dark"] .quote-page,
+[data-theme="dark"] .quote-card {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--ink);
+}
+[data-theme="dark"] .quote-name { color: var(--ink); }
+[data-theme="dark"] .quote-role { color: var(--muted); }
+[data-theme="dark"] .quote-body { color: var(--ink-2); }
+[data-theme="dark"] .quote-mark { color: var(--border-strong); }
+
+/* ---- Misc links / generic anchor in hero etc. ---- */
+[data-theme="dark"] a { color: inherit; }
+[data-theme="dark"] .hero-sub a,
+[data-theme="dark"] .section-sub a { color: var(--ember); }
+
+/* ---- Form labels generic ---- */
+[data-theme="dark"] label { color: var(--ink-2); }
+
+/* ---- Make sure default <body> text outside any wrapper still flips ---- */
+[data-theme="dark"] body { background: var(--bg); color: var(--ink); }

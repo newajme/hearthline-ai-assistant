@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import ThemeToggle from "../ThemeToggle";
+import LanguageSwitcher from "../LanguageSwitcher";
 
 type SessionUser = {
   id: number;
@@ -18,6 +19,7 @@ export function DashGlobalTopbar({ user }: { user: SessionUser }) {
     <div className="dash-global-topbar">
       <DashSearch />
       <div className="dash-topbar-right">
+        <LanguageSwitcher />
         <ThemeToggle />
         <DashBell />
         <DashUser user={user} />

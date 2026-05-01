@@ -1,33 +1,48 @@
+"use client";
+
 import Link from "next/link";
 
 import { Anna, SkPhone, SkScroll } from "./Anna";
 import AnnaDemoLauncher from "./AnnaDemoLauncher";
 import ChatWidget from "./ChatWidget";
 import ThemeToggle from "./ThemeToggle";
+import LanguageSwitcher from "./LanguageSwitcher";
 import HeroBackdrop from "./HeroBackdrop";
 import HeroPipeline from "./HeroPipeline";
 import LiveTicker from "./LiveTicker";
 import MockDashboard from "./MockDashboard";
 import PhoneWidget from "./PhoneWidget";
+import { useI18n } from "./lib/i18n";
 
 const DEMO_URL = "https://calendly.com/contact-codewithmuh/30min";
 const REPO_URL = "https://github.com/codewithmuh/hearthline";
 
-const FEATURES = [
-  {
-    name: "AI Phone Receptionist",
-    body: "Never miss a call again. Anna answers 24/7, qualifies leads in real time, and books appointments straight into your calendar.",
-  },
-  { name: "AI Chat Assistant" },
-  { name: "CRM Integration" },
-  { name: "Smart Quoting" },
-  { name: "AI Knowledge Base" },
-  { name: "Data Analytics" },
-];
-
 export default function HomePage() {
+  const { t } = useI18n();
+
+  const FEATURES = [
+    { name: t("features.f1.name") },
+    { name: t("features.f2.name") },
+    { name: t("features.f3.name") },
+    { name: t("features.f4.name") },
+    { name: t("features.f5.name") },
+    { name: t("features.f6.name") },
+  ];
+
+  const INDUSTRIES = [
+    { name: t("industries.i1.name"), sketch: <SkPipe />, body: t("industries.i1.body") },
+    { name: t("industries.i2.name"), sketch: <SkWindow />, body: t("industries.i2.body") },
+    { name: t("industries.i3.name"), sketch: <SkSolar />, body: t("industries.i3.body") },
+    { name: t("industries.i4.name"), sketch: <SkInsulation />, body: t("industries.i4.body") },
+    { name: t("industries.i5.name"), sketch: <SkGarage />, body: t("industries.i5.body") },
+    { name: t("industries.i6.name"), sketch: <SkBolt />, body: t("industries.i6.body") },
+    { name: t("industries.i7.name"), sketch: <SkLeaf />, body: t("industries.i7.body") },
+    { name: t("industries.i8.name"), sketch: <SkSpray />, body: t("industries.i8.body") },
+    { name: t("industries.i9.name"), sketch: <SkBug />, body: t("industries.i9.body") },
+  ];
+
   return (
-    <>
+    <div translate="no" className="notranslate">
       <div className="topbar-wrap">
         <header className="topbar">
           <div className="brand-cluster">
@@ -42,20 +57,21 @@ export default function HomePage() {
               className="built-by-pill"
               title="Built by codewithmuh"
             >
-              by <strong>codewithmuh</strong>
+              {t("topbar.builtBy")} <strong>codewithmuh</strong>
             </a>
           </div>
           <nav className="nav-links">
-            <Link href="#features" className="nav-link">Features</Link>
-            <Link href="#workflow" className="nav-link">How it works</Link>
-            <Link href="#impact" className="nav-link">Impact</Link>
-            <Link href="#industries" className="nav-link">Industries</Link>
-            <Link href="/docs" className="nav-link">Docs</Link>
+            <Link href="#features" className="nav-link">{t("nav.features")}</Link>
+            <Link href="#workflow" className="nav-link">{t("nav.how")}</Link>
+            <Link href="#impact" className="nav-link">{t("nav.impact")}</Link>
+            <Link href="#industries" className="nav-link">{t("nav.industries")}</Link>
+            <Link href="/docs" className="nav-link">{t("nav.docs")}</Link>
           </nav>
           <div className="topbar-right">
+            <LanguageSwitcher />
             <ThemeToggle />
-            <Link href="/login" className="btn btn-ghost">Sign in</Link>
-            <a href={DEMO_URL} target="_blank" rel="noreferrer" className="btn btn-primary">Book a demo</a>
+            <Link href="/login" className="btn btn-ghost">{t("btn.signIn")}</Link>
+            <a href={DEMO_URL} target="_blank" rel="noreferrer" className="btn btn-primary">{t("btn.bookDemo")}</a>
           </div>
         </header>
       </div>
@@ -67,69 +83,56 @@ export default function HomePage() {
           <span className="hero-meet hero-meet-platform hero-meet-anna">
             <Anna />
             <span>
-              <strong>Hi, I'm Anna.</strong>
-              <span className="hero-meet-anna-tail"> I'm answering your phones tonight.</span>
+              <strong>{t("hero.meetStrong")}</strong>
+              <span className="hero-meet-anna-tail">{t("hero.meetTail")}</span>
             </span>
           </span>
           <h1 className="hero-title">
-            The 24/7 AI Front Desk<br />
-            <span className="hero-title-em">for Home Services.</span>
+            {t("hero.title1")}<br />
+            <span className="hero-title-em">{t("hero.title2")}</span>
           </h1>
-          <p className="hero-sub">
-            We pick up. We qualify. We book. Your crew stays on the tools.
-          </p>
+          <p className="hero-sub">{t("hero.sub")}</p>
           <div className="hero-actions">
             <AnnaDemoLauncher />
             <a href={DEMO_URL} target="_blank" rel="noreferrer" className="btn btn-ghost">
-              Book a demo
+              {t("btn.bookDemo")}
             </a>
           </div>
 
           <LiveTicker />
 
-          {/* Animated dashboard preview */}
           <MockDashboard />
 
-          {/* Honest social proof for an OSS project — no fake logos */}
           <a href={REPO_URL} target="_blank" rel="noreferrer" className="gh-strip">
-            <span>Open-source · MIT</span>
+            <span>{t("hero.oss")}</span>
             <span className="sep" aria-hidden />
-            <strong>★ Star on GitHub</strong>
+            <strong>{t("hero.star")}</strong>
             <span className="sep" aria-hidden />
-            <span>Self-host or done-for-you setup</span>
+            <span>{t("hero.selfHost")}</span>
           </a>
         </section>
 
         <div className="ember-line" aria-hidden />
 
-        {/* SECTION INTRO */}
         <section className="shell section-tight" id="features">
           <div className="section-head">
-            <span className="section-flourish">Features</span>
-            <h2 className="section-title">Configure once. Captures every lead.</h2>
-            <p className="section-sub">
-              Set your business hours, pricing rules, and service area. Hearthline adapts
-              to your trade — from emergency plumbing at 2 AM to a $25k solar quote at noon.
-            </p>
+            <span className="section-flourish">{t("features.eyebrow")}</span>
+            <h2 className="section-title">{t("features.title")}</h2>
+            <p className="section-sub">{t("features.sub")}</p>
           </div>
         </section>
 
-        {/* FEATURE SPLIT — active feature description + numbered list on left, phone widget on right */}
         <section className="shell section-tight">
           <div className="feature-split feature-split-stretch">
             <div className="feature-split-left">
               <div className="feature-active">
                 <div className="feature-active-row">
-                  <h3 className="feature-active-name">AI Phone Receptionist</h3>
+                  <h3 className="feature-active-name">{t("features.f1.name")}</h3>
                   <span className="feature-num feature-num-active">01</span>
                 </div>
-                <p className="feature-active-body">
-                  Never miss a call again. Hearthline picks up every inbound within two rings,
-                  qualifies the lead in real time, and books the slot directly into your team's
-                  calendar — in a voice you choose, with the script your business runs on.
-                </p>
+                <p className="feature-active-body">{t("features.f1.body")}</p>
                 <Link href="/dashboard" className="feature-cta">
-                  Explore <span aria-hidden>→</span>
+                  {t("btn.explore")} <span aria-hidden>→</span>
                 </Link>
               </div>
               <div className="features-list features-list-tight">
@@ -147,43 +150,32 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* DARK STATS BAND */}
         <section className="shell section" id="impact">
           <div className="stats-band">
             <div>
               <span className="section-flourish" style={{ color: "rgba(255,255,255,0.55)" }}>
-                Why teams switch
+                {t("stats.eyebrow")}
               </span>
-              <h2 className="stats-band-title">Every missed call is a job your competitor books.</h2>
-              <p className="stats-band-body">
-                Hearthline picks up every inbound across every channel, qualifies it on the
-                spot, and hands your crew a deal-ready conversation. Anna never sleeps,
-                never takes a smoke break, and never forgets to ask for the photo.
-              </p>
+              <h2 className="stats-band-title">{t("stats.title")}</h2>
+              <p className="stats-band-body">{t("stats.body")}</p>
               <ul>
-                <li>Calls answered while you're on a roof at 3 AM</li>
-                <li>Photos turned into drafted quotes before you finish your coffee</li>
-                <li>Every interaction synced to HubSpot, Pipedrive, or your CRM</li>
+                <li>{t("stats.li1")}</li>
+                <li>{t("stats.li2")}</li>
+                <li>{t("stats.li3")}</li>
               </ul>
             </div>
             <div className="stats-band-right">
               <div className="stats-card night">
-                <div className="stats-card-num">3 AM</div>
-                <div className="stats-card-label">
-                  The burst-pipe call your competitor missed last Tuesday. Anna picked it up.
-                </div>
+                <div className="stats-card-num">{t("stats.card1.num")}</div>
+                <div className="stats-card-label">{t("stats.card1.label")}</div>
               </div>
               <div className="stats-card ember">
-                <div className="stats-card-num">43 sec</div>
-                <div className="stats-card-label">
-                  Average time from customer photo to drafted PDF quote in tonight's demo.
-                </div>
+                <div className="stats-card-num">{t("stats.card2.num")}</div>
+                <div className="stats-card-label">{t("stats.card2.label")}</div>
               </div>
               <div className="stats-card">
-                <div className="stats-card-num">$0</div>
-                <div className="stats-card-label">
-                  Per missed call. Hearthline books the ones your inbox loses.
-                </div>
+                <div className="stats-card-num">{t("stats.card3.num")}</div>
+                <div className="stats-card-label">{t("stats.card3.label")}</div>
               </div>
             </div>
           </div>
@@ -191,28 +183,20 @@ export default function HomePage() {
 
         <div className="ember-line" aria-hidden />
 
-        {/* HOW IT FLOWS — cartoon pipeline */}
         <section className="shell section-tight" id="flow">
           <div className="section-head">
-            <span className="section-flourish">How it flows</span>
-            <h2 className="section-title">How a job flows through Hearthline.</h2>
-            <p className="section-sub">
-              Five stages, fully automated. The customer never feels the handoffs —
-              they just get a quick answer, a quote, and a booked time slot.
-            </p>
+            <span className="section-flourish">{t("flow.eyebrow")}</span>
+            <h2 className="section-title">{t("flow.title")}</h2>
+            <p className="section-sub">{t("flow.sub")}</p>
           </div>
           <HeroPipeline />
         </section>
 
-        {/* CONVERSATION SAMPLE */}
         <section className="shell section-tight" id="workflow">
           <div className="section-head">
-            <span className="section-flourish">A real conversation</span>
-            <h2 className="section-title">Anna handles the objection, not just the hello.</h2>
-            <p className="section-sub">
-              Live SMS thread between Anna and a customer. Photo arrives, quote drafted,
-              deal created, calendar booked — all auto.
-            </p>
+            <span className="section-flourish">{t("convo.eyebrow")}</span>
+            <h2 className="section-title">{t("convo.title")}</h2>
+            <p className="section-sub">{t("convo.sub")}</p>
           </div>
           <div className="workflow-convo workflow-convo-solo">
             <div className="workflow-convo-head">
@@ -220,8 +204,8 @@ export default function HomePage() {
                 <SkPhone />
               </span>
               <div>
-                <h3>Inbound Lead Automation</h3>
-                <p>Qualifies the lead, syncs to CRM, drafts an estimate — automatically.</p>
+                <h3>{t("convo.head.title")}</h3>
+                <p>{t("convo.head.sub")}</p>
               </div>
             </div>
 
@@ -231,15 +215,13 @@ export default function HomePage() {
                   <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-7 8-7s8 3 8 7" /></svg>
                 </span>
                 <div className="workflow-msg-bubble">
-                  I need to replace about 5 windows in my living room. Looking for white PVC.
+                  {t("convo.msg1")}
                 </div>
               </div>
               <div className="workflow-msg out">
                 <div className="workflow-msg-bubble">
-                  Got it — 5 PVC windows, white. Standard double-glazed, or do you want triple
-                  for noise / energy? And could you snap a quick photo of one window from
-                  inside?
-                  <span className="workflow-sig">— Anna</span>
+                  {t("convo.msg2")}
+                  <span className="workflow-sig">{t("convo.signed")}</span>
                 </div>
                 <span className="workflow-avatar ai">A</span>
               </div>
@@ -248,7 +230,7 @@ export default function HomePage() {
                   <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-7 8-7s8 3 8 7" /></svg>
                 </span>
                 <div className="workflow-msg-bubble">
-                  Double-glazed is fine. Here's a photo.
+                  {t("convo.msg3")}
                   <span className="workflow-photo">
                     <SkScroll />
                     <span>living-room-window.jpg · 2.1 MB</span>
@@ -257,28 +239,26 @@ export default function HomePage() {
               </div>
               <div className="workflow-msg out">
                 <div className="workflow-msg-bubble">
-                  Perfect — measured ~120×140 cm from your photo. Five units, supply and
-                  install: <strong>$3,540</strong> incl. tax. I've texted the breakdown and a
-                  Tuesday 9:30 AM survey slot. Tap the link to confirm.
-                  <span className="workflow-sig">— Anna</span>
+                  {t("convo.msg4Pre")}<strong>$3,540</strong>{t("convo.msg4Mid")}
+                  <span className="workflow-sig">{t("convo.signed")}</span>
                 </div>
                 <span className="workflow-avatar ai">A</span>
               </div>
             </div>
 
-            <div className="workflow-output-label">Output Result</div>
+            <div className="workflow-output-label">{t("convo.output")}</div>
             <div className="workflow-output-row">
               <span className="action-pill quote">
                 <span className="action-dot" style={{ background: "#7c3aed" }} />
-                Estimate #E-291 · sent
+                {t("convo.estimate")}
               </span>
               <span className="action-pill booked">
                 <span className="action-dot" style={{ background: "#2563eb" }} />
-                Deal Created · HubSpot
+                {t("convo.deal")}
               </span>
               <span className="action-pill won">
                 <span className="action-dot" style={{ background: "#16a34a" }} />
-                Survey Booked · Tue 9:30 AM
+                {t("convo.survey")}
               </span>
             </div>
           </div>
@@ -288,29 +268,14 @@ export default function HomePage() {
 
         <div className="ember-line" aria-hidden />
 
-        {/* INDUSTRIES — wide flexibility */}
         <section className="shell section-tight" id="industries">
           <div className="section-head">
-            <span className="section-flourish">Trades</span>
-            <h2 className="section-title">One platform. Every trade.</h2>
-            <p className="section-sub">
-              Pricing logic, scripts, and dispatch rules come pre-tuned for each trade — and
-              are fully editable. Don't see yours? Hearthline configures to any home-service
-              workflow.
-            </p>
+            <span className="section-flourish">{t("industries.eyebrow")}</span>
+            <h2 className="section-title">{t("industries.title")}</h2>
+            <p className="section-sub">{t("industries.sub")}</p>
           </div>
           <div className="industries-grid industries-grid-wide">
-            {[
-              { name: "HVAC & Plumbing", sketch: <SkPipe />, body: "Emergency-call routing 24/7, technician dispatch, maintenance contracts." },
-              { name: "Windows & Doors", sketch: <SkWindow />, body: "Photo quoting, measurement scheduling, installation bookings." },
-              { name: "Solar & Roofing", sketch: <SkSolar />, body: "Roof-type qualification, rebate matching, site-survey coordination." },
-              { name: "Energy Renovation", sketch: <SkInsulation />, body: "Insulation audits, subsidy applications, multi-step renovation flows." },
-              { name: "Garage & Shutters", sketch: <SkGarage />, body: "Brand + model identification, repair vs replace triage, after-hours calls." },
-              { name: "Electrical", sketch: <SkBolt />, body: "Emergency vs scheduled job triage, safety-warning scripts, smart-home upsells." },
-              { name: "Landscaping & Pools", sketch: <SkLeaf />, body: "Seasonal scheduling, recurring contracts, photo-based estimates." },
-              { name: "Cleaning & Restoration", sketch: <SkSpray />, body: "Damage triage, insurance routing, recurring booking, before/after photos." },
-              { name: "Pest Control", sketch: <SkBug />, body: "Symptom triage, recurring contracts, neighbour-coverage upsell, follow-ups." },
-            ].map((it) => (
+            {INDUSTRIES.map((it) => (
               <div className="industry-card" key={it.name}>
                 <span className="industry-sketch" aria-hidden>{it.sketch}</span>
                 <h3>{it.name}</h3>
@@ -319,100 +284,78 @@ export default function HomePage() {
             ))}
           </div>
           <p className="industries-note">
-            Plus: not in this list? Hearthline plugs into any workflow your team already
-            runs. <a href={DEMO_URL} target="_blank" rel="noreferrer">Tell us about yours</a>.
+            {t("industries.note")}
+            <a href={DEMO_URL} target="_blank" rel="noreferrer">{t("btn.tellUs")}</a>.
           </p>
         </section>
 
-        {/* CONFIGURABILITY HIGHLIGHT */}
         <section className="shell section-tight">
           <div className="config-band">
             <div className="config-band-text">
-              <p className="section-eyebrow">Configurable end-to-end</p>
-              <h2 className="config-band-title">
-                Your voice. Your pricing. Your CRM. Your hours.
-              </h2>
-              <p className="config-band-body">
-                Pick from 30+ neural voices in 7 languages. Drop in your price book.
-                Connect HubSpot, Pipedrive, Salesforce, ServiceTitan, or your custom API.
-                Set business hours per channel. Hearthline runs on your rules — not the other
-                way around.
-              </p>
+              <p className="section-eyebrow">{t("config.eyebrow")}</p>
+              <h2 className="config-band-title">{t("config.title")}</h2>
+              <p className="config-band-body">{t("config.body")}</p>
             </div>
             <ul className="config-knobs">
-              <li><span>Voice</span><strong>30+ neural · 7 languages</strong></li>
-              <li><span>Pricing</span><strong>Your price book · per-trade rules</strong></li>
-              <li><span>CRM</span><strong>HubSpot · Pipedrive · Salesforce · API</strong></li>
-              <li><span>Hours</span><strong>Per-channel · per-day · holidays</strong></li>
-              <li><span>Voice cloning</span><strong>Use your owner's voice (optional)</strong></li>
-              <li><span>Self-host</span><strong>MIT-licensed code on GitHub</strong></li>
+              <li><span>{t("config.k1.l")}</span><strong>{t("config.k1.v")}</strong></li>
+              <li><span>{t("config.k2.l")}</span><strong>{t("config.k2.v")}</strong></li>
+              <li><span>{t("config.k3.l")}</span><strong>{t("config.k3.v")}</strong></li>
+              <li><span>{t("config.k4.l")}</span><strong>{t("config.k4.v")}</strong></li>
+              <li><span>{t("config.k5.l")}</span><strong>{t("config.k5.v")}</strong></li>
+              <li><span>{t("config.k6.l")}</span><strong>{t("config.k6.v")}</strong></li>
             </ul>
           </div>
         </section>
 
         <div className="ember-line" aria-hidden />
 
-        {/* FINAL CTA */}
         <section className="shell section-tight">
           <div className="final-cta">
             <span className="final-cta-mark"><Flame /></span>
-            <h2 className="final-cta-title">
-              Keep the fire on. We&rsquo;ll watch the door.
-            </h2>
-            <p className="final-cta-sub">
-              Anna picks up the 3 AM emergency, the lunch-break callback, and the photo
-              from the customer who can&rsquo;t describe a leak in words. Your team stays
-              on the tools — the schedule fills itself.
-            </p>
+            <h2 className="final-cta-title">{t("finalCta.title")}</h2>
+            <p className="final-cta-sub">{t("finalCta.sub")}</p>
             <div className="final-cta-actions">
               <AnnaDemoLauncher variant="onDark" />
               <a href={DEMO_URL} target="_blank" rel="noreferrer" className="btn btn-onDark-ghost">
-                Book a demo
+                {t("btn.bookDemo")}
               </a>
             </div>
           </div>
         </section>
 
-        {/* FOOTER */}
         <footer className="shell footer">
           <div>
             <div className="brand" style={{ marginBottom: 12 }}>
               <span className="brand-mark"><Flame /></span>
               <span>Hearthline</span>
             </div>
-            <p className="footer-tag">
-              The 24/7 AI communication hub for home-service teams.
-            </p>
+            <p className="footer-tag">{t("footer.tag")}</p>
           </div>
           <div className="footer-col">
-            <h5>Product</h5>
-            <a href="#features">Features</a>
-            <a href="#industries">Industries</a>
-            <Link href="/login">Sign in</Link>
+            <h5>{t("footer.product")}</h5>
+            <a href="#features">{t("nav.features")}</a>
+            <a href="#industries">{t("nav.industries")}</a>
+            <Link href="/login">{t("btn.signIn")}</Link>
           </div>
           <div className="footer-col">
-            <h5>Resources</h5>
-            <Link href="/faq">FAQ</Link>
-            <Link href="/docs">Docs</Link>
-            <a href={DEMO_URL} target="_blank" rel="noreferrer">Book a demo</a>
+            <h5>{t("footer.resources")}</h5>
+            <Link href="/faq">{t("footer.faq")}</Link>
+            <Link href="/docs">{t("nav.docs")}</Link>
+            <a href={DEMO_URL} target="_blank" rel="noreferrer">{t("btn.bookDemo")}</a>
           </div>
           <div className="footer-col">
-            <h5>Legal</h5>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
+            <h5>{t("footer.legal")}</h5>
+            <Link href="/privacy">{t("footer.privacy")}</Link>
+            <Link href="/terms">{t("footer.terms")}</Link>
           </div>
 
-          {/* Creator credit row — full-width inside the footer grid */}
           <div className="creator-credit">
             <div className="creator-credit-text">
-              <p className="creator-credit-eyebrow">Built by</p>
+              <p className="creator-credit-eyebrow">{t("footer.builtBy")}</p>
               <a href="https://codewithmuh.com" target="_blank" rel="noreferrer" className="creator-credit-name">
                 Muhammad Rashid Daha · <span>codewithmuh.com</span>
               </a>
-              <p className="creator-credit-bio">
-                AI build-along videos for developers shipping real agents.
-                Hire me to deploy Hearthline for your business.
-              </p>
+              <p className="creator-credit-bio">{t("footer.bio")}</p>
             </div>
             <div className="creator-credit-socials">
               <a href="https://codewithmuh.com" target="_blank" rel="noreferrer" className="social-btn" aria-label="codewithmuh.com">
@@ -439,19 +382,18 @@ export default function HomePage() {
           </div>
 
           <div className="footer-bottom">
-            <span>© {new Date().getFullYear()} Hearthline · Open-source under MIT.</span>
+            <span>© {new Date().getFullYear()} Hearthline · {t("footer.copyright")}</span>
             <span>
-              Built by{" "}
+              {t("footer.builtBy")}{" "}
               <a href="https://codewithmuh.com" target="_blank" rel="noreferrer">@codewithmuh</a>
-              {" "}with care for home-service teams.
+              {" "}{t("footer.bottomTail")}
             </span>
           </div>
         </footer>
       </main>
 
-      {/* Floating chat widget */}
       <ChatWidget />
-    </>
+    </div>
   );
 }
 
@@ -463,7 +405,6 @@ function Flame() {
   );
 }
 
-// Hand-drawn sketch icons used on the industry cards.
 const sketchProps = {
   viewBox: "0 0 64 64",
   fill: "none" as const,

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import ThemeToggle from "./ThemeToggle";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const DEMO_URL = "https://calendly.com/contact-codewithmuh/30min";
 
@@ -19,6 +20,7 @@ export function MarketingTopbar() {
           <Link href="/docs" className="nav-link">Docs</Link>
         </nav>
         <div className="topbar-right">
+          <LanguageSwitcher />
           <ThemeToggle />
           <Link href="/login" className="btn btn-ghost">Sign in</Link>
           <a href={DEMO_URL} target="_blank" rel="noreferrer" className="btn btn-primary">Book a demo</a>

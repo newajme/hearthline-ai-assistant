@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import ThemeToggle from "../ThemeToggle";
+import LanguageSwitcher from "../LanguageSwitcher";
 
 export const metadata = {
   title: "Hearthline · Docs",
@@ -71,6 +72,7 @@ export default function DocsPage() {
             <Link href="/login" className="nav-link">Sign in</Link>
           </nav>
           <div className="topbar-right">
+            <LanguageSwitcher />
             <ThemeToggle />
             <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="btn btn-ghost gh-btn">
               <Github /> Star on GitHub
