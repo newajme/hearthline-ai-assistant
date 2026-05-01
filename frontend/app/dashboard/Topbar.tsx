@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import ThemeToggle from "../ThemeToggle";
+
 type SessionUser = {
   id: number;
   username: string;
@@ -16,6 +18,7 @@ export function DashGlobalTopbar({ user }: { user: SessionUser }) {
     <div className="dash-global-topbar">
       <DashSearch />
       <div className="dash-topbar-right">
+        <ThemeToggle />
         <DashBell />
         <DashUser user={user} />
       </div>

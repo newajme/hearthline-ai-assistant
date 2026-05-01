@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import ThemeToggle from "../ThemeToggle";
+
 export const metadata = {
   title: "Hearthline · Docs",
   description: "Self-host Hearthline. Stack, architecture, quick start, roadmap.",
@@ -9,21 +11,21 @@ const GITHUB_URL = "https://github.com/codewithmuh/hearthline";
 const YT_URL = "https://www.youtube.com/@codewithmuh";
 
 const STACK = [
-  { tag: "Backend", title: "Django 5 + DRF", body: "5 apps · 8 models · webhook endpoints for Vapi & Twilio · service layer for Claude + OpenAI Vision. Migrations included.", codeHint: "apps/{core,leads,calls,quotes,ai}" },
+  { tag: "Backend", title: "Django 5 + DRF", body: "5 apps · 8 models · Vapi custom-LLM endpoint · Twilio webhooks · service layer for Claude orchestration + OpenAI Vision. Migrations included.", codeHint: "apps/{core,leads,calls,quotes,ai}" },
   { tag: "Frontend", title: "Next.js 15 + React 19", body: "App Router, server components, real-time dashboard with KPIs, lead detail, quote line items, customers, settings.", codeHint: "app/dashboard/{leads,calls,quotes,…}" },
-  { tag: "Voice", title: "Vapi + Twilio", body: "POST /api/calls/webhooks/vapi/ persists the transcript, kicks off Claude extraction, creates a Lead with structured fields.", codeHint: "apps/calls/views.py" },
-  { tag: "AI Pipeline", title: "Claude Sonnet 4.6 + GPT-4o vision", body: "Transcript → structured lead JSON. Customer photo → drafted quote with line items, tax, and PDF-ready notes.", codeHint: "apps/ai/services.py" },
+  { tag: "Voice", title: "Vapi + Twilio (custom-LLM mode)", body: "Vapi POSTs every conversation turn to /api/calls/vapi/chat/completions/ — Anna runs an agentic loop server-side and returns the next utterance plus optional X-Vapi-End-Call header.", codeHint: "apps/calls/views.py · chat_completions" },
+  { tag: "AI Pipeline", title: "Anna · Claude Sonnet 4.6 + GPT-4o vision", body: "5-tool loop (qualify_lead, check_availability, book_appointment, send_sms, end_call). Tools persist Customer, Lead, Conversation rows in real time. Vision pipeline drafts quotes from a single photo.", codeHint: "apps/calls/agent/{prompts,tools,receptionist}.py" },
   { tag: "Database", title: "Postgres 16", body: "Single docker volume. Seed command included — one shell command and you have 8 leads, 5 calls, 4 quotes to play with.", codeHint: "manage.py seed_demo --wipe" },
   { tag: "Infra", title: "Docker Compose", body: "Three services: db, backend, frontend. Hot-reload mounted on both apps. No build tooling, no Vercel config, no AWS.", codeHint: "docker-compose.yml" },
 ];
 
 const PIPELINE = [
-  { stage: "Inbound call", code: "Vapi", body: "Caller is greeted by the configured AI persona. Vapi handles STT + TTS." },
-  { stage: "Webhook fires", code: "POST /api/calls/webhooks/vapi/", body: "Django persists Call row with transcript, summary, and raw payload." },
-  { stage: "Claude extracts", code: "extract_lead_from_transcript()", body: "Strict-JSON pull of customer name, trade, urgency, value, follow-ups." },
-  { stage: "Lead is born", code: "Lead.objects.create(...)", body: "Customer is linked or created. Conversation + Message rows are written." },
-  { stage: "Photo → quote", code: "POST /api/quotes/from-photo/", body: "Vision pipeline drafts line items, subtotal, tax, total, customer-facing notes." },
-  { stage: "Dashboard updates", code: "GET /api/leads/", body: "Server component re-fetches, action pill flips to Quote Sent / Booked / Won." },
+  { stage: "Inbound call", code: "Vapi · custom-LLM mode", body: "Vapi handles STT + TTS. The caller hears Anna in the voice you picked, in the language you configured." },
+  { stage: "Every turn POSTs the transcript", code: "POST /api/calls/vapi/chat/completions/", body: "OpenAI-compatible payload. Django converts it to Claude format and runs the agent loop." },
+  { stage: "Anna decides what to do next", code: "agent/receptionist.py", body: "Claude Sonnet 4.6 picks from 5 tools — qualify_lead, check_availability, book_appointment, send_sms, end_call — or speaks." },
+  { stage: "Tools write to the database", code: "services/persistence.py", body: "qualify_lead creates/updates Customer + Lead + Conversation. book_appointment confirms a slot. Every fact Anna learned is persisted." },
+  { stage: "Photo → quote", code: "POST /api/quotes/from-photo/", body: "GPT-4o vision drafts line items, subtotal, tax, total, and customer-facing notes from a single inbound MMS or chat upload." },
+  { stage: "Dashboard updates live", code: "GET /api/leads/ · GET /api/calls/", body: "Server component re-fetches, action pill flips to Qualified / Quote Sent / Booked / Won." },
 ];
 
 const ROADMAP = {
@@ -69,6 +71,7 @@ export default function DocsPage() {
             <Link href="/login" className="nav-link">Sign in</Link>
           </nav>
           <div className="topbar-right">
+            <ThemeToggle />
             <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="btn btn-ghost gh-btn">
               <Github /> Star on GitHub
             </a>
@@ -107,10 +110,12 @@ export default function DocsPage() {
           </ul>
         </section>
 
+        <div className="ember-line" aria-hidden />
+
         {/* STACK */}
         <section className="shell section-tight" id="stack">
           <div className="section-head">
-            <p className="section-eyebrow">What's in the repo</p>
+            <span className="section-flourish">What&rsquo;s in the repo</span>
             <h2 className="section-title">A real, runnable stack — not a marketing site.</h2>
             <p className="section-sub">
               Every box below is wired up in code. No "coming soon" labels. Empty fields just
@@ -129,14 +134,16 @@ export default function DocsPage() {
           </div>
         </section>
 
+        <div className="ember-line" aria-hidden />
+
         {/* PIPELINE */}
         <section className="shell section" id="flow">
           <div className="section-head">
-            <p className="section-eyebrow">The pipeline</p>
-            <h2 className="section-title">What happens when the phone rings.</h2>
+            <span className="section-flourish">The pipeline</span>
+            <h2 className="section-title">What happens when Anna picks up.</h2>
             <p className="section-sub">
-              Six stages, each one a single function or webhook in the codebase. Trace it with
-              your IDE in five minutes.
+              Six stages, each one a single function, webhook, or tool dispatch in the
+              codebase. Trace it with your IDE in five minutes.
             </p>
           </div>
           <ol className="pipeline">
@@ -153,10 +160,12 @@ export default function DocsPage() {
           </ol>
         </section>
 
+        <div className="ember-line" aria-hidden />
+
         {/* RUN */}
         <section className="shell section-tight" id="run">
           <div className="section-head">
-            <p className="section-eyebrow">Get it running</p>
+            <span className="section-flourish">Get it running</span>
             <h2 className="section-title">Three commands. No login. No waitlist.</h2>
           </div>
           <div className="run-grid">
@@ -195,10 +204,12 @@ docker compose up --build
           </div>
         </section>
 
+        <div className="ember-line" aria-hidden />
+
         {/* ROADMAP */}
         <section className="shell section" id="roadmap">
           <div className="section-head">
-            <p className="section-eyebrow">Built in public</p>
+            <span className="section-flourish">Built in public</span>
             <h2 className="section-title">What's done. What's next. What's not yet.</h2>
             <p className="section-sub">
               Pull requests welcome. Each line below is a real GitHub issue.
@@ -215,7 +226,7 @@ docker compose up --build
         <section className="shell section-tight">
           <div className="creator-card">
             <div className="creator-text">
-              <p className="section-eyebrow">Built by</p>
+              <span className="section-flourish">Built by</span>
               <h2 className="creator-title">@codewithmuh</h2>
               <p className="creator-body">
                 I make AI build-along videos for developers. Hearthline is one of the projects
@@ -239,6 +250,8 @@ docker compose up --build
             </div>
           </div>
         </section>
+
+        <div className="ember-line" aria-hidden />
 
         {/* FINAL CTA */}
         <section className="shell section-tight">

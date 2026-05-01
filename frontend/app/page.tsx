@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Anna, SkPhone, SkScroll } from "./Anna";
 import AnnaDemoLauncher from "./AnnaDemoLauncher";
 import ChatWidget from "./ChatWidget";
+import ThemeToggle from "./ThemeToggle";
 import HeroBackdrop from "./HeroBackdrop";
 import HeroPipeline from "./HeroPipeline";
 import LiveTicker from "./LiveTicker";
@@ -52,6 +53,7 @@ export default function HomePage() {
             <Link href="/docs" className="nav-link">Docs</Link>
           </nav>
           <div className="topbar-right">
+            <ThemeToggle />
             <Link href="/login" className="btn btn-ghost">Sign in</Link>
             <a href={DEMO_URL} target="_blank" rel="noreferrer" className="btn btn-primary">Book a demo</a>
           </div>
