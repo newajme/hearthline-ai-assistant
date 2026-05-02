@@ -11,6 +11,7 @@ from django.conf import settings
 from django.http import JsonResponse, StreamingHttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django_ratelimit.core import is_ratelimited
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -120,6 +121,9 @@ def chat_completions(request):
     if not _verify_chat_completions_secret(request):
         logger.warning("[CUSTOM LLM] Unauthorized — bad/missing shared secret")
         return JsonResponse({"error": "unauthorized"}, status=401)
+    if is_ratelimited(request, group="vapi-chat-ip", key="ip", rate="120/m", increment=True):
+        logger.warning("[CUSTOM LLM] rate-limited ip=%s", request.META.get("REMOTE_ADDR"))
+        return JsonResponse({"error": "rate_limited"}, status=429)
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
@@ -148,7 +152,7 @@ def chat_completions(request):
         result = handle_conversation_turn(claude_messages, caller_phone=caller_phone, call_id=call_id)
         text = result["text"]
         end_call = result["end_call"]
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001 — Vapi must always get a 200 + spoken text, otherwise the live call drops mid-sentence
         logger.error("[CUSTOM LLM ERROR] %s", exc)
         text = "I'm sorry, I'm having a technical issue. Please call back in a moment."
         end_call = False

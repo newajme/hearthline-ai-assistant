@@ -29,6 +29,8 @@ jobs:
       DJANGO_SECRET_KEY: ci-secret
       DJANGO_DEBUG: '0'
       DJANGO_ALLOWED_HOSTS: '*'
+      HEARTHLINE_ENCRYPTION_KEY: 8sJk6HGZ_mXqkJZ3p4Yp7Vw8oV1NfQkM7d2g3hT0a5Y=
+      VAPI_WEBHOOK_SECRET: ci-vapi-secret
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

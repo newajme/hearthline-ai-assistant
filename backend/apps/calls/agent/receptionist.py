@@ -128,7 +128,7 @@ def _persist_turn(conversation_history: list, caller_phone: str | None,
                 conversation=convo, direction="out", role="assistant",
                 body=anna_reply[:2000],
             )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001 — best-effort timeline persistence; never crash the live call on a DB hiccup
         logger.warning("[TRANSCRIPT PERSIST] %s", exc)
 
 
@@ -223,7 +223,7 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
             logger.info("[TOOL] %s %s", tb.name, json.dumps(tb.input))
             try:
                 last_result = execute_tool(tb.name, tb.input, caller_phone=caller_phone, call_id=call_id, business=biz)
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:  # noqa: BLE001 — surface any tool failure back to the LLM as a tool_result so it can recover, not 500
                 logger.error("[TOOL ERROR] %s: %s", tb.name, exc)
                 last_result = {"error": str(exc)}
             logger.info("[RESULT] %s", json.dumps(last_result, default=str))

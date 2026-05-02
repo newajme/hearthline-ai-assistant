@@ -30,6 +30,6 @@ def send_email(to: str, subject: str, body: str, business=None) -> dict:
         EmailMessage(subject=subject, body=body, from_email=from_addr, to=[to]).send(fail_silently=False)
         logger.info("[EMAIL SENT] to=%s subject=%s", to, subject)
         return {"success": True}
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001 — every SMTP backend raises a different exception type; surface as a structured failure
         logger.error("[EMAIL ERROR] to=%s err=%s", to, exc)
         return {"success": False, "error": str(exc)}

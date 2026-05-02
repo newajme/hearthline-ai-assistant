@@ -132,6 +132,7 @@ def run_openai_loop(
             try:
                 tool_input = json.loads(tc.function.arguments or "{}")
             except json.JSONDecodeError:
+                logger.warning("[TOOL JSON ERROR] %s args=%r", name, tc.function.arguments)
                 tool_input = {}
 
             if name == "end_call":

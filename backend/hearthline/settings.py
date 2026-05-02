@@ -6,10 +6,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-not-for-production")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
-ALLOWED_HOSTS = os.environ.get(
-    "DJANGO_ALLOWED_HOSTS",
-    "localhost,127.0.0.1,backend,.ngrok-free.app,.ngrok.app,.ngrok.io,.trycloudflare.com",
-).split(",")
+_default_allowed_hosts = "localhost,127.0.0.1,backend"
+if DEBUG:
+    _default_allowed_hosts += ",.ngrok-free.app,.ngrok.app,.ngrok.io,.trycloudflare.com"
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", _default_allowed_hosts).split(",")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -160,8 +160,10 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok.io",
 ]
 
-# Logging — surface app-level INFO logs (call transcripts, tool calls) to stdout
-# so `docker compose logs -f backend` shows the running call.
+# Logging — surface app-level logs (call transcripts, tool calls) to stdout
+# so `docker compose logs -f backend` shows the running call. Override the
+# default via HEARTHLINE_LOG_LEVEL=DEBUG when chasing a specific bug.
+_app_log_level = os.environ.get("HEARTHLINE_LOG_LEVEL", "INFO").upper()
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -172,7 +174,7 @@ LOGGING = {
         "console": {"class": "logging.StreamHandler", "formatter": "simple"},
     },
     "loggers": {
-        "apps": {"handlers": ["console"], "level": "INFO", "propagate": False},
+        "apps": {"handlers": ["console"], "level": _app_log_level, "propagate": False},
     },
     "root": {"handlers": ["console"], "level": "WARNING"},
 }
@@ -205,8 +207,9 @@ if not DEBUG:
             "python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())'"
         )
     if not VAPI_WEBHOOK_SECRET:
-        # Soft warning: webhook signature verification is skipped without it.
-        import logging as _lg
-        _lg.getLogger(__name__).warning(
-            "VAPI_WEBHOOK_SECRET is not set in prod — webhook signatures will not be verified."
+        raise RuntimeError(
+            "VAPI_WEBHOOK_SECRET is not set. Without it, anyone can POST forged "
+            "Vapi webhooks and run up your Anthropic bill — refusing to start. "
+            "Set it to the shared secret configured on your Vapi assistant's "
+            "Server URL settings."
         )
