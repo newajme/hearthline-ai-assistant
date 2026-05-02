@@ -2,9 +2,10 @@
 
 > **The open-source AI front desk for home-service teams.**
 > Inbound calls, SMS, photo quotes, dispatch, deposits — automated 24/7.
-> Self-hostable. MIT-licensed. Built in public.
+> Self-hostable. AGPL-3.0 (commercial license available). Built in public.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](LICENSE)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-black.svg)](LICENSE)
+[![Commercial license](https://img.shields.io/badge/Commercial-license%20available-d2532b.svg)](COMMERCIAL.md)
 [![Built with Claude](https://img.shields.io/badge/AI-Claude%20Sonnet%204.6-d2532b.svg)](https://anthropic.com)
 [![Voice by Vapi](https://img.shields.io/badge/Voice-Vapi-2563eb.svg)](https://vapi.ai)
 [![Stack](https://img.shields.io/badge/Stack-Next.js%20%C2%B7%20Django%20%C2%B7%20Postgres-black.svg)](#stack)
@@ -207,7 +208,10 @@ Pull requests welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow.
 
 ## License
 
-[MIT](LICENSE) — fork it, deploy it, sell it under your own brand. No attribution required (but appreciated).
+Hearthline is dual-licensed:
+
+- **[AGPL-3.0](LICENSE)** for self-hosting, learning, and internal use. If you modify Hearthline and run it as a network service, your modifications must be released under AGPL-3.0 too.
+- **[Commercial license](COMMERCIAL.md)** for white-labeling, reselling, embedding in closed-source products, or done-for-you deployment. Email **codewithmuh@gmail.com** or [book a call](https://calendly.com/contact-codewithmuh/30min).
 
 ---
 

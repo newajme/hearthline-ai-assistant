@@ -77,11 +77,13 @@ export default function TermsPage() {
 
             <h2>7. Open-source code</h2>
             <p>
-              The Hearthline reference implementation is published under the MIT license at{" "}
+              The Hearthline reference implementation is published under the GNU AGPL-3.0 license at{" "}
               <a href="https://github.com/codewithmuh/hearthline" target="_blank" rel="noreferrer">
                 github.com/codewithmuh/hearthline
-              </a>. Self-hosting is permitted; running your own deployment falls outside the
-              scope of these Terms (use the MIT license).
+              </a>. Self-hosting is permitted under AGPL-3.0; running your own deployment falls
+              outside the scope of these Terms. A separate commercial license is available for
+              white-labeling, reselling, or embedding Hearthline in closed-source products —
+              contact codewithmuh@gmail.com.
             </p>
 
             <h2>8. Disclaimer of warranties</h2>

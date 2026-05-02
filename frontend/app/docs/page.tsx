@@ -86,7 +86,7 @@ export default function DocsPage() {
         {/* HERO */}
         <section className="shell hero">
           <span className="hero-eyebrow">
-            <span className="dot" /> Built in public · MIT license · Self-hostable
+            <span className="dot" /> Built in public · AGPL-3.0 · Self-hostable
           </span>
           <h1 className="hero-title">
             Fork the whole stack.<br />Run it on your laptop.
@@ -304,10 +304,11 @@ docker compose up --build
           </div>
           <div className="footer-col">
             <h5>Legal</h5>
-            <a href={`${GITHUB_URL}/blob/main/LICENSE`} target="_blank" rel="noreferrer">MIT License</a>
+            <a href={`${GITHUB_URL}/blob/main/LICENSE`} target="_blank" rel="noreferrer">AGPL-3.0 License</a>
+            <a href={`${GITHUB_URL}/blob/main/COMMERCIAL.md`} target="_blank" rel="noreferrer">Commercial license</a>
           </div>
           <div className="footer-bottom">
-            <span>© {new Date().getFullYear()} Hearthline. Open-source under MIT.</span>
+            <span>© {new Date().getFullYear()} Hearthline. Open-source under AGPL-3.0.</span>
             <span>Next.js · Django · Vapi · Twilio · Claude · Postgres</span>
           </div>
         </footer>
