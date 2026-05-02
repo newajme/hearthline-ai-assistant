@@ -1,15 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 
-import { Anna, SkPhone, SkScroll } from "./Anna";
+import { Anna } from "./Anna";
 import AnnaDemoLauncher from "./AnnaDemoLauncher";
 import ChatWidget from "./ChatWidget";
 import ThemeToggle from "./ThemeToggle";
 import LanguageSwitcher from "./LanguageSwitcher";
 import HeroBackdrop from "./HeroBackdrop";
-import HeroPipeline from "./HeroPipeline";
 import LiveTicker from "./LiveTicker";
+import MissedCallStory from "./MissedCallStory";
 import MockDashboard from "./MockDashboard";
 import PhoneWidget from "./PhoneWidget";
 import { useI18n } from "./lib/i18n";
@@ -19,26 +20,27 @@ const REPO_URL = "https://github.com/codewithmuh/hearthline";
 
 export default function HomePage() {
   const { t } = useI18n();
+  const [activeFeature, setActiveFeature] = useState(0);
 
   const FEATURES = [
-    { name: t("features.f1.name") },
-    { name: t("features.f2.name") },
-    { name: t("features.f3.name") },
-    { name: t("features.f4.name") },
-    { name: t("features.f5.name") },
-    { name: t("features.f6.name") },
+    { name: t("features.f1.name"), body: t("features.f1.body") },
+    { name: t("features.f2.name"), body: t("features.f2.body") },
+    { name: t("features.f3.name"), body: t("features.f3.body") },
+    { name: t("features.f4.name"), body: t("features.f4.body") },
+    { name: t("features.f5.name"), body: t("features.f5.body") },
+    { name: t("features.f6.name"), body: t("features.f6.body") },
   ];
 
   const INDUSTRIES = [
-    { name: t("industries.i1.name"), sketch: <SkPipe />, body: t("industries.i1.body") },
-    { name: t("industries.i2.name"), sketch: <SkWindow />, body: t("industries.i2.body") },
-    { name: t("industries.i3.name"), sketch: <SkSolar />, body: t("industries.i3.body") },
-    { name: t("industries.i4.name"), sketch: <SkInsulation />, body: t("industries.i4.body") },
-    { name: t("industries.i5.name"), sketch: <SkGarage />, body: t("industries.i5.body") },
-    { name: t("industries.i6.name"), sketch: <SkBolt />, body: t("industries.i6.body") },
-    { name: t("industries.i7.name"), sketch: <SkLeaf />, body: t("industries.i7.body") },
-    { name: t("industries.i8.name"), sketch: <SkSpray />, body: t("industries.i8.body") },
-    { name: t("industries.i9.name"), sketch: <SkBug />, body: t("industries.i9.body") },
+    { name: t("industries.i1.name"), sketch: <SkPipe />,       body: t("industries.i1.body"), tint: "water" },
+    { name: t("industries.i2.name"), sketch: <SkWindow />,     body: t("industries.i2.body"), tint: "glass" },
+    { name: t("industries.i3.name"), sketch: <SkSolar />,      body: t("industries.i3.body"), tint: "sun" },
+    { name: t("industries.i4.name"), sketch: <SkInsulation />, body: t("industries.i4.body"), tint: "earth" },
+    { name: t("industries.i5.name"), sketch: <SkGarage />,     body: t("industries.i5.body"), tint: "slate" },
+    { name: t("industries.i6.name"), sketch: <SkBolt />,       body: t("industries.i6.body"), tint: "spark" },
+    { name: t("industries.i7.name"), sketch: <SkLeaf />,       body: t("industries.i7.body"), tint: "leaf" },
+    { name: t("industries.i8.name"), sketch: <SkSpray />,      body: t("industries.i8.body"), tint: "foam" },
+    { name: t("industries.i9.name"), sketch: <SkBug />,        body: t("industries.i9.body"), tint: "moss" },
   ];
 
   return (
@@ -70,7 +72,19 @@ export default function HomePage() {
           <div className="topbar-right">
             <LanguageSwitcher />
             <ThemeToggle />
-            <Link href="/login" className="btn btn-ghost">{t("btn.signIn")}</Link>
+            <Link href="/login" className="topbar-signin" aria-label={t("btn.signIn")}>{t("btn.signIn")}</Link>
+            <a
+              href={REPO_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-ghost btn-github"
+              aria-label="Star Hearthline on GitHub"
+            >
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden>
+                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.13 0 1.54-.01 2.79-.01 3.16 0 .31.21.68.8.56C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z" />
+              </svg>
+              <span>Star on GitHub</span>
+            </a>
             <a href={DEMO_URL} target="_blank" rel="noreferrer" className="btn btn-primary">{t("btn.bookDemo")}</a>
           </div>
         </header>
@@ -87,6 +101,10 @@ export default function HomePage() {
               <span className="hero-meet-anna-tail">{t("hero.meetTail")}</span>
             </span>
           </span>
+          <p className="hero-eyebrow-trades">
+            <span className="hero-eyebrow-trades-label">{t("hero.tradesLabel")}</span>
+            <span className="hero-eyebrow-trades-list">{t("hero.tradesList")}</span>
+          </p>
           <h1 className="hero-title">
             {t("hero.title1")}<br />
             <span className="hero-title-em">{t("hero.title2")}</span>
@@ -114,14 +132,7 @@ export default function HomePage() {
 
         <div className="ember-line" aria-hidden />
 
-        <section className="shell section-tight" id="flow">
-          <div className="section-head">
-            <span className="section-flourish">{t("flow.eyebrow")}</span>
-            <h2 className="section-title">{t("flow.title")}</h2>
-            <p className="section-sub">{t("flow.sub")}</p>
-          </div>
-          <HeroPipeline />
-        </section>
+        <MissedCallStory />
 
         <div className="ember-line" aria-hidden />
 
@@ -135,99 +146,30 @@ export default function HomePage() {
             <div className="feature-split-left">
               <div className="feature-active">
                 <div className="feature-active-row">
-                  <h3 className="feature-active-name">{t("features.f1.name")}</h3>
-                  <span className="feature-num feature-num-active">01</span>
+                  <h3 className="feature-active-name">{FEATURES[activeFeature].name}</h3>
+                  <span className="feature-num feature-num-active">0{activeFeature + 1}</span>
                 </div>
-                <p className="feature-active-body">{t("features.f1.body")}</p>
+                <p className="feature-active-body">{FEATURES[activeFeature].body}</p>
                 <Link href="/dashboard" className="feature-cta">
                   {t("btn.explore")} <span aria-hidden>→</span>
                 </Link>
               </div>
               <div className="features-list features-list-tight">
-                {FEATURES.slice(1).map((f, i) => (
-                  <div className="feature-row muted" key={f.name}>
+                {FEATURES.map((f, i) => i === activeFeature ? null : (
+                  <button
+                    type="button"
+                    className="feature-row muted feature-row-btn"
+                    key={f.name}
+                    onClick={() => setActiveFeature(i)}
+                  >
                     <h3 className="feature-name">{f.name}</h3>
-                    <span className="feature-num">0{i + 2}</span>
-                  </div>
+                    <span className="feature-num">0{i + 1}</span>
+                  </button>
                 ))}
               </div>
             </div>
             <div className="feature-split-right">
               <PhoneWidget />
-            </div>
-          </div>
-        </section>
-
-        <div className="ember-line" aria-hidden />
-
-        <section className="shell section-tight" id="workflow">
-          <div className="section-head">
-            <span className="section-flourish">{t("convo.eyebrow")}</span>
-            <h2 className="section-title">{t("convo.title")}</h2>
-            <p className="section-sub">{t("convo.sub")}</p>
-          </div>
-          <div className="workflow-convo workflow-convo-solo">
-            <div className="workflow-convo-head">
-              <span className="workflow-convo-icon">
-                <SkPhone />
-              </span>
-              <div>
-                <h3>{t("convo.head.title")}</h3>
-                <p>{t("convo.head.sub")}</p>
-              </div>
-            </div>
-
-            <div className="workflow-thread">
-              <div className="workflow-msg in">
-                <span className="workflow-avatar">
-                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-7 8-7s8 3 8 7" /></svg>
-                </span>
-                <div className="workflow-msg-bubble">
-                  {t("convo.msg1")}
-                </div>
-              </div>
-              <div className="workflow-msg out">
-                <div className="workflow-msg-bubble">
-                  {t("convo.msg2")}
-                  <span className="workflow-sig">{t("convo.signed")}</span>
-                </div>
-                <span className="workflow-avatar ai">A</span>
-              </div>
-              <div className="workflow-msg in">
-                <span className="workflow-avatar">
-                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-7 8-7s8 3 8 7" /></svg>
-                </span>
-                <div className="workflow-msg-bubble">
-                  {t("convo.msg3")}
-                  <span className="workflow-photo">
-                    <SkScroll />
-                    <span>living-room-window.jpg · 2.1 MB</span>
-                  </span>
-                </div>
-              </div>
-              <div className="workflow-msg out">
-                <div className="workflow-msg-bubble">
-                  {t("convo.msg4Pre")}<strong>$3,540</strong>{t("convo.msg4Mid")}
-                  <span className="workflow-sig">{t("convo.signed")}</span>
-                </div>
-                <span className="workflow-avatar ai">A</span>
-              </div>
-            </div>
-
-            <div className="workflow-output-label">{t("convo.output")}</div>
-            <div className="workflow-output-row">
-              <span className="action-pill quote">
-                <span className="action-dot" style={{ background: "#7c3aed" }} />
-                {t("convo.estimate")}
-              </span>
-              <span className="action-pill booked">
-                <span className="action-dot" style={{ background: "#2563eb" }} />
-                {t("convo.deal")}
-              </span>
-              <span className="action-pill won">
-                <span className="action-dot" style={{ background: "#16a34a" }} />
-                {t("convo.survey")}
-              </span>
             </div>
           </div>
         </section>
@@ -242,7 +184,7 @@ export default function HomePage() {
           </div>
           <div className="industries-grid industries-grid-wide">
             {INDUSTRIES.map((it) => (
-              <div className="industry-card" key={it.name}>
+              <div className={`industry-card tint-${it.tint}`} key={it.name}>
                 <span className="industry-sketch" aria-hidden>{it.sketch}</span>
                 <h3>{it.name}</h3>
                 <p>{it.body}</p>

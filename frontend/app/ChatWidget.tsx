@@ -36,18 +36,33 @@ const INTRO: Msg = {
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
-  const [teaser, setTeaser] = useState(true);
+  const [revealed, setRevealed] = useState(false);
+  const [teaser, setTeaser] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([INTRO]);
   const [draft, setDraft] = useState("");
   const [thinking, setThinking] = useState(false);
   const scriptIdx = useRef(0);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  // Hide teaser after 8s
+  // Reveal the FAB only after the user scrolls past the hero (~600px),
+  // then show the teaser bubble briefly so it never collides with the dashboard preview on first paint.
   useEffect(() => {
+    function onScroll() {
+      if (window.scrollY > 600) {
+        setRevealed(true);
+        setTeaser(true);
+        window.removeEventListener("scroll", onScroll);
+      }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!teaser) return;
     const t = setTimeout(() => setTeaser(false), 8000);
     return () => clearTimeout(t);
-  }, []);
+  }, [teaser]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -83,7 +98,7 @@ export default function ChatWidget() {
   return (
     <>
       {/* TEASER bubble (bottom-right) */}
-      {!open && teaser && (
+      {!open && revealed && teaser && (
         <button className="chat-teaser" onClick={() => { setOpen(true); setTeaser(false); }}>
           <span className="chat-teaser-avatar">A</span>
           <div>
@@ -95,7 +110,7 @@ export default function ChatWidget() {
       )}
 
       {/* FAB launcher */}
-      {!open && (
+      {!open && revealed && (
         <button className="chat-fab" onClick={() => { setOpen(true); setTeaser(false); }} aria-label="Open chat">
           <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />

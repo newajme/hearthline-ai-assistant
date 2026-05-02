@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "./lib/i18n";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-fraunces",
+  weight: "variable",
+  style: ["normal", "italic"],
+  axes: ["SOFT", "opsz"],
+});
 
 export const metadata: Metadata = {
   title: "Hearthline — The 24/7 AI front-desk for home-service teams",
@@ -31,7 +39,7 @@ const SW_INIT = `if('serviceWorker' in navigator){window.addEventListener('load'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${fraunces.variable}`} suppressHydrationWarning>
       <body>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
         <script dangerouslySetInnerHTML={{ __html: LANG_INIT }} />
