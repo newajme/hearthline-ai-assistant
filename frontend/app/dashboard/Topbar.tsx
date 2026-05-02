@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import ThemeToggle from "../ThemeToggle";
 import LanguageSwitcher from "../LanguageSwitcher";
-import { getAdminUrl } from "../lib/api";
+import { getAdminUrl } from "../lib/adminUrl";
 
 type SessionUser = {
   id: number;

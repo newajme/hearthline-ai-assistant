@@ -61,10 +61,10 @@ export default function HomePage() {
             </a>
           </div>
           <nav className="nav-links">
+            <Link href="#flow" className="nav-link">{t("nav.how")}</Link>
             <Link href="#features" className="nav-link">{t("nav.features")}</Link>
-            <Link href="#workflow" className="nav-link">{t("nav.how")}</Link>
-            <Link href="#impact" className="nav-link">{t("nav.impact")}</Link>
             <Link href="#industries" className="nav-link">{t("nav.industries")}</Link>
+            <Link href="#impact" className="nav-link">{t("nav.impact")}</Link>
             <Link href="/docs" className="nav-link">{t("nav.docs")}</Link>
           </nav>
           <div className="topbar-right">
@@ -114,15 +114,23 @@ export default function HomePage() {
 
         <div className="ember-line" aria-hidden />
 
+        <section className="shell section-tight" id="flow">
+          <div className="section-head">
+            <span className="section-flourish">{t("flow.eyebrow")}</span>
+            <h2 className="section-title">{t("flow.title")}</h2>
+            <p className="section-sub">{t("flow.sub")}</p>
+          </div>
+          <HeroPipeline />
+        </section>
+
+        <div className="ember-line" aria-hidden />
+
         <section className="shell section-tight" id="features">
           <div className="section-head">
             <span className="section-flourish">{t("features.eyebrow")}</span>
             <h2 className="section-title">{t("features.title")}</h2>
             <p className="section-sub">{t("features.sub")}</p>
           </div>
-        </section>
-
-        <section className="shell section-tight">
           <div className="feature-split feature-split-stretch">
             <div className="feature-split-left">
               <div className="feature-active">
@@ -150,47 +158,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="shell section" id="impact">
-          <div className="stats-band">
-            <div>
-              <span className="section-flourish" style={{ color: "rgba(255,255,255,0.55)" }}>
-                {t("stats.eyebrow")}
-              </span>
-              <h2 className="stats-band-title">{t("stats.title")}</h2>
-              <p className="stats-band-body">{t("stats.body")}</p>
-              <ul>
-                <li>{t("stats.li1")}</li>
-                <li>{t("stats.li2")}</li>
-                <li>{t("stats.li3")}</li>
-              </ul>
-            </div>
-            <div className="stats-band-right">
-              <div className="stats-card night">
-                <div className="stats-card-num">{t("stats.card1.num")}</div>
-                <div className="stats-card-label">{t("stats.card1.label")}</div>
-              </div>
-              <div className="stats-card ember">
-                <div className="stats-card-num">{t("stats.card2.num")}</div>
-                <div className="stats-card-label">{t("stats.card2.label")}</div>
-              </div>
-              <div className="stats-card">
-                <div className="stats-card-num">{t("stats.card3.num")}</div>
-                <div className="stats-card-label">{t("stats.card3.label")}</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <div className="ember-line" aria-hidden />
-
-        <section className="shell section-tight" id="flow">
-          <div className="section-head">
-            <span className="section-flourish">{t("flow.eyebrow")}</span>
-            <h2 className="section-title">{t("flow.title")}</h2>
-            <p className="section-sub">{t("flow.sub")}</p>
-          </div>
-          <HeroPipeline />
-        </section>
 
         <section className="shell section-tight" id="workflow">
           <div className="section-head">
@@ -266,8 +234,6 @@ export default function HomePage() {
 
         <div className="ember-line" aria-hidden />
 
-        <div className="ember-line" aria-hidden />
-
         <section className="shell section-tight" id="industries">
           <div className="section-head">
             <span className="section-flourish">{t("industries.eyebrow")}</span>
@@ -287,6 +253,37 @@ export default function HomePage() {
             {t("industries.note")}
             <a href={DEMO_URL} target="_blank" rel="noreferrer">{t("btn.tellUs")}</a>.
           </p>
+        </section>
+
+        <section className="shell section" id="impact">
+          <div className="stats-band">
+            <div>
+              <span className="section-flourish" style={{ color: "rgba(255,255,255,0.55)" }}>
+                {t("stats.eyebrow")}
+              </span>
+              <h2 className="stats-band-title">{t("stats.title")}</h2>
+              <p className="stats-band-body">{t("stats.body")}</p>
+              <ul>
+                <li>{t("stats.li1")}</li>
+                <li>{t("stats.li2")}</li>
+                <li>{t("stats.li3")}</li>
+              </ul>
+            </div>
+            <div className="stats-band-right">
+              <div className="stats-card night">
+                <div className="stats-card-num">{t("stats.card1.num")}</div>
+                <div className="stats-card-label">{t("stats.card1.label")}</div>
+              </div>
+              <div className="stats-card ember">
+                <div className="stats-card-num">{t("stats.card2.num")}</div>
+                <div className="stats-card-label">{t("stats.card2.label")}</div>
+              </div>
+              <div className="stats-card">
+                <div className="stats-card-num">{t("stats.card3.num")}</div>
+                <div className="stats-card-label">{t("stats.card3.label")}</div>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="shell section-tight">

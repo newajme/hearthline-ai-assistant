@@ -9,6 +9,16 @@ export const metadata: Metadata = {
   title: "Hearthline — The 24/7 AI front-desk for home-service teams",
   description:
     "Phone, SMS, WhatsApp, email, chat — every customer touchpoint qualified, photo-quoted, and dispatched without anyone picking up the phone.",
+  applicationName: "Hearthline",
+  appleWebApp: {
+    capable: true,
+    title: "Hearthline",
+    statusBarStyle: "black-translucent",
+  },
+};
+
+export const viewport = {
+  themeColor: "#0b0b0f",
 };
 
 const THEME_INIT = `(function(){try{var s=localStorage.getItem('hl-theme');var m=window.matchMedia('(prefers-color-scheme: dark)').matches;var t=s||(m?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { getAdminUrl } from "../lib/api";
+import { getAdminUrl } from "../lib/adminUrl";
 
 type Counts = { leads: number; calls: number; quotes: number; businesses: number };
 
