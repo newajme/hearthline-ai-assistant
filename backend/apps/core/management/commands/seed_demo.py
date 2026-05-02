@@ -20,95 +20,43 @@ from apps.quotes.models import LineItem, Quote
 
 
 CUSTOMERS = [
-    ("Mark Johnson", "+1 (555) 777-8888", "mark.johnson@example.com", "1820 Oak St, Sacramento, CA"),
-    ("David Chen", "+1 (555) 333-9999", "david.chen@example.com", "207 Pine Ridge Dr, Oakland, CA"),
-    ("Olivia Park", "+1 (555) 803-2240", "olivia@bayhvac.com", "320 Bayshore Ave, Redwood City, CA"),
+    ("Demo Customer", "+1 (000) 123-4567", "demo@example.test", "123 Demo Street, Sample City"),
 ]
 
 
 LEADS = [
     {
-        "summary": "5 PVC windows for living room, white frame, standard sizing.",
-        "status": "won",
-        "temp": "hot",
-        "value": 3520,
-        "extracted": {"trade": "windows", "units": 5, "material": "white PVC", "urgency": "this_month"},
-    },
-    {
-        "summary": "Roof replacement quote — approx 2,000 sq ft, asphalt shingles.",
+        "summary": "Sample window replacement enquiry — 3 standard PVC units.",
         "status": "quoted",
         "temp": "warm",
-        "value": 8500,
-        "extracted": {"trade": "roofing", "sqft": 2000, "urgency": "this_month"},
-    },
-    {
-        "summary": "HVAC install for 3-bed home, asking about smart-thermostat add-on.",
-        "status": "booked",
-        "temp": "hot",
-        "value": 12300,
-        "extracted": {"trade": "hvac", "units": 1, "addons": ["thermostat"], "urgency": "this_week"},
+        "value": 1900,
+        "extracted": {"trade": "windows", "units": 3, "material": "white PVC", "urgency": "this_month"},
     },
 ]
 
 
 CALLS = [
     {
-        "from": "+15557778888",
-        "transcript": "Hi, I'm Mark Johnson. I'd like to replace 5 windows in my living room — white PVC, standard size. Can you quote that?",
-        "summary": "Window replacement quote request — 5 units, white PVC, standard sizing. Customer pre-qualified for site survey.",
+        "from": "+10001234567",
+        "transcript": "Hi, this is a demo caller. I'd like a quote on three standard PVC windows.",
+        "summary": "Demo call — sample window replacement enquiry for 3 units.",
         "status": "completed",
-        "duration": 184,
-    },
-    {
-        "from": "+15553339999",
-        "transcript": "Hello, this is David. Need a quote on roof replacement, approximately 2000 square feet, single-story home.",
-        "summary": "Roof replacement enquiry — 2,000 sqft. Quote drafted at $8,500. Customer requested PDF.",
-        "status": "completed",
-        "duration": 142,
-    },
-    {
-        "from": "+15558032240",
-        "transcript": "Hi, this is Olivia from Bay HVAC. We had a customer ask about your wholesale rates for residential AC units.",
-        "summary": "B2B enquiry — wholesale AC unit pricing. Routed to commercial team.",
-        "status": "completed",
-        "duration": 96,
+        "duration": 120,
     },
 ]
 
 
 QUOTES = [
     {
-        "ref": "HL-A1F3C2",
+        "ref": "HL-DEMO01",
         "lead_idx": 0,
         "items": [
-            ("Standard PVC window 1.2m × 1.4m", 5, 580),
-            ("Removal & disposal of existing units", 5, 60),
+            ("Standard PVC window 1.2m × 1.4m", 3, 580),
+            ("Removal & disposal of existing units", 3, 60),
             ("Site survey + measurement", 1, 150),
         ],
-        "notes": "Prices indicative pending in-person measurement. Includes labour and materials.",
-        "status": "accepted",
-    },
-    {
-        "ref": "HL-B7D219",
-        "lead_idx": 1,
-        "items": [
-            ("Asphalt shingle roof — 2,000 sq ft", 1, 7200),
-            ("Tear-off and disposal", 1, 850),
-            ("Drip edge + ice/water shield", 1, 450),
-        ],
-        "notes": "Two-year workmanship warranty. Subject to inspection of decking on first day.",
+        "notes": "Demo quote for screen recording. Not a real customer.",
         "status": "sent",
-    },
-    {
-        "ref": "HL-C9E417",
-        "lead_idx": 2,
-        "items": [
-            ("Carrier 16 SEER 3-ton AC unit", 1, 8500),
-            ("Smart thermostat — Ecobee Premium", 1, 320),
-            ("Install + first-year service plan", 1, 3480),
-        ],
-        "notes": "Includes haul-away of existing unit and rebate paperwork submission.",
-        "status": "accepted",
     },
 ]
 
