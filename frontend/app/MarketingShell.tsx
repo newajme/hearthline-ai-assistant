@@ -57,6 +57,7 @@ export function MarketingTopbar({
   }, [open]);
 
   return (
+    <>
     <div className={`topbar-wrap ${scrolled ? "is-scrolled" : ""}`}>
       <header className="topbar">
         <div className="brand-cluster">
@@ -120,6 +121,7 @@ export function MarketingTopbar({
           </button>
         </div>
       </header>
+    </div>
 
       {open && (
         <div className="mobile-sheet" role="dialog" aria-modal="true" aria-label={t("menu.open")}>
@@ -164,7 +166,7 @@ export function MarketingTopbar({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

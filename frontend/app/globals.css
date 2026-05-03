@@ -8541,6 +8541,8 @@ html[dir="rtl"] .pipeline-num { direction: ltr; unicode-bidi: isolate; }
   inset: 64px 0 0 0;
   background: var(--bg);
   z-index: 99;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 24px 28px 32px;
   display: flex;
   flex-direction: column;
