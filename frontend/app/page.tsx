@@ -226,6 +226,7 @@ export default function HomePage() {
             <h5>{t("footer.resources")}</h5>
             <Link href="/faq">{t("footer.faq")}</Link>
             <Link href="/docs">{t("nav.docs")}</Link>
+            <Link href="/contact">Contact support</Link>
             <a href={DEMO_URL} target="_blank" rel="noreferrer">{t("btn.bookDemo")}</a>
           </div>
           <div className="footer-col">

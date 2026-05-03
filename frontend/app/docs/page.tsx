@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { MarketingFooter, MarketingTopbar } from "../MarketingShell";
+import ArchitectureOverview from "./ArchitectureOverview";
 
 export const metadata = {
   title: "Docs",
@@ -245,31 +246,7 @@ docker compose up --build
                 renders server components against a Django REST API; voice runs through
                 Vapi's custom-LLM mode so Anna keeps a real agent loop server-side.
               </p>
-              <div className="docs-arch-grid">
-                <div className="docs-arch-cell">
-                  <span className="docs-arch-cell-num">01</span>
-                  <strong>Caller</strong>
-                  <span>Phone · SMS · WhatsApp · web chat · email</span>
-                </div>
-                <div className="docs-arch-arrow" aria-hidden>→</div>
-                <div className="docs-arch-cell">
-                  <span className="docs-arch-cell-num">02</span>
-                  <strong>Vapi / Twilio</strong>
-                  <span>Voice handling, transcript per turn</span>
-                </div>
-                <div className="docs-arch-arrow" aria-hidden>→</div>
-                <div className="docs-arch-cell">
-                  <span className="docs-arch-cell-num">03</span>
-                  <strong>Django + Anna</strong>
-                  <span>Claude tool loop, persists to Postgres</span>
-                </div>
-                <div className="docs-arch-arrow" aria-hidden>→</div>
-                <div className="docs-arch-cell">
-                  <span className="docs-arch-cell-num">04</span>
-                  <strong>Next.js dashboard</strong>
-                  <span>Server components, live KPIs, quote PDFs</span>
-                </div>
-              </div>
+              <ArchitectureOverview />
             </section>
 
             <section id="stack" className="docs-section">

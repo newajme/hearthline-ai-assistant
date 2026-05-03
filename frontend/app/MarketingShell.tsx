@@ -132,6 +132,9 @@ export function MarketingTopbar({
             <Link href="/faq" className="mobile-sheet-link" onClick={() => setOpen(false)}>
               FAQ
             </Link>
+            <Link href="/contact" className="mobile-sheet-link" onClick={() => setOpen(false)}>
+              Contact
+            </Link>
             <Link href="/login" className="mobile-sheet-link" onClick={() => setOpen(false)}>
               Sign in
             </Link>
@@ -182,6 +185,7 @@ export function MarketingFooter() {
         <h5>Resources</h5>
         <Link href="/faq">FAQ</Link>
         <Link href="/docs">Docs</Link>
+        <Link href="/contact">Contact</Link>
         <a href={DEMO_URL} target="_blank" rel="noreferrer">Book a demo</a>
       </div>
       <div className="footer-col">
