@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
+import { useI18n } from "../lib/i18n";
+
 export default function LoginForm({ next }: { next: string }) {
+  const { t } = useI18n();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,14 +27,14 @@ export default function LoginForm({ next }: { next: string }) {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        setErr(data.detail || "Could not sign you in. Check your credentials.");
+        setErr(data.detail || t("login.error.fallback"));
         setBusy(false);
         return;
       }
       router.push(next);
       router.refresh();
     } catch {
-      setErr("Network error. Try again.");
+      setErr(t("login.error.network"));
       setBusy(false);
     }
   }
@@ -46,18 +49,18 @@ export default function LoginForm({ next }: { next: string }) {
       </Link>
 
       <form className="auth-card" onSubmit={onSubmit} noValidate>
-        <h1 className="auth-title">Welcome back</h1>
+        <h1 className="auth-title">{t("login.title")}</h1>
         <p className="auth-sub">
-          Sign in to your Hearthline dashboard. Don&apos;t have an account?{" "}
+          {t("login.sub.pre")}
           <a href="https://calendly.com/contact-codewithmuh/30min" target="_blank" rel="noreferrer">
-            Book a demo
+            {t("login.sub.cta")}
           </a>
           .
         </p>
 
         {err && <div className="auth-error" role="alert">{err}</div>}
 
-        <label className="auth-label" htmlFor="email">Email or username</label>
+        <label className="auth-label" htmlFor="email">{t("login.email")}</label>
         <input
           id="email"
           name="username"
@@ -68,10 +71,10 @@ export default function LoginForm({ next }: { next: string }) {
           className="auth-input"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@company.com"
+          placeholder={t("login.emailPh")}
         />
 
-        <label className="auth-label" htmlFor="password">Password</label>
+        <label className="auth-label" htmlFor="password">{t("login.password")}</label>
         <div className="auth-input-wrap">
           <input
             id="password"
@@ -88,25 +91,25 @@ export default function LoginForm({ next }: { next: string }) {
             type="button"
             className="auth-input-toggle"
             onClick={() => setShowPw((v) => !v)}
-            aria-label={showPw ? "Hide password" : "Show password"}
+            aria-label={showPw ? t("login.hide") : t("login.show")}
           >
-            {showPw ? "Hide" : "Show"}
+            {showPw ? t("login.hide") : t("login.show")}
           </button>
         </div>
 
         <button type="submit" className="btn btn-primary auth-submit" disabled={busy}>
-          {busy ? "Signing in…" : "Sign in"}
+          {busy ? t("login.submitting") : t("login.submit")}
           {!busy && <span aria-hidden>→</span>}
         </button>
 
         <p className="auth-foot">
-          Trouble signing in? Email{" "}
+          {t("login.foot.pre")}
           <a href="mailto:contact@codewithmuh.com">contact@codewithmuh.com</a>.
         </p>
       </form>
 
       <p className="auth-back">
-        <Link href="/">← Back to home</Link>
+        <Link href="/">{t("login.back")}</Link>
       </p>
     </main>
   );

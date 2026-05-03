@@ -1,3 +1,4 @@
+import { getT } from "../lib/i18n-server";
 import { MarketingFooter, MarketingTopbar } from "../MarketingShell";
 
 import { FAQS } from "./data";
@@ -24,7 +25,8 @@ const FAQ_JSONLD = {
   })),
 };
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const { t } = await getT();
   return (
     <>
       <script
@@ -36,15 +38,13 @@ export default function FaqPage() {
         <section className="shell hero hero-tight">
           <span className="hero-meet">
             <span className="hero-meet-avatar">?</span>
-            <span>Frequently asked questions</span>
+            <span>{t("faq.heroEyebrow")}</span>
           </span>
           <h1 className="hero-title">
-            Honest answers.<br />
-            <span className="hero-title-em">No marketing fluff.</span>
+            {t("faq.heroT1")}<br />
+            <span className="hero-title-em">{t("faq.heroT2")}</span>
           </h1>
-          <p className="hero-sub">
-            Setup, pricing, integrations, security — the things home-service teams actually ask before signing up.
-          </p>
+          <p className="hero-sub">{t("faq.heroSub")}</p>
         </section>
 
         <section className="shell section-tight">
@@ -53,8 +53,8 @@ export default function FaqPage() {
 
         <section className="shell section-tight">
           <div className="final-cta">
-            <h2 className="final-cta-title">Still have a question?</h2>
-            <p className="final-cta-sub">Book a 30-minute call and ask directly.</p>
+            <h2 className="final-cta-title">{t("faq.finalT")}</h2>
+            <p className="final-cta-sub">{t("faq.finalSub")}</p>
             <div className="final-cta-actions">
               <a
                 href="https://calendly.com/contact-codewithmuh/30min"
@@ -62,7 +62,7 @@ export default function FaqPage() {
                 rel="noreferrer"
                 className="btn btn-onDark btn-lg"
               >
-                Book a demo <span aria-hidden>→</span>
+                {t("btn.bookDemo")} <span aria-hidden>→</span>
               </a>
             </div>
           </div>

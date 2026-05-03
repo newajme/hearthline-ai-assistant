@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { getT } from "../lib/i18n-server";
 import { MarketingFooter, MarketingTopbar } from "../MarketingShell";
 import ArchitectureOverview from "./ArchitectureOverview";
 
@@ -127,30 +128,34 @@ const ROADMAP = {
   ],
 };
 
-const TOC = [
-  { id: "quickstart", label: "Quick start", group: "Get started" },
-  { id: "architecture", label: "Architecture", group: "Get started" },
-  { id: "stack", label: "What's in the repo", group: "Concepts" },
-  { id: "pipeline", label: "Anna's agent loop", group: "Concepts" },
-  { id: "voice", label: "Wiring real voice", group: "Integrations" },
-  { id: "demo-data", label: "Seed demo data", group: "Integrations" },
-  { id: "roadmap", label: "Roadmap", group: "Project" },
-  { id: "license", label: "License", group: "Project" },
-];
+function buildToc(t: (k: string) => string) {
+  return [
+    { id: "quickstart", label: t("docs.toc.quickstart"), group: t("docs.tocStarted") },
+    { id: "architecture", label: t("docs.toc.architecture"), group: t("docs.tocStarted") },
+    { id: "stack", label: t("docs.toc.stack"), group: t("docs.tocConcepts") },
+    { id: "pipeline", label: t("docs.toc.pipeline"), group: t("docs.tocConcepts") },
+    { id: "voice", label: t("docs.toc.voice"), group: t("docs.tocIntegrations") },
+    { id: "demo-data", label: t("docs.toc.demoData"), group: t("docs.tocIntegrations") },
+    { id: "roadmap", label: t("docs.toc.roadmap"), group: t("docs.tocProject") },
+    { id: "license", label: t("docs.toc.license"), group: t("docs.tocProject") },
+  ];
+}
 
-export default function DocsPage() {
-  const groups = Array.from(new Set(TOC.map((t) => t.group)));
+export default async function DocsPage() {
+  const { t } = await getT();
+  const TOC = buildToc(t);
+  const groups = Array.from(new Set(TOC.map((x) => x.group)));
 
   return (
     <>
       <MarketingTopbar
         ossPill="AGPL-3.0"
         links={[
-          { href: "/", label: "Home" },
-          { href: "#quickstart", label: "Quick start" },
-          { href: "#stack", label: "Stack" },
-          { href: "#pipeline", label: "Pipeline" },
-          { href: "#roadmap", label: "Roadmap" },
+          { href: "/", label: t("nav.how").startsWith("How") ? "Home" : "Home" },
+          { href: "#quickstart", label: t("docs.toc.quickstart") },
+          { href: "#stack", label: t("docs.toc.stack") },
+          { href: "#pipeline", label: t("docs.toc.pipeline") },
+          { href: "#roadmap", label: t("docs.toc.roadmap") },
         ]}
       />
 
@@ -179,10 +184,10 @@ export default function DocsPage() {
                   rel="noreferrer"
                   className="docs-toc-cta"
                 >
-                  ★ Star on GitHub
+                  {t("docs.toc.starGh")}
                 </a>
                 <a href={YT_URL} target="_blank" rel="noreferrer" className="docs-toc-yt">
-                  ▶ Build along on YouTube
+                  {t("docs.toc.buildAlong")}
                 </a>
               </div>
             </div>
@@ -191,18 +196,14 @@ export default function DocsPage() {
           <article className="docs-body">
             <header className="docs-hero">
               <span className="docs-hero-eyebrow">
-                <span className="dot" /> Built in public · AGPL-3.0 · Self-hostable
+                <span className="dot" /> {t("docs.eyebrow")}
               </span>
-              <h1 className="docs-hero-title">Self-host Hearthline.</h1>
-              <p className="docs-hero-sub">
-                Same dashboard, same AI pipeline, same code we ship in the YouTube
-                build-alongs — yours under AGPL-3.0. Three commands and you're running
-                the full stack locally.
-              </p>
+              <h1 className="docs-hero-title">{t("docs.title")}</h1>
+              <p className="docs-hero-sub">{t("docs.sub")}</p>
             </header>
 
             <section id="quickstart" className="docs-section">
-              <h2 className="docs-h2">Quick start</h2>
+              <h2 className="docs-h2">{t("docs.h.quickstart")}</h2>
               <pre className="docs-code">
                 <code>{`# 1 — clone
 git clone https://github.com/codewithmuh/hearthline.git
@@ -220,12 +221,12 @@ docker compose up --build
               </pre>
               <div className="docs-next-cards">
                 <a href="#voice" className="docs-next-card">
-                  <strong>Wire up Vapi</strong>
-                  <span>Drop your key in <code>.env</code> and point a webhook.</span>
+                  <strong>{t("docs.next.vapi")}</strong>
+                  <span>{t("docs.next.vapiSub")}</span>
                 </a>
                 <a href="#demo-data" className="docs-next-card">
-                  <strong>Seed demo data</strong>
-                  <span>One command — the dashboard fills with believable rows.</span>
+                  <strong>{t("docs.next.seed")}</strong>
+                  <span>{t("docs.next.seedSub")}</span>
                 </a>
                 <a
                   href={`${REPO_TREE}/DEPLOY.md`}
@@ -233,28 +234,21 @@ docker compose up --build
                   rel="noreferrer"
                   className="docs-next-card"
                 >
-                  <strong>Deploy to a VPS</strong>
-                  <span>Docker Compose + Caddy auto-HTTPS in DEPLOY.md.</span>
+                  <strong>{t("docs.next.deploy")}</strong>
+                  <span>{t("docs.next.deploySub")}</span>
                 </a>
               </div>
             </section>
 
             <section id="architecture" className="docs-section">
-              <h2 className="docs-h2">Architecture overview</h2>
-              <p className="docs-p">
-                Three Docker services, two AI providers, one Postgres. The frontend
-                renders server components against a Django REST API; voice runs through
-                Vapi's custom-LLM mode so Anna keeps a real agent loop server-side.
-              </p>
+              <h2 className="docs-h2">{t("docs.h.architecture")}</h2>
+              <p className="docs-p">{t("docs.archP")}</p>
               <ArchitectureOverview />
             </section>
 
             <section id="stack" className="docs-section">
-              <h2 className="docs-h2">What&rsquo;s in the repo</h2>
-              <p className="docs-p">
-                Every box below is wired up in code. Click the path to jump straight to
-                the file on GitHub.
-              </p>
+              <h2 className="docs-h2">{t("docs.h.stack")}</h2>
+              <p className="docs-p">{t("docs.stackP")}</p>
               <div className="docs-stack-grid">
                 {STACK.map((s) => (
                   <article className="docs-stack-card" key={s.title}>
@@ -276,11 +270,8 @@ docker compose up --build
             </section>
 
             <section id="pipeline" className="docs-section">
-              <h2 className="docs-h2">Anna&rsquo;s agent loop</h2>
-              <p className="docs-p">
-                Six stages, each one a single function, webhook, or tool dispatch in the
-                codebase. Trace it with your IDE in five minutes.
-              </p>
+              <h2 className="docs-h2">{t("docs.h.pipeline")}</h2>
+              <p className="docs-p">{t("docs.pipelineP")}</p>
               <ol className="docs-pipeline">
                 {PIPELINE.map((s, i) => (
                   <li key={s.stage} className="docs-pipeline-step">
@@ -304,27 +295,20 @@ docker compose up --build
             </section>
 
             <section id="voice" className="docs-section">
-              <h2 className="docs-h2">Wiring real voice</h2>
-              <p className="docs-p">
-                Drop your Vapi key in <code>.env</code> and point the assistant webhook at
-                a tunnel of your local backend (or your deployed URL):
-              </p>
+              <h2 className="docs-h2">{t("docs.h.voice")}</h2>
+              <p className="docs-p">{t("docs.voiceP1")}</p>
               <pre className="docs-code docs-code-mini">
                 <code>https://&lt;your-host&gt;/api/calls/webhooks/vapi/</code>
               </pre>
               <p className="docs-p">
-                The custom-LLM completions endpoint lives at{" "}
-                <code>/api/calls/vapi/chat/completions/</code> — Vapi POSTs the running
-                transcript on every turn and Anna's loop returns the next utterance.
+                {t("docs.voiceP2.pre")}{" "}
+                <code>/api/calls/vapi/chat/completions/</code>{t("docs.voiceP2.post")}
               </p>
             </section>
 
             <section id="demo-data" className="docs-section">
-              <h2 className="docs-h2">Seed demo data</h2>
-              <p className="docs-p">
-                One management command. Wipes the existing demo set and inserts 8 leads,
-                5 calls, 4 quotes — enough to see every dashboard view come alive.
-              </p>
+              <h2 className="docs-h2">{t("docs.h.demoData")}</h2>
+              <p className="docs-p">{t("docs.demoP")}</p>
               <pre className="docs-code docs-code-mini">
                 <code>{`docker compose exec backend \\
   python manage.py seed_demo --wipe`}</code>
@@ -332,21 +316,19 @@ docker compose up --build
             </section>
 
             <section id="roadmap" className="docs-section">
-              <h2 className="docs-h2">Roadmap</h2>
-              <p className="docs-p">
-                Pull requests welcome. Each line below is a real GitHub issue.
-              </p>
+              <h2 className="docs-h2">{t("docs.h.roadmap")}</h2>
+              <p className="docs-p">{t("docs.roadmapP")}</p>
               <div className="docs-roadmap">
-                <RoadmapCol title="Shipped" tone="done" items={ROADMAP.done} />
-                <RoadmapCol title="In progress" tone="wip" items={ROADMAP.wip} />
-                <RoadmapCol title="Open issues" tone="todo" items={ROADMAP.todo} />
+                <RoadmapCol title={t("docs.roadmap.shipped")} tone="done" items={ROADMAP.done} />
+                <RoadmapCol title={t("docs.roadmap.wip")} tone="wip" items={ROADMAP.wip} />
+                <RoadmapCol title={t("docs.roadmap.todo")} tone="todo" items={ROADMAP.todo} />
               </div>
             </section>
 
             <section id="license" className="docs-section">
-              <h2 className="docs-h2">License</h2>
+              <h2 className="docs-h2">{t("docs.h.license")}</h2>
               <p className="docs-p">
-                The reference implementation is published under the{" "}
+                {t("docs.licenseP.pre")}
                 <a
                   href={`${GITHUB_URL}/blob/main/LICENSE`}
                   target="_blank"
@@ -354,9 +336,9 @@ docker compose up --build
                 >
                   GNU AGPL-3.0
                 </a>
-                . A separate commercial license is available for white-labeling,
-                reselling, or embedding Hearthline in closed-source products — email{" "}
-                <a href="mailto:contact@codewithmuh.com">contact@codewithmuh.com</a>.
+                {t("docs.licenseP.mid")}
+                <a href="mailto:contact@codewithmuh.com">contact@codewithmuh.com</a>
+                {t("docs.licenseP.post")}
               </p>
               <div className="docs-cta">
                 <a
@@ -365,10 +347,10 @@ docker compose up --build
                   rel="noreferrer"
                   className="btn btn-primary"
                 >
-                  ★ Clone on GitHub
+                  {t("docs.cloneCta")}
                 </a>
                 <Link href="/login" className="btn btn-ghost">
-                  Sign in to dashboard
+                  {t("docs.signinCta")}
                 </Link>
               </div>
             </section>

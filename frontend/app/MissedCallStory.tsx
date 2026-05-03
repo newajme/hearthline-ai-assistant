@@ -64,8 +64,8 @@ export default function MissedCallStory() {
                 ))}
               </div>
               <div className="story-scenes">
-                <SceneRing       active={active === 0} />
-                <ScenePickup     active={active === 1} />
+                <SceneRing       active={active === 0} t={t} />
+                <ScenePickup     active={active === 1} t={t} />
                 <SceneSms        active={active === 2} t={t} />
                 <SceneCalendar   active={active === 3} t={t} />
               </div>
@@ -77,7 +77,7 @@ export default function MissedCallStory() {
   );
 }
 
-function SceneRing({ active }: { active: boolean }) {
+function SceneRing({ active, t }: { active: boolean; t: (k: string) => string }) {
   return (
     <div className={`scene scene-ring ${active ? "is-active" : ""}`}>
       <div className="scene-clock">11:47<span>pm</span></div>
@@ -91,12 +91,12 @@ function SceneRing({ active }: { active: boolean }) {
         <span className="scene-ring-pulse" />
         <span className="scene-ring-pulse delay" />
       </div>
-      <div className="scene-caption">Incoming · unknown number</div>
+      <div className="scene-caption">{t("story.scene.incoming")}</div>
     </div>
   );
 }
 
-function ScenePickup({ active }: { active: boolean }) {
+function ScenePickup({ active, t }: { active: boolean; t: (k: string) => string }) {
   return (
     <div className={`scene scene-pickup ${active ? "is-active" : ""}`}>
       <div className="scene-anna">
@@ -104,7 +104,7 @@ function ScenePickup({ active }: { active: boolean }) {
         <div>
           <strong>Anna</strong>
           <span className="scene-anna-status">
-            <span className="scene-anna-dot" /> on the line · 00:08
+            <span className="scene-anna-dot" /> {t("story.scene.onLine")} · 00:08
           </span>
         </div>
       </div>
@@ -113,9 +113,7 @@ function ScenePickup({ active }: { active: boolean }) {
           <span key={i} className="scene-wave-bar" style={{ animationDelay: `${i * 0.04}s` }} />
         ))}
       </div>
-      <div className="scene-transcript">
-        &ldquo;Hi, this is Anna with North Pine Windows. I can help you tonight — what's going on at home?&rdquo;
-      </div>
+      <div className="scene-transcript">{t("story.scene.transcript")}</div>
     </div>
   );
 }
@@ -151,8 +149,8 @@ function SceneCalendar({ active, t }: { active: boolean; t: (k: string) => strin
   return (
     <div className={`scene scene-calendar ${active ? "is-active" : ""}`}>
       <div className="scene-cal-head">
-        <span>This week</span>
-        <strong>3 new bookings overnight</strong>
+        <span>{t("story.scene.calHead")}</span>
+        <strong>{t("story.scene.calNew")}</strong>
       </div>
       <div className="scene-cal-grid">
         {DAYS.map((d, di) => (
@@ -161,21 +159,21 @@ function SceneCalendar({ active, t }: { active: boolean; t: (k: string) => strin
             {di === 1 && (
               <div className="scene-cal-slot is-new">
                 <span className="scene-cal-time">9:30 AM</span>
-                <span className="scene-cal-job">5-window survey</span>
-                <span className="scene-cal-tag">Anna · new</span>
+                <span className="scene-cal-job">{t("story.scene.cal.survey")}</span>
+                <span className="scene-cal-tag">{t("story.scene.cal.tagNew")}</span>
               </div>
             )}
             {di === 2 && (
               <div className="scene-cal-slot">
                 <span className="scene-cal-time">2:00 PM</span>
-                <span className="scene-cal-job">HVAC check-up</span>
+                <span className="scene-cal-job">{t("story.scene.cal.hvac")}</span>
               </div>
             )}
             {di === 4 && (
               <div className="scene-cal-slot is-new">
                 <span className="scene-cal-time">11:00 AM</span>
-                <span className="scene-cal-job">Roof leak quote</span>
-                <span className="scene-cal-tag">Anna · new</span>
+                <span className="scene-cal-job">{t("story.scene.cal.roof")}</span>
+                <span className="scene-cal-tag">{t("story.scene.cal.tagNew")}</span>
               </div>
             )}
           </div>

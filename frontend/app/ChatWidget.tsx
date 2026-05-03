@@ -6,6 +6,7 @@ import {
   sendMessage,
   loadHistory,
   connectLiveSocket,
+  pollLiveMessages,
   hasLiveSession,
   resetLiveSession,
   closeConversation,
@@ -14,45 +15,16 @@ import {
   type SupportMessage,
   type LiveSocket,
 } from "./lib/supportClient";
+import { useI18n } from "./lib/i18n";
 
 type Msg = { role: "ai" | "user" | "system" | "staff"; text: string; ts: number };
 type Mode = "ai" | "intake" | "live";
 
-const SCRIPT: Array<{ user: string; ai: string[] }> = [
-  {
-    user: "Need a quote for 5 windows",
-    ai: [
-      "Got it — 5 windows. Are these standard PVC and around 1.2m × 1.4m?",
-      "If yes, indicative price starts around $3,500 fitted.",
-    ],
-  },
-  {
-    user: "Can someone come Saturday morning?",
-    ai: [
-      "I have Saturday at 9 AM open with our window team.",
-      "Want me to lock that in and text you the confirmation?",
-    ],
-  },
-  {
-    user: "Do solar panels qualify for the new state rebate?",
-    ai: [
-      "Yes — properties under $400k AV qualify for the 30% rebate this year.",
-      "I can check your address and bundle the savings into your quote.",
-    ],
-  },
+const SCRIPT_KEYS: Array<{ uKey: string; aKeys: string[] }> = [
+  { uKey: "chat.script.q1", aKeys: ["chat.script.a1a", "chat.script.a1b"] },
+  { uKey: "chat.script.q2", aKeys: ["chat.script.a2a", "chat.script.a2b"] },
+  { uKey: "chat.script.q3", aKeys: ["chat.script.a3a", "chat.script.a3b"] },
 ];
-
-const INTRO: Msg = {
-  role: "ai",
-  text: "Hi! I'm Anna from Hearthline. Need a quote, want to book a job, or have a question on a recent visit?",
-  ts: Date.now(),
-};
-
-const HANDOFF_INTRO: Msg = {
-  role: "system",
-  text: "Connecting you to a human teammate — they'll see this conversation and reply here.",
-  ts: Date.now(),
-};
 
 function fromSupport(m: SupportMessage): Msg {
   return {
@@ -63,6 +35,10 @@ function fromSupport(m: SupportMessage): Msg {
 }
 
 export default function ChatWidget() {
+  const { t } = useI18n();
+  const INTRO: Msg = { role: "ai", text: t("chat.intro"), ts: Date.now() };
+  const HANDOFF_INTRO: Msg = { role: "system", text: t("chat.handoffIntro"), ts: Date.now() };
+
   const [open, setOpen] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [teaser, setTeaser] = useState(false);
@@ -77,7 +53,29 @@ export default function ChatWidget() {
   const scriptIdx = useRef(0);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const wsRef = useRef<LiveSocket | null>(null);
+  const pollerRef = useRef<{ stop: () => void } | null>(null);
   const seenIds = useRef<Set<string>>(new Set());
+
+  function ingestSupportMessage(m: SupportMessage) {
+    if (seenIds.current.has(m.id)) return;
+    seenIds.current.add(m.id);
+    if (m.author_type === "staff" || m.author_type === "system") {
+      pushMessage(fromSupport(m));
+    }
+    if (m.author_type === "system" && /ended|resolved/i.test(m.body)) {
+      setClosed(true);
+    }
+  }
+
+  function startPollingFallback() {
+    if (pollerRef.current) return;
+    pollerRef.current = pollLiveMessages(ingestSupportMessage, 4000);
+  }
+
+  function stopPollingFallback() {
+    pollerRef.current?.stop();
+    pollerRef.current = null;
+  }
 
   // Hydrate stored identity once on mount
   useEffect(() => {
@@ -121,6 +119,8 @@ export default function ChatWidget() {
     return () => {
       wsRef.current?.close();
       wsRef.current = null;
+      pollerRef.current?.stop();
+      pollerRef.current = null;
     };
   }, []);
 
@@ -145,8 +145,8 @@ export default function ChatWidget() {
     pushMessage({ role: "user", text, ts: Date.now() });
     setDraft("");
     setThinking(true);
-    const idx = scriptIdx.current % SCRIPT.length;
-    const replies = SCRIPT[idx].ai;
+    const idx = scriptIdx.current % SCRIPT_KEYS.length;
+    const replies = SCRIPT_KEYS[idx].aKeys.map((k) => t(k));
     scriptIdx.current += 1;
     let delay = 900;
     replies.forEach((reply, i) => {
@@ -170,17 +170,9 @@ export default function ChatWidget() {
       const msg = (e as Error).message || "";
       if (msg.includes("closed")) {
         setClosed(true);
-        pushMessage({
-          role: "system",
-          text: "This conversation is closed. Start a new one to keep talking.",
-          ts: Date.now(),
-        });
+        pushMessage({ role: "system", text: t("chat.error.closed"), ts: Date.now() });
       } else {
-        pushMessage({
-          role: "system",
-          text: "Couldn't deliver that message — please try again in a moment.",
-          ts: Date.now(),
-        });
+        pushMessage({ role: "system", text: t("chat.error.send"), ts: Date.now() });
       }
       console.error(e);
     }
@@ -241,23 +233,26 @@ export default function ChatWidget() {
 
       // Open WebSocket for incoming staff replies (with auto-reconnect)
       wsRef.current?.close();
+      stopPollingFallback();
       wsRef.current = connectLiveSocket(
-        (m) => {
-          if (seenIds.current.has(m.id)) return;
-          seenIds.current.add(m.id);
-          if (m.author_type === "staff" || m.author_type === "system") {
-            pushMessage(fromSupport(m));
-          }
-          if (m.author_type === "system" && /ended|resolved/i.test(m.body)) {
-            setClosed(true);
-          }
-        },
+        ingestSupportMessage,
         (status) => {
           setLiveStatus(
             status === "connected" ? "connected" : status === "connecting" ? "connecting" : "idle",
           );
+          if (status === "connected") {
+            stopPollingFallback();
+          } else if (status === "closed") {
+            // WS went away (server doesn't support it, e.g. Vercel) — poll instead.
+            startPollingFallback();
+          }
         },
       );
+      // If the WS hasn't opened after 3 s, also start polling so the user
+      // never sits with stale messages.
+      setTimeout(() => {
+        if (!wsRef.current?.isOpen()) startPollingFallback();
+      }, 3000);
     } catch (e) {
       console.error(e);
       pushMessage({
@@ -294,23 +289,26 @@ export default function ChatWidget() {
         ]);
       }
       wsRef.current?.close();
+      stopPollingFallback();
       wsRef.current = connectLiveSocket(
-        (m) => {
-          if (seenIds.current.has(m.id)) return;
-          seenIds.current.add(m.id);
-          if (m.author_type === "staff" || m.author_type === "system") {
-            pushMessage(fromSupport(m));
-          }
-          if (m.author_type === "system" && /ended|resolved/i.test(m.body)) {
-            setClosed(true);
-          }
-        },
+        ingestSupportMessage,
         (status) => {
           setLiveStatus(
             status === "connected" ? "connected" : status === "connecting" ? "connecting" : "idle",
           );
+          if (status === "connected") {
+            stopPollingFallback();
+          } else if (status === "closed") {
+            // WS went away (server doesn't support it, e.g. Vercel) — poll instead.
+            startPollingFallback();
+          }
         },
       );
+      // If the WS hasn't opened after 3 s, also start polling so the user
+      // never sits with stale messages.
+      setTimeout(() => {
+        if (!wsRef.current?.isOpen()) startPollingFallback();
+      }, 3000);
     } catch {
       resetLiveSession();
       setMode("ai");
@@ -325,6 +323,7 @@ export default function ChatWidget() {
     }
     wsRef.current?.close();
     wsRef.current = null;
+    stopPollingFallback();
     resetLiveSession();
     seenIds.current.clear();
     setLiveStatus("idle");
@@ -351,19 +350,19 @@ export default function ChatWidget() {
             type="button"
             className="chat-teaser-main"
             onClick={() => { setOpen(true); setTeaser(false); }}
-            aria-label="Open Anna chat"
+            aria-label={t("chat.openLabel")}
           >
             <span className="chat-teaser-avatar">A</span>
             <div>
-              <div className="chat-teaser-title">Anna · Hearthline AI</div>
-              <div className="chat-teaser-body">Hi! Need a quote or want to book? Ask me anything.</div>
+              <div className="chat-teaser-title">{t("chat.teaser.title")}</div>
+              <div className="chat-teaser-body">{t("chat.teaser.body")}</div>
             </div>
           </button>
           <button
             type="button"
             className="chat-teaser-close"
             onClick={() => setTeaser(false)}
-            aria-label="Dismiss Anna teaser"
+            aria-label={t("chat.dismissTeaser")}
           >
             ×
           </button>
@@ -372,7 +371,7 @@ export default function ChatWidget() {
 
       {/* FAB launcher */}
       {!open && revealed && (
-        <button className="chat-fab" onClick={() => { setOpen(true); setTeaser(false); }} aria-label="Open chat">
+        <button className="chat-fab" onClick={() => { setOpen(true); setTeaser(false); }} aria-label={t("chat.openLabel")}>
           <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
@@ -397,11 +396,11 @@ export default function ChatWidget() {
                       : liveStatus === "connecting"
                       ? "Connecting…"
                       : "Live chat"
-                    : "Hearthline AI · replies in seconds"}
+                    : t("chat.role")}
                 </div>
               </div>
             </div>
-            <button className="chat-close" onClick={() => setOpen(false)} aria-label="Close chat">×</button>
+            <button className="chat-close" onClick={() => setOpen(false)} aria-label={t("chat.closeLabel")}>×</button>
           </div>
 
           {mode === "intake" ? (
@@ -437,8 +436,8 @@ export default function ChatWidget() {
               <div className="chat-quick">
                 {mode === "ai" ? (
                   <>
-                    <button onClick={() => trigger("Need a quote for 5 windows")}>Get a quote</button>
-                    <button onClick={() => trigger("Can someone come Saturday morning?")}>Book a visit</button>
+                    <button onClick={() => trigger(t("chat.script.q1"))}>{t("chat.quick.quote")}</button>
+                    <button onClick={() => trigger(t("chat.script.q2"))}>{t("chat.quick.book")}</button>
                     <button
                       onClick={requestLiveChat}
                       style={{ background: "#0f172a", color: "white", borderColor: "#0f172a" }}
@@ -471,10 +470,10 @@ export default function ChatWidget() {
                     type="text"
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
-                    placeholder={mode === "live" ? "Message a human…" : "Type a message…"}
+                    placeholder={mode === "live" ? "Message a human…" : t("chat.placeholder")}
                     autoFocus
                   />
-                  <button type="submit" aria-label="Send">
+                  <button type="submit" aria-label={t("chat.send")}>
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
                   </button>
                 </form>

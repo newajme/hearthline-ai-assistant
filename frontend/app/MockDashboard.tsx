@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+import { useI18n } from "./lib/i18n";
 
 type Action =
   | { kind: "deal-won"; amount: number }
@@ -20,13 +22,13 @@ type Row = {
   ageSec: number;
 };
 
-// Same Anna across every channel — keeps brand consistent.
-const ASSISTANTS: Array<[string, string]> = [
-  ["Anna", "phone"],
-  ["Anna", "SMS"],
-  ["Anna", "WhatsApp"],
-  ["Anna", "web chat"],
-  ["Anna", "email"],
+// Channel keys — resolved through i18n at render time.
+const CHANNEL_KEYS = [
+  "mock.channel.phone",
+  "mock.channel.sms",
+  "mock.channel.whatsapp",
+  "mock.channel.chat",
+  "mock.channel.email",
 ];
 // Business-style demo names — feels real but is obviously not personal PII.
 const NAMES: Array<[string, string]> = [
@@ -50,50 +52,62 @@ const MESSAGES: Array<{ msg: string; action: Action }> = [
   { msg: "Drain still backing up after yesterday's visit.", action: { kind: "appointment-booked" } },
 ];
 
-function pickRowAt(id: number, idx: number): Row {
+function pickRowAt(id: number, idx: number, t: (k: string) => string): Row {
   const [contact, contactSub] = NAMES[idx % NAMES.length];
-  const [name, channel] = ASSISTANTS[idx % ASSISTANTS.length];
+  const channelKey = CHANNEL_KEYS[idx % CHANNEL_KEYS.length];
   const m = MESSAGES[idx % MESSAGES.length];
   return {
     id,
     contact,
     contactSub,
-    assistant: `${name} · ${channel}`,
-    initial: name[0],
+    assistant: `Anna · ${t(channelKey)}`,
+    initial: "A",
     message: m.msg,
     action: m.action,
     ageSec: 0,
   };
 }
 
-function pickRandomRow(id: number): Row {
+function pickRandomRow(id: number, t: (k: string) => string): Row {
   const [contact, contactSub] = NAMES[Math.floor(Math.random() * NAMES.length)];
-  const [name, channel] = ASSISTANTS[Math.floor(Math.random() * ASSISTANTS.length)];
+  const channelKey = CHANNEL_KEYS[Math.floor(Math.random() * CHANNEL_KEYS.length)];
   const m = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
   return {
     id,
     contact,
     contactSub,
-    assistant: `${name} · ${channel}`,
-    initial: name[0],
+    assistant: `Anna · ${t(channelKey)}`,
+    initial: "A",
     message: m.msg,
     action: m.action,
     ageSec: 0,
   };
 }
 
-// Deterministic — same on server and client to avoid hydration mismatch.
-const INITIAL_ROWS: Row[] = Array.from({ length: 6 }).map((_, i) => ({
-  ...pickRowAt(i, i),
-  ageSec: i * 60 + 10,
-}));
-
 export default function MockDashboard() {
-  const [rows, setRows] = useState<Row[]>(INITIAL_ROWS);
-  const idRef = useRef<number>(INITIAL_ROWS.length);
+  const { t } = useI18n();
+
+  // Deterministic seed derived from t() — re-renders when language changes.
+  const initialRows = useMemo<Row[]>(
+    () =>
+      Array.from({ length: 6 }).map((_, i) => ({
+        ...pickRowAt(i, i, t),
+        ageSec: i * 60 + 10,
+      })),
+    [t],
+  );
+
+  const [rows, setRows] = useState<Row[]>(initialRows);
+  const idRef = useRef<number>(initialRows.length);
   const [leads, setLeads] = useState(0);
   const [quotes, setQuotes] = useState(0);
   const [bookings, setBookings] = useState(0);
+
+  // When language flips, reset rows so labels translate immediately.
+  useEffect(() => {
+    setRows(initialRows);
+    idRef.current = initialRows.length;
+  }, [initialRows]);
 
   useEffect(() => {
     const start = performance.now();
@@ -116,12 +130,12 @@ export default function MockDashboard() {
     const interval = setInterval(() => {
       setRows((prev) => {
         const aged = prev.map((r) => ({ ...r, ageSec: r.ageSec + 4 }));
-        const next = pickRandomRow(idRef.current++);
+        const next = pickRandomRow(idRef.current++, t);
         return [next, ...aged].slice(0, 6);
       });
     }, 4500);
     return () => clearInterval(interval);
-  }, []);
+  }, [t]);
 
   return (
     <div className="mock-dashboard">
@@ -154,13 +168,13 @@ export default function MockDashboard() {
         <div className="mock-body">
           <div className="mock-topbar">
             <div className="mock-crumbs">
-              <strong>Overview</strong>
+              <strong>{t("mock.crumb")}</strong>
               <span className="mock-divider">/</span>
               <span>Rolling Shutters Inc.</span>
             </div>
             <div className="mock-search">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
-              <span>Search…</span>
+              <span>{t("mock.search")}</span>
               <kbd className="mock-kbd">⌘K</kbd>
             </div>
             <div className="mock-actions">
@@ -172,31 +186,31 @@ export default function MockDashboard() {
           </div>
 
           <div className="mock-kpis">
-            <KpiCard label="Total Leads" value={leads.toLocaleString()} delta="+12% vs last 30d" />
-            <KpiCard label="Quotes Generated" value={`$${quotes.toFixed(1)}k`} delta="+8% acceptance" />
-            <KpiCard label="Installations Booked" value={bookings.toString()} delta="+4 this week" />
+            <KpiCard label={t("mock.kpi.leads")} value={leads.toLocaleString()} delta={t("mock.kpi.leadsDelta")} />
+            <KpiCard label={t("mock.kpi.quotes")} value={`$${quotes.toFixed(1)}k`} delta={t("mock.kpi.quotesDelta")} />
+            <KpiCard label={t("mock.kpi.bookings")} value={bookings.toString()} delta={t("mock.kpi.bookingsDelta")} />
           </div>
 
           <div className="mock-section-head">
             <div className="mock-section-title">
-              Recent Interactions
+              {t("mock.section.title")}
               <span className="mock-livefeed">
                 <span className="mock-pulse" />
-                Live
+                {t("mock.live")}
               </span>
             </div>
             <button className="mock-filter-btn" type="button">
               <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M6 12h12M10 18h4" /></svg>
-              Filter
+              {t("mock.filter")}
             </button>
           </div>
 
           <div className="mock-table">
             <div className="mock-thead">
-              <span>Contact</span>
-              <span>Assistant</span>
-              <span>Activity</span>
-              <span>Action</span>
+              <span>{t("mock.col.contact")}</span>
+              <span>{t("mock.col.assistant")}</span>
+              <span>{t("mock.col.activity")}</span>
+              <span>{t("mock.col.action")}</span>
             </div>
             {rows.map((r) => (
               <div className="mock-row" key={r.id}>
@@ -215,16 +229,16 @@ export default function MockDashboard() {
                 </div>
                 <div className="mock-activity">
                   <div className="mock-activity-text">{r.message}</div>
-                  <div className="mock-activity-age">{formatAge(r.ageSec)}</div>
+                  <div className="mock-activity-age">{formatAge(r.ageSec, t)}</div>
                 </div>
                 <div className="mock-action">
-                  <ActionPill action={r.action} />
+                  <ActionPill action={r.action} t={t} />
                 </div>
               </div>
             ))}
           </div>
           <div className="mock-foot">
-            Showing 6 of 198 · <a href="/dashboard">Open the real dashboard →</a>
+            {t("mock.foot")} · <a href="/dashboard">{t("mock.openReal")} →</a>
           </div>
         </div>
       </div>
@@ -249,31 +263,31 @@ function KpiCard({ label, value, delta }: { label: string; value: string; delta:
   );
 }
 
-function ActionPill({ action }: { action: Action }) {
+function ActionPill({ action, t }: { action: Action; t: (k: string) => string }) {
   if (action.kind === "deal-won") {
-    return <span className="action-pill won"><Dot color="#16a34a" /> Deal Won · ${action.amount.toLocaleString()}</span>;
+    return <span className="action-pill won"><Dot color="#16a34a" /> {t("pill.dealWon")} · ${action.amount.toLocaleString()}</span>;
   }
   if (action.kind === "quote-generated") {
-    return <span className="action-pill quote"><Dot color="#7c3aed" /> Quote Sent · ${action.amount.toLocaleString()}</span>;
+    return <span className="action-pill quote"><Dot color="#7c3aed" /> {t("pill.quoteSent")} · ${action.amount.toLocaleString()}</span>;
   }
   if (action.kind === "appointment-booked") {
-    return <span className="action-pill booked"><Dot color="#2563eb" /> Booked</span>;
+    return <span className="action-pill booked"><Dot color="#2563eb" /> {t("pill.booked")}</span>;
   }
   if (action.kind === "subsidy-checked") {
-    return <span className="action-pill subsidy"><Dot color="#d2532b" /> Subsidy Match</span>;
+    return <span className="action-pill subsidy"><Dot color="#d2532b" /> {t("pill.subsidy")}</span>;
   }
-  return <span className="action-pill status"><Dot color="#6b7280" /> Qualifying</span>;
+  return <span className="action-pill status"><Dot color="#6b7280" /> {t("pill.qualifying")}</span>;
 }
 
 function Dot({ color }: { color: string }) {
   return <span className="action-dot" style={{ background: color }} />;
 }
 
-function formatAge(sec: number): string {
-  if (sec < 30) return "Just now";
-  if (sec < 60) return `${sec}s ago`;
+function formatAge(sec: number, t: (k: string) => string): string {
+  if (sec < 30) return t("mock.justNow");
+  if (sec < 60) return t("mock.secAgo").replace("{n}", String(sec));
   const m = Math.floor(sec / 60);
-  if (m < 60) return `${m}m ago`;
+  if (m < 60) return t("mock.minAgo").replace("{n}", String(m));
   const h = Math.floor(m / 60);
-  return `${h}h ago`;
+  return t("mock.hourAgo").replace("{n}", String(h));
 }

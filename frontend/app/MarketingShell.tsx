@@ -5,19 +5,22 @@ import { useEffect, useState } from "react";
 
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
+import { useI18n } from "./lib/i18n";
 
 const DEMO_URL = "https://calendly.com/contact-codewithmuh/30min";
 const REPO_URL = "https://github.com/codewithmuh/hearthline";
 
 export type NavLink = { href: string; label: string };
 
-const HOME_LINKS: NavLink[] = [
-  { href: "/#story", label: "How it works" },
-  { href: "/#features", label: "Features" },
-  { href: "/#industries", label: "Industries" },
-  { href: "/#impact", label: "Impact" },
-  { href: "/docs", label: "Docs" },
-];
+function defaultLinks(t: (k: string) => string): NavLink[] {
+  return [
+    { href: "/#story", label: t("nav.how") },
+    { href: "/#features", label: t("nav.features") },
+    { href: "/#industries", label: t("nav.industries") },
+    { href: "/#impact", label: t("nav.impact") },
+    { href: "/docs", label: t("nav.docs") },
+  ];
+}
 
 type TopbarProps = {
   links?: NavLink[];
@@ -26,12 +29,14 @@ type TopbarProps = {
 };
 
 export function MarketingTopbar({
-  links = HOME_LINKS,
+  links,
   showBuiltBy = false,
   ossPill,
 }: TopbarProps) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const resolvedLinks = links ?? defaultLinks(t);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -68,13 +73,13 @@ export function MarketingTopbar({
               className="built-by-pill"
               title="Built by codewithmuh"
             >
-              by <strong>codewithmuh</strong>
+              {t("topbar.builtBy")} <strong>codewithmuh</strong>
             </a>
           )}
         </div>
 
         <nav className="nav-links" aria-label="Primary">
-          {links.map((l) => (
+          {resolvedLinks.map((l) => (
             <Link key={l.href} href={l.href} className="nav-link">
               {l.label}
             </Link>
@@ -89,8 +94,8 @@ export function MarketingTopbar({
             target="_blank"
             rel="noreferrer"
             className="topbar-icon-link"
-            aria-label="Star Hearthline on GitHub"
-            title="Star on GitHub"
+            aria-label={t("topbar.starGh")}
+            title={t("topbar.starGh")}
           >
             <Github />
           </a>
@@ -100,12 +105,12 @@ export function MarketingTopbar({
             rel="noreferrer"
             className="btn btn-primary topbar-cta"
           >
-            Book a demo
+            {t("btn.bookDemo")}
           </a>
           <button
             type="button"
             className="topbar-burger"
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? t("menu.close") : t("menu.open")}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
@@ -117,9 +122,9 @@ export function MarketingTopbar({
       </header>
 
       {open && (
-        <div className="mobile-sheet" role="dialog" aria-modal="true" aria-label="Menu">
+        <div className="mobile-sheet" role="dialog" aria-modal="true" aria-label={t("menu.open")}>
           <nav className="mobile-sheet-nav">
-            {links.map((l) => (
+            {resolvedLinks.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
@@ -130,13 +135,13 @@ export function MarketingTopbar({
               </Link>
             ))}
             <Link href="/faq" className="mobile-sheet-link" onClick={() => setOpen(false)}>
-              FAQ
+              {t("footer.faq")}
             </Link>
             <Link href="/contact" className="mobile-sheet-link" onClick={() => setOpen(false)}>
-              Contact
+              {t("nav.contact")}
             </Link>
             <Link href="/login" className="mobile-sheet-link" onClick={() => setOpen(false)}>
-              Sign in
+              {t("btn.signIn")}
             </Link>
           </nav>
           <div className="mobile-sheet-actions">
@@ -146,7 +151,7 @@ export function MarketingTopbar({
               rel="noreferrer"
               className="btn btn-ghost mobile-sheet-btn"
             >
-              <Github /> Star on GitHub
+              <Github /> {t("topbar.starGh")}
             </a>
             <a
               href={DEMO_URL}
@@ -154,7 +159,7 @@ export function MarketingTopbar({
               rel="noreferrer"
               className="btn btn-primary mobile-sheet-btn"
             >
-              Book a demo →
+              {t("btn.bookDemo")} →
             </a>
           </div>
         </div>
@@ -164,6 +169,11 @@ export function MarketingTopbar({
 }
 
 export function MarketingFooter() {
+  return <MarketingFooterInner />;
+}
+
+function MarketingFooterInner() {
+  const { t } = useI18n();
   return (
     <footer className="shell footer">
       <div>
@@ -171,32 +181,30 @@ export function MarketingFooter() {
           <span className="brand-mark"><Flame /></span>
           <span>Hearthline</span>
         </div>
-        <p className="footer-tag">
-          The 24/7 AI front desk for home-service teams.
-        </p>
+        <p className="footer-tag">{t("footer.tag")}</p>
       </div>
       <div className="footer-col">
-        <h5>Product</h5>
-        <Link href="/#features">Features</Link>
-        <Link href="/#industries">Industries</Link>
-        <Link href="/login">Sign in</Link>
+        <h5>{t("footer.product")}</h5>
+        <Link href="/#features">{t("nav.features")}</Link>
+        <Link href="/#industries">{t("nav.industries")}</Link>
+        <Link href="/login">{t("btn.signIn")}</Link>
       </div>
       <div className="footer-col">
-        <h5>Resources</h5>
-        <Link href="/faq">FAQ</Link>
-        <Link href="/docs">Docs</Link>
-        <Link href="/contact">Contact</Link>
-        <a href={DEMO_URL} target="_blank" rel="noreferrer">Book a demo</a>
+        <h5>{t("footer.resources")}</h5>
+        <Link href="/faq">{t("footer.faq")}</Link>
+        <Link href="/docs">{t("nav.docs")}</Link>
+        <Link href="/contact">{t("nav.contact")}</Link>
+        <a href={DEMO_URL} target="_blank" rel="noreferrer">{t("btn.bookDemo")}</a>
       </div>
       <div className="footer-col">
-        <h5>Legal</h5>
-        <Link href="/privacy">Privacy</Link>
-        <Link href="/terms">Terms</Link>
+        <h5>{t("footer.legal")}</h5>
+        <Link href="/privacy">{t("footer.privacy")}</Link>
+        <Link href="/terms">{t("footer.terms")}</Link>
       </div>
       <div className="footer-bottom">
-        <span>© {new Date().getFullYear()} Hearthline. Open-source under AGPL-3.0.</span>
+        <span>© {new Date().getFullYear()} Hearthline. {t("footer.copyright")}</span>
         <span>
-          Built by{" "}
+          {t("footer.builtBy")}{" "}
           <a href="https://codewithmuh.com" target="_blank" rel="noreferrer author">
             @codewithmuh
           </a>

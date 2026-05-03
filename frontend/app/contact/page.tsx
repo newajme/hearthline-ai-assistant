@@ -6,6 +6,7 @@ import {
   getStoredIdentity,
   setStoredIdentity,
 } from "../lib/supportClient";
+import { useI18n } from "../lib/i18n";
 import { MarketingFooter, MarketingTopbar } from "../MarketingShell";
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -14,6 +15,7 @@ const CALENDLY = "https://calendly.com/contact-codewithmuh/30min";
 const SUPPORT_EMAIL = "contact@codewithmuh.com";
 
 export default function ContactPage() {
+  const { t } = useI18n();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -32,11 +34,11 @@ export default function ContactPage() {
     e.preventDefault();
     setError(null);
     if (!name.trim() || !email.trim() || !body.trim()) {
-      setError("Please fill in your name, email, and message.");
+      setError(t("contact.error.required"));
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setError("Please enter a valid email.");
+      setError(t("contact.error.email"));
       return;
     }
     setStatus("submitting");
@@ -53,7 +55,7 @@ export default function ContactPage() {
       setSubject("");
       setStatus("success");
     } catch (err) {
-      setError((err as Error).message || "Could not submit ticket. Please try again.");
+      setError((err as Error).message || t("contact.error.fallback"));
       setStatus("error");
     }
   }
@@ -65,16 +67,13 @@ export default function ContactPage() {
         <section className="shell hero hero-tight">
           <span className="hero-meet">
             <span className="hero-meet-avatar">@</span>
-            <span>Get in touch</span>
+            <span>{t("contact.heroEyebrow")}</span>
           </span>
           <h1 className="hero-title">
-            Talk to a human.<br />
-            <span className="hero-title-em">Or send a ticket.</span>
+            {t("contact.heroT1")}<br />
+            <span className="hero-title-em">{t("contact.heroT2")}</span>
           </h1>
-          <p className="hero-sub">
-            Demo bookings, self-host setup, partnership questions, or just feedback —
-            pick the lane that fits and we&rsquo;ll get back to you.
-          </p>
+          <p className="hero-sub">{t("contact.heroSub")}</p>
         </section>
 
         <section className="shell section-tight">
@@ -83,24 +82,24 @@ export default function ContactPage() {
             <aside className="contact-channels">
               <ChannelCard
                 icon={<CalIcon />}
-                title="Book a 30-min call"
-                body="Walk through your setup, pricing, or self-host plan with Rashid (founder)."
-                cta="Open Calendly →"
+                title={t("contact.ch1.title")}
+                body={t("contact.ch1.body")}
+                cta={`${t("contact.ch1.cta")} →`}
                 href={CALENDLY}
                 accent="#d2532b"
               />
               <ChannelCard
                 icon={<MailIcon />}
-                title="Email support"
-                body="Best for billing, deployments, or anything you'd rather not type into a form."
+                title={t("contact.ch2.title")}
+                body={t("contact.ch2.body")}
                 cta={SUPPORT_EMAIL}
                 href={`mailto:${SUPPORT_EMAIL}`}
                 accent="#2563eb"
               />
               <ChannelCard
                 icon={<GhIcon />}
-                title="Open an issue"
-                body="Bugs, feature requests, and architecture questions live on GitHub."
+                title={t("contact.ch3.title")}
+                body={t("contact.ch3.body")}
                 cta="github.com/codewithmuh/hearthline"
                 href="https://github.com/codewithmuh/hearthline/issues"
                 accent="#16a34a"
@@ -111,15 +110,10 @@ export default function ContactPage() {
                   <div className="contact-creator-avatar" aria-hidden>MR</div>
                   <div>
                     <div className="contact-creator-name">Muhammad Rashid</div>
-                    <div className="contact-creator-role">
-                      Builds Hearthline live · @codewithmuh
-                    </div>
+                    <div className="contact-creator-role">{t("contact.creatorRole")}</div>
                   </div>
                 </div>
-                <p className="contact-creator-bio">
-                  AI build-along videos for developers shipping real agents. Hire me to
-                  deploy Hearthline for your business.
-                </p>
+                <p className="contact-creator-bio">{t("contact.creatorBio")}</p>
                 <div className="contact-creator-socials">
                   <a
                     href="https://codewithmuh.com"
@@ -168,24 +162,20 @@ export default function ContactPage() {
             {/* RIGHT — ticket form */}
             <div className="contact-card">
               <div className="contact-card-head">
-                <h2 className="contact-card-title">Send a ticket</h2>
-                <p className="contact-card-sub">
-                  Average reply &lt; 4 hours during business days. We&rsquo;ll respond by
-                  email and on the chat bubble below.
-                </p>
+                <h2 className="contact-card-title">{t("contact.cardTitle")}</h2>
+                <p className="contact-card-sub">{t("contact.cardSub")}</p>
               </div>
 
               {status === "success" ? (
                 <div className="contact-success">
                   <div className="contact-success-mark" aria-hidden>✓</div>
-                  <h2>Ticket received</h2>
+                  <h2>{t("contact.success.title")}</h2>
                   <p>
-                    Thanks {name.split(" ")[0]} — we&rsquo;ve logged your message. You&rsquo;ll get a
-                    reply at <strong>{email}</strong>.
+                    {name.split(" ")[0]} — <strong>{email}</strong>
                   </p>
                   {ticketId && (
                     <p className="contact-success-ref">
-                      Ticket reference: <code>{ticketId.slice(0, 8)}</code>
+                      <code>{ticketId.slice(0, 8)}</code>
                     </p>
                   )}
                   <button
@@ -196,14 +186,14 @@ export default function ContactPage() {
                       setTicketId(null);
                     }}
                   >
-                    Submit another ticket
+                    {t("contact.success.again")}
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="contact-form">
                   <div className="contact-row">
                     <label className="contact-field">
-                      <span>Your name</span>
+                      <span>{t("contact.f.name")}</span>
                       <input
                         type="text"
                         value={name}
@@ -213,7 +203,7 @@ export default function ContactPage() {
                       />
                     </label>
                     <label className="contact-field">
-                      <span>Email</span>
+                      <span>{t("contact.f.email")}</span>
                       <input
                         type="email"
                         value={email}
@@ -224,21 +214,21 @@ export default function ContactPage() {
                     </label>
                   </div>
                   <label className="contact-field">
-                    <span>Subject</span>
+                    <span>{t("contact.f.subject")}</span>
                     <input
                       type="text"
                       value={subject}
                       onChange={(e) => setSubject(e.target.value)}
-                      placeholder="What's this about?"
+                      placeholder={t("contact.f.subjectPh")}
                     />
                   </label>
                   <label className="contact-field">
-                    <span>Message</span>
+                    <span>{t("contact.f.body")}</span>
                     <textarea
                       value={body}
                       onChange={(e) => setBody(e.target.value)}
                       rows={6}
-                      placeholder="Describe your question or issue. The more detail, the faster we can help."
+                      placeholder={t("contact.f.bodyPh")}
                       required
                     />
                   </label>
@@ -251,11 +241,9 @@ export default function ContactPage() {
                       className="contact-submit"
                       disabled={status === "submitting"}
                     >
-                      {status === "submitting" ? "Sending…" : "Send ticket →"}
+                      {status === "submitting" ? t("contact.f.sending") : `${t("contact.f.send")} →`}
                     </button>
-                    <span className="contact-hint">
-                      Or use the chat bubble for live help.
-                    </span>
+                    <span className="contact-hint">{t("contact.f.hint")}</span>
                   </div>
                 </form>
               )}

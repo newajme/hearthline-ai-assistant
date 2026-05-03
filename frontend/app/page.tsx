@@ -10,7 +10,7 @@ import MissedCallStory from "./MissedCallStory";
 import MockDashboard from "./MockDashboard";
 import FeatureExplorer from "./FeatureExplorer";
 import StatsBand from "./StatsBand";
-import { tEn as t } from "./lib/strings-en";
+import { getT } from "./lib/i18n-server";
 
 const SITE_URL = "https://hearthline.codewithmuh.com";
 const DEMO_URL = "https://calendly.com/contact-codewithmuh/30min";
@@ -68,7 +68,8 @@ const SOFTWARE_JSONLD = {
   ],
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { t } = await getT();
   const INDUSTRIES = [
     { name: t("industries.i1.name"), sketch: <SkPipe />,       body: t("industries.i1.body"), tint: "water" },
     { name: t("industries.i2.name"), sketch: <SkWindow />,     body: t("industries.i2.body"), tint: "glass" },
@@ -95,7 +96,7 @@ export default function HomePage() {
           <HeroBackdrop />
           <span className="hero-platform-pill">
             <span className="hero-platform-dot" aria-hidden />
-            For home-services businesses
+            {t("hero.platformPill")}
           </span>
           <h1 className="hero-title">
             {t("hero.title1")}<br />
@@ -110,11 +111,11 @@ export default function HomePage() {
               rel="noreferrer"
               className="hero-secondary-link"
             >
-              or book a 30-min demo <span aria-hidden>→</span>
+              {t("hero.secondary")} <span aria-hidden>→</span>
             </a>
           </div>
           <p className="hero-trades">
-            <span className="hero-trades-label">For</span>
+            <span className="hero-trades-label">{t("hero.tradesPrefix")}</span>
             <span className="hero-trades-list">{t("hero.tradesList")}</span>
           </p>
 
@@ -140,7 +141,7 @@ export default function HomePage() {
         <section className="shell section-tight" id="features">
           <div className="section-head">
             <span className="section-flourish">{t("features.eyebrow")}</span>
-            <h2 className="section-title">Configure once. Capture every lead.</h2>
+            <h2 className="section-title">{t("features.title")}</h2>
             <p className="section-sub">{t("features.sub")}</p>
           </div>
           <FeatureExplorer />
@@ -203,7 +204,7 @@ export default function HomePage() {
               </a>
             </div>
             <a href={REPO_URL} target="_blank" rel="noreferrer" className="final-cta-self-host">
-              Prefer to self-host? Clone on GitHub <span aria-hidden>→</span>
+              {t("finalCta.selfHost")} <span aria-hidden>→</span>
             </a>
           </div>
         </section>
@@ -226,7 +227,7 @@ export default function HomePage() {
             <h5>{t("footer.resources")}</h5>
             <Link href="/faq">{t("footer.faq")}</Link>
             <Link href="/docs">{t("nav.docs")}</Link>
-            <Link href="/contact">Contact support</Link>
+            <Link href="/contact">{t("nav.contact")}</Link>
             <a href={DEMO_URL} target="_blank" rel="noreferrer">{t("btn.bookDemo")}</a>
           </div>
           <div className="footer-col">

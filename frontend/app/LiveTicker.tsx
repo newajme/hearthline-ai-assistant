@@ -2,33 +2,17 @@
 
 import { useEffect, useState } from "react";
 
-type TickerItem = {
-  kind: "call" | "quote" | "deal" | "subsidy" | "booked" | "sms";
-  text: string;
-};
+import { useI18n } from "./lib/i18n";
 
-const ITEMS: TickerItem[] = [
-  { kind: "deal", text: "Deal won · $12,300 HVAC install" },
-  { kind: "quote", text: "Photo quote drafted · $8,500 roof replacement" },
-  { kind: "sms", text: "HVAC lead qualified via SMS in 38s" },
-  { kind: "booked", text: "Saturday 9 AM booked · garage door repair" },
-  { kind: "subsidy", text: "Solar rebate match found · $2,400 saved" },
-  { kind: "call", text: "Anna answered call · 02:14 duration" },
-  { kind: "deal", text: "Deal won · $9,450 window install" },
-  { kind: "quote", text: "Smart-thermostat add-on quoted · $1,200" },
-  { kind: "call", text: "Burst-pipe emergency routed · tech ETA 22 min" },
-  { kind: "booked", text: "Tuesday 9:30 AM survey on the calendar" },
-  { kind: "sms", text: "Customer photo received · measuring 5 windows" },
-  { kind: "deal", text: "Deal won · $4,820 furnace tune-up package" },
-  { kind: "subsidy", text: "Insulation grant matched · $1,800 covered" },
-  { kind: "quote", text: "Drainage estimate sent · $720 with site survey" },
-  { kind: "call", text: "After-hours call qualified · routed to on-call" },
-  { kind: "booked", text: "Friday 11 AM roof leak quote booked" },
-  { kind: "sms", text: "WhatsApp lead → quote in 41 seconds" },
-  { kind: "deal", text: "Deal won · $18,900 full HVAC retrofit" },
+type Kind = "call" | "quote" | "deal" | "subsidy" | "booked" | "sms";
+
+const ITEM_KINDS: Kind[] = [
+  "deal", "quote", "sms", "booked", "subsidy", "call",
+  "deal", "quote", "call", "booked", "sms", "deal",
+  "subsidy", "quote", "call", "booked", "sms", "deal",
 ];
 
-const ICONS: Record<TickerItem["kind"], { color: string; symbol: string }> = {
+const ICONS: Record<Kind, { color: string; symbol: string }> = {
   call: { color: "#16a34a", symbol: "●" },
   quote: { color: "#7c3aed", symbol: "●" },
   deal: { color: "#16a34a", symbol: "✓" },
@@ -46,7 +30,12 @@ function baselineCount() {
 }
 
 export default function LiveTicker() {
-  const loop = [...ITEMS, ...ITEMS];
+  const { t } = useI18n();
+  const items = ITEM_KINDS.map((kind, i) => ({
+    kind,
+    text: t(`ticker.i${i + 1}`),
+  }));
+  const loop = [...items, ...items];
   const [counter, setCounter] = useState(247);
 
   useEffect(() => {
@@ -60,7 +49,7 @@ export default function LiveTicker() {
       <div className="ticker-stat">
         <span className="ticker-pulse" />
         <strong>{counter}</strong>
-        <span>calls handled today</span>
+        <span>{t("ticker.callsToday")}</span>
       </div>
       <div className="ticker-track-mask">
         <div className="ticker-track">

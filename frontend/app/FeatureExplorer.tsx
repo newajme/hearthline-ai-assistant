@@ -3,24 +3,26 @@
 import { useState } from "react";
 
 import PhoneWidget from "./PhoneWidget";
+import { useI18n } from "./lib/i18n";
 
 type FeatureKey = "phone" | "chat" | "crm" | "quote" | "kb" | "analytics";
 
 const FEATURES: Array<{
   key: FeatureKey;
   num: string;
-  name: string;
-  blurb: string;
+  nameKey: string;
+  blurbKey: string;
 }> = [
-  { key: "phone", num: "01", name: "AI Phone Receptionist", blurb: "Anna picks up every call, qualifies the lead, and books the slot — 24/7." },
-  { key: "chat", num: "02", name: "AI Chat Assistant", blurb: "Same brain on your website, SMS, and WhatsApp. Same brand voice." },
-  { key: "crm", num: "03", name: "CRM Integration", blurb: "Every interaction lands in HubSpot, Pipedrive, or your tool of choice — fully populated." },
-  { key: "quote", num: "04", name: "Smart Quoting", blurb: "Customer texts a photo. Anna drafts a real PDF estimate in under 60 seconds." },
-  { key: "kb", num: "05", name: "AI Knowledge Base", blurb: "Pricing rules, install manuals, FAQs — Anna pulls answers straight from your docs." },
-  { key: "analytics", num: "06", name: "Data Analytics", blurb: "Dashboard tells you which channels close, which techs win, and what's leaking." },
+  { key: "phone", num: "01", nameKey: "fexp.f1.name", blurbKey: "fexp.f1.body" },
+  { key: "chat", num: "02", nameKey: "fexp.f2.name", blurbKey: "fexp.f2.body" },
+  { key: "crm", num: "03", nameKey: "fexp.f3.name", blurbKey: "fexp.f3.body" },
+  { key: "quote", num: "04", nameKey: "fexp.f4.name", blurbKey: "fexp.f4.body" },
+  { key: "kb", num: "05", nameKey: "fexp.f5.name", blurbKey: "fexp.f5.body" },
+  { key: "analytics", num: "06", nameKey: "fexp.f6.name", blurbKey: "fexp.f6.body" },
 ];
 
 export default function FeatureExplorer() {
+  const { t } = useI18n();
   const [active, setActive] = useState<FeatureKey>("phone");
 
   return (
@@ -34,8 +36,8 @@ export default function FeatureExplorer() {
             className={`fexp-row ${active === f.key ? "active" : ""}`}
           >
             <div className="fexp-row-body">
-              <div className="fexp-row-name">{f.name}</div>
-              {active === f.key && <div className="fexp-row-blurb">{f.blurb}</div>}
+              <div className="fexp-row-name">{t(f.nameKey)}</div>
+              {active === f.key && <div className="fexp-row-blurb">{t(f.blurbKey)}</div>}
             </div>
             <span className="fexp-row-num">{f.num}</span>
           </button>
@@ -44,132 +46,132 @@ export default function FeatureExplorer() {
 
       <div className="fexp-stage">
         {active === "phone" && <PhoneWidget />}
-        {active === "chat" && <ChatDemo />}
-        {active === "crm" && <CrmDemo />}
-        {active === "quote" && <QuoteDemo />}
-        {active === "kb" && <KbDemo />}
-        {active === "analytics" && <AnalyticsDemo />}
+        {active === "chat" && <ChatDemo t={t} />}
+        {active === "crm" && <CrmDemo t={t} />}
+        {active === "quote" && <QuoteDemo t={t} />}
+        {active === "kb" && <KbDemo t={t} />}
+        {active === "analytics" && <AnalyticsDemo t={t} />}
       </div>
     </div>
   );
 }
 
-function ChatDemo() {
+type T = (k: string) => string;
+
+function ChatDemo({ t }: { t: T }) {
   return (
     <div className="demo-card">
       <div className="demo-card-head">
         <span className="chat-avatar">A</span>
         <div>
           <div className="chat-name">Anna <span className="chat-online" /></div>
-          <div className="chat-role">Hearthline AI · WhatsApp</div>
+          <div className="chat-role">{t("demo.chat.role")}</div>
         </div>
       </div>
       <div className="demo-thread">
-        <Bubble role="in">Hi, my AC stopped cooling. Can someone come today?</Bubble>
-        <Bubble role="out">Yes — I have a tech 14 mins away. Same-day visit is $129 + parts. Confirm?</Bubble>
-        <Bubble role="in">Yes please.</Bubble>
-        <Bubble role="out">Booked for 4:20 PM. I've texted the tech's photo + ETA so you know who's at the door.</Bubble>
+        <Bubble role="in">{t("demo.chat.in1")}</Bubble>
+        <Bubble role="out">{t("demo.chat.out1")}</Bubble>
+        <Bubble role="in">{t("demo.chat.in2")}</Bubble>
+        <Bubble role="out">{t("demo.chat.out2")}</Bubble>
       </div>
       <div className="demo-foot">
-        <span className="action-pill booked"><span className="action-dot" style={{ background: "#2563eb" }} /> Booked · 4:20 PM</span>
-        <span className="action-pill quote"><span className="action-dot" style={{ background: "#7c3aed" }} /> Tech ETA sent</span>
+        <span className="action-pill booked"><span className="action-dot" style={{ background: "#2563eb" }} /> {t("demo.chat.pillBooked")}</span>
+        <span className="action-pill quote"><span className="action-dot" style={{ background: "#7c3aed" }} /> {t("demo.chat.pillEta")}</span>
       </div>
     </div>
   );
 }
 
-function CrmDemo() {
+function CrmDemo({ t }: { t: T }) {
   return (
     <div className="demo-card">
       <div className="demo-card-head">
         <span className="demo-icon">🔄</span>
         <div>
-          <div className="chat-name">HubSpot · Auto-sync</div>
-          <div className="chat-role">Lead pushed in 2.1s</div>
+          <div className="chat-name">{t("demo.crm.title")}</div>
+          <div className="chat-role">{t("demo.crm.role")}</div>
         </div>
       </div>
       <div className="demo-fields">
-        <Field label="Contact" value="Demo Customer 001 · +1 (000) 123-4567" />
-        <Field label="Source" value="Inbound Call · Vapi" />
-        <Field label="Trade" value="HVAC" />
-        <Field label="Estimated value" value="$12,300" />
-        <Field label="Temperature" value="Hot" />
-        <Field label="Owner" value="Auto-assigned · Anna" />
+        <Field label={t("demo.crm.contact")} value={t("demo.crm.contactVal")} />
+        <Field label={t("demo.crm.source")} value={t("demo.crm.sourceVal")} />
+        <Field label={t("demo.crm.trade")} value={t("demo.crm.tradeVal")} />
+        <Field label={t("demo.crm.value")} value={t("demo.crm.valueVal")} />
+        <Field label={t("demo.crm.temp")} value={t("demo.crm.tempVal")} />
+        <Field label={t("demo.crm.owner")} value={t("demo.crm.ownerVal")} />
       </div>
       <div className="demo-foot">
-        <span className="action-pill won"><span className="action-dot" style={{ background: "#16a34a" }} /> Deal Created</span>
-        <span className="action-pill status"><span className="action-dot" style={{ background: "#6b7280" }} /> Stage: Quoted</span>
+        <span className="action-pill won"><span className="action-dot" style={{ background: "#16a34a" }} /> {t("demo.crm.pillCreated")}</span>
+        <span className="action-pill status"><span className="action-dot" style={{ background: "#6b7280" }} /> {t("demo.crm.pillStage")}</span>
       </div>
     </div>
   );
 }
 
-function QuoteDemo() {
+function QuoteDemo({ t }: { t: T }) {
   return (
     <div className="demo-card">
       <div className="demo-card-head">
         <span className="demo-icon">📸</span>
         <div>
-          <div className="chat-name">Photo → Quote</div>
-          <div className="chat-role">Generated in 47s</div>
+          <div className="chat-name">{t("demo.quote.title")}</div>
+          <div className="chat-role">{t("demo.quote.role")}</div>
         </div>
       </div>
       <div className="demo-quote">
-        <div className="demo-quote-row"><span>5× Standard PVC window 1.2 × 1.4m</span><span>$2,900</span></div>
-        <div className="demo-quote-row"><span>Removal &amp; disposal</span><span>$300</span></div>
-        <div className="demo-quote-row"><span>Site survey + measurement</span><span>$150</span></div>
-        <div className="demo-quote-row demo-quote-total"><span>Total (incl. tax)</span><span>$3,618</span></div>
+        <div className="demo-quote-row"><span>{t("demo.quote.row1")}</span><span>$2,900</span></div>
+        <div className="demo-quote-row"><span>{t("demo.quote.row2")}</span><span>$300</span></div>
+        <div className="demo-quote-row"><span>{t("demo.quote.row3")}</span><span>$150</span></div>
+        <div className="demo-quote-row demo-quote-total"><span>{t("demo.quote.totalLabel")}</span><span>$3,618</span></div>
       </div>
       <div className="demo-foot">
-        <span className="action-pill quote"><span className="action-dot" style={{ background: "#7c3aed" }} /> Quote HL-A1F3C2 · sent</span>
+        <span className="action-pill quote"><span className="action-dot" style={{ background: "#7c3aed" }} /> {t("demo.quote.pill")}</span>
       </div>
     </div>
   );
 }
 
-function KbDemo() {
+function KbDemo({ t }: { t: T }) {
   return (
     <div className="demo-card">
       <div className="demo-card-head">
         <span className="demo-icon">📚</span>
         <div>
-          <div className="chat-name">Knowledge Base</div>
-          <div className="chat-role">Answer pulled from your manuals</div>
+          <div className="chat-name">{t("demo.kb.title")}</div>
+          <div className="chat-role">{t("demo.kb.role")}</div>
         </div>
       </div>
       <div className="demo-thread">
-        <Bubble role="in">My Liftmaster 8500 keeps reversing on close. Is that the safety sensor?</Bubble>
-        <Bubble role="out">
-          Likely yes — that model uses a photo-eye sensor 6 inches off the ground. If it's misaligned or dusty, the door reverses. Try cleaning both lenses and check the LED is solid green.
-        </Bubble>
-        <Bubble role="in">Still happening.</Bubble>
-        <Bubble role="out">I've booked our garage-door tech for tomorrow 9 AM. You'll get an SMS confirmation.</Bubble>
+        <Bubble role="in">{t("demo.kb.in1")}</Bubble>
+        <Bubble role="out">{t("demo.kb.out1")}</Bubble>
+        <Bubble role="in">{t("demo.kb.in2")}</Bubble>
+        <Bubble role="out">{t("demo.kb.out2")}</Bubble>
       </div>
       <div className="demo-foot">
-        <span className="action-pill subsidy"><span className="action-dot" style={{ background: "#d2532b" }} /> Cited Liftmaster 8500 manual · §4.3</span>
+        <span className="action-pill subsidy"><span className="action-dot" style={{ background: "#d2532b" }} /> {t("demo.kb.pill")}</span>
       </div>
     </div>
   );
 }
 
-function AnalyticsDemo() {
+function AnalyticsDemo({ t }: { t: T }) {
   return (
     <div className="demo-card">
       <div className="demo-card-head">
         <span className="demo-icon">📊</span>
         <div>
-          <div className="chat-name">This week</div>
-          <div className="chat-role">Sept 23 – 29</div>
+          <div className="chat-name">{t("demo.analytics.title")}</div>
+          <div className="chat-role">{t("demo.analytics.role")}</div>
         </div>
       </div>
       <div className="demo-stats">
-        <div className="demo-stat"><strong>92%</strong><span>Calls answered &lt; 2 rings</span></div>
-        <div className="demo-stat"><strong>$47.3k</strong><span>Quoted</span></div>
-        <div className="demo-stat"><strong>34%</strong><span>Quote → won rate</span></div>
-        <div className="demo-stat"><strong>23m</strong><span>Avg response time</span></div>
+        <div className="demo-stat"><strong>{t("demo.analytics.s1n")}</strong><span>{t("demo.analytics.s1l")}</span></div>
+        <div className="demo-stat"><strong>{t("demo.analytics.s2n")}</strong><span>{t("demo.analytics.s2l")}</span></div>
+        <div className="demo-stat"><strong>{t("demo.analytics.s3n")}</strong><span>{t("demo.analytics.s3l")}</span></div>
+        <div className="demo-stat"><strong>{t("demo.analytics.s4n")}</strong><span>{t("demo.analytics.s4l")}</span></div>
       </div>
       <div className="demo-foot">
-        <span className="action-pill won"><span className="action-dot" style={{ background: "#16a34a" }} /> +12% vs last week</span>
+        <span className="action-pill won"><span className="action-dot" style={{ background: "#16a34a" }} /> {t("demo.analytics.pill")}</span>
       </div>
     </div>
   );

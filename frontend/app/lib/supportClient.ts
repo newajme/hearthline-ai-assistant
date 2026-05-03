@@ -123,6 +123,45 @@ export type LiveSocket = {
   isOpen: () => boolean;
 };
 
+/** Poll-based fallback for environments without WebSockets (e.g. Vercel).
+ * Calls `loadHistory` every `intervalMs` and emits any new messages by id.
+ */
+export function pollLiveMessages(
+  onMessage: (m: SupportMessage) => void,
+  intervalMs = 4000,
+): { stop: () => void } {
+  let stopped = false;
+  const seen = new Set<string>();
+  let timer: ReturnType<typeof setTimeout> | null = null;
+
+  async function tick() {
+    if (stopped) return;
+    try {
+      const history = await loadHistory();
+      for (const m of history) {
+        if (seen.has(m.id)) continue;
+        seen.add(m.id);
+        onMessage(m);
+      }
+    } catch {
+      // ignore — try again next interval
+    }
+    if (!stopped) {
+      timer = setTimeout(tick, intervalMs);
+    }
+  }
+
+  // Fire first poll immediately (catches a fast staff reply right after open)
+  void tick();
+
+  return {
+    stop: () => {
+      stopped = true;
+      if (timer) clearTimeout(timer);
+    },
+  };
+}
+
 /**
  * Connect to the widget WebSocket. Auto-reconnects with exponential backoff
  * on unexpected close (network blips, server restart). Call `close()` to

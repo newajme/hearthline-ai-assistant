@@ -3,16 +3,18 @@
 import { useState } from "react";
 
 import AnnaDemoModal from "./AnnaDemoModal";
+import { useI18n } from "./lib/i18n";
 
 type Variant = "primary" | "onDark";
 
 export default function AnnaDemoLauncher({
-  label = "Hear Anna pick up",
+  label,
   variant = "primary",
 }: {
   label?: string;
   variant?: Variant;
 }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const className =
     variant === "onDark"
@@ -22,7 +24,7 @@ export default function AnnaDemoLauncher({
   return (
     <>
       <button type="button" className={className} onClick={() => setOpen(true)}>
-        <span className="btn-anna-dot" aria-hidden /> {label}
+        <span className="btn-anna-dot" aria-hidden /> {label ?? t("annaLaunch.cta")}
       </button>
       <AnnaDemoModal open={open} onClose={() => setOpen(false)} />
     </>

@@ -5,17 +5,18 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { Anna } from "./Anna";
+import { useI18n } from "./lib/i18n";
 
 type Phase = "ringing" | "live" | "ended";
 
 type Bubble = { role: "in" | "out"; text: string };
 
-const SCRIPT: Array<{ role: "in" | "out"; text: string; afterMs: number }> = [
-  { role: "out", text: "Hi, this is Anna at Hearthline — how can I help tonight?", afterMs: 600 },
-  { role: "in", text: "Yeah, my furnace just stopped working. It's freezing in here.", afterMs: 2600 },
-  { role: "out", text: "I'm sorry to hear that. Is there any smell or visible damage?", afterMs: 4800 },
-  { role: "in", text: "No smell. The pilot light is just out.", afterMs: 7000 },
-  { role: "out", text: "Got it. I can have a tech at your address by 7:45 AM. Shall I book it and text you the confirmation?", afterMs: 9000 },
+const SCRIPT_KEYS: Array<{ role: "in" | "out"; key: string; afterMs: number }> = [
+  { role: "out", key: "annaModal.line1", afterMs: 600 },
+  { role: "in",  key: "annaModal.line2", afterMs: 2600 },
+  { role: "out", key: "annaModal.line3", afterMs: 4800 },
+  { role: "in",  key: "annaModal.line4", afterMs: 7000 },
+  { role: "out", key: "annaModal.line5", afterMs: 9000 },
 ];
 
 const DEMO_URL = "https://calendly.com/contact-codewithmuh/30min";
@@ -26,6 +27,7 @@ type Props = {
 };
 
 export default function AnnaDemoModal({ open, onClose }: Props) {
+  const { t } = useI18n();
   const [phase, setPhase] = useState<Phase>("ringing");
   const [seconds, setSeconds] = useState(0);
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
@@ -60,20 +62,20 @@ export default function AnnaDemoModal({ open, onClose }: Props) {
   useEffect(() => {
     if (!open || phase !== "live") return;
     const timers: ReturnType<typeof setTimeout>[] = [];
-    SCRIPT.forEach((entry, i) => {
+    SCRIPT_KEYS.forEach((entry, i) => {
       timers.push(
         setTimeout(() => {
-          setBubbles((cur) => [...cur, { role: entry.role, text: entry.text }]);
-          const next = SCRIPT[i + 1];
+          setBubbles((cur) => [...cur, { role: entry.role, text: t(entry.key) }]);
+          const next = SCRIPT_KEYS[i + 1];
           setTypingFor(next ? next.role : null);
-          if (i === SCRIPT.length - 1) {
+          if (i === SCRIPT_KEYS.length - 1) {
             timers.push(setTimeout(() => setPhase("ended"), 2200));
           }
         }, entry.afterMs),
       );
     });
     return () => timers.forEach(clearTimeout);
-  }, [open, phase]);
+  }, [open, phase, t]);
 
   useEffect(() => {
     if (!open) return;
@@ -120,11 +122,9 @@ export default function AnnaDemoModal({ open, onClose }: Props) {
 
         <div className="anna-modal-head">
           <span className="anna-modal-eyebrow">
-            <span className="dot-pulse" aria-hidden /> Live demo · simulated call
+            <span className="dot-pulse" aria-hidden /> {t("annaModal.eyebrow")}
           </span>
-          <h3 className="anna-modal-title">
-            Watch Anna take a 3 AM emergency.
-          </h3>
+          <h3 className="anna-modal-title">{t("annaModal.title")}</h3>
         </div>
 
         <div className="anna-modal-stage">
@@ -142,13 +142,13 @@ export default function AnnaDemoModal({ open, onClose }: Props) {
             </div>
             <div className="anna-phone-name">Anna · Hearthline</div>
             <div className="anna-phone-status">
-              {phase === "ringing" && "Incoming call · ringing…"}
+              {phase === "ringing" && t("annaModal.statusRinging")}
               {phase === "live" && (
                 <>
-                  <span className="dot-pulse" aria-hidden /> Connected · {mm}:{ss}
+                  <span className="dot-pulse" aria-hidden /> {t("annaModal.statusConnected")} · {mm}:{ss}
                 </>
               )}
-              {phase === "ended" && "Call ended · summary saved to CRM"}
+              {phase === "ended" && t("annaModal.statusEnded")}
             </div>
           </div>
 
@@ -157,7 +157,7 @@ export default function AnnaDemoModal({ open, onClose }: Props) {
             {phase === "ringing" && (
               <div className="anna-feed-empty">
                 <span className="anna-feed-empty-dots"><i /><i /><i /></span>
-                <span>Customer dialing in…</span>
+                <span>{t("annaModal.dialing")}</span>
               </div>
             )}
             {phase !== "ringing" && (
@@ -186,12 +186,12 @@ export default function AnnaDemoModal({ open, onClose }: Props) {
                 )}
                 {phase === "ended" && (
                   <div className="anna-feed-summary">
-                    <div className="anna-feed-summary-title">What just happened</div>
+                    <div className="anna-feed-summary-title">{t("annaModal.summaryTitle")}</div>
                     <ul>
-                      <li>Lead qualified — emergency, no safety risk</li>
-                      <li>Tech booked · Tomorrow 7:45 AM</li>
-                      <li>Customer texted confirmation + tech name</li>
-                      <li>Deal created in HubSpot · #D-1042</li>
+                      <li>{t("annaModal.summary1")}</li>
+                      <li>{t("annaModal.summary2")}</li>
+                      <li>{t("annaModal.summary3")}</li>
+                      <li>{t("annaModal.summary4")}</li>
                     </ul>
                   </div>
                 )}
@@ -201,16 +201,13 @@ export default function AnnaDemoModal({ open, onClose }: Props) {
         </div>
 
         <div className="anna-modal-foot">
-          <p className="anna-modal-foot-note">
-            This is a scripted preview. The real Anna runs on your business's own pricing,
-            voice, and CRM.
-          </p>
+          <p className="anna-modal-foot-note">{t("annaModal.foot")}</p>
           <div className="anna-modal-actions">
             <a href={DEMO_URL} target="_blank" rel="noreferrer" className="btn btn-primary">
-              Book a real demo
+              {t("annaModal.bookReal")}
             </a>
             <Link href="/dashboard/test-call" className="btn btn-ghost" onClick={onClose}>
-              Open the full simulator →
+              {t("annaModal.openSim")} →
             </Link>
           </div>
         </div>
