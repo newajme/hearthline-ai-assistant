@@ -207,10 +207,3 @@ if not DEBUG:
             "Generate one with: "
             "python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())'"
         )
-    if not VAPI_WEBHOOK_SECRET:
-        raise RuntimeError(
-            "VAPI_WEBHOOK_SECRET is not set. Without it, anyone can POST forged "
-            "Vapi webhooks and run up your Anthropic bill — refusing to start. "
-            "Set it to the shared secret configured on your Vapi assistant's "
-            "Server URL settings."
-        )
