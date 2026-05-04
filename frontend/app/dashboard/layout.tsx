@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import { apiFetch, getCurrentUser } from "@/app/lib/api";
+import { apiFetch, apiJson, getCurrentUser } from "@/app/lib/api";
 
 import Sidebar from "./Sidebar";
 import { DashGlobalTopbar } from "./Topbar";
+
+type BusinessLite = { name: string };
+type BusinessPage = { results: BusinessLite[] };
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -26,15 +29,26 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const user = await getCurrentUser();
   if (!user) redirect("/login?next=/dashboard");
 
-  const [leads, calls, quotes, businesses] = await Promise.all([
+  const [leads, calls, quotes, businesses, tickets, bizPage] = await Promise.all([
     fetchCount("/leads/"),
     fetchCount("/calls/"),
     fetchCount("/quotes/"),
     fetchCount("/businesses/"),
+    fetchCount("/support/tickets/?status=open"),
+    apiJson<BusinessPage>("/businesses/"),
   ]);
+  const sidebarName =
+    [user.first_name, ""].filter(Boolean).join(" ").trim() ||
+    user.username ||
+    user.email ||
+    "Signed in";
+  const sidebarBusiness = bizPage?.results?.[0]?.name ?? "";
   return (
     <div className="app-shell">
-      <Sidebar counts={{ leads, calls, quotes, businesses }} />
+      <Sidebar
+        counts={{ leads, calls, quotes, businesses, tickets }}
+        user={{ name: sidebarName, business: sidebarBusiness }}
+      />
       <div className="app-main">
         <DashGlobalTopbar user={user} />
         {children}

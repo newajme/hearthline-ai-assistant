@@ -40,6 +40,9 @@ export default function ApiKeysCard({ business }: { business: Business }) {
     { field: "twilio_account_sid", label: "Twilio Account SID", hint: "Twilio voice + SMS fallback.", configured: !!business.twilio_account_sid, masked: business.twilio_account_sid },
     { field: "twilio_auth_token", label: "Twilio Auth token", hint: "", configured: business.has_twilio_creds, masked: business.twilio_auth_token },
     { field: "twilio_from_number", label: "Twilio from number", hint: "Outbound caller ID.", configured: !!business.twilio_from_number, masked: business.twilio_from_number },
+    { field: "whatsapp_access_token", label: "WhatsApp access token", hint: "Meta Cloud API permanent token. Powers inbound support tickets.", configured: business.has_whatsapp_creds, masked: business.whatsapp_access_token },
+    { field: "whatsapp_phone_number_id", label: "WhatsApp phone number ID", hint: "From Meta Business Manager → WhatsApp → API Setup.", configured: !!business.whatsapp_phone_number_id, masked: business.whatsapp_phone_number_id },
+    { field: "whatsapp_verify_token", label: "WhatsApp verify token", hint: "Anything you choose — paste the same string into Meta's webhook config.", configured: !!business.whatsapp_verify_token, masked: business.whatsapp_verify_token },
   ];
   const rows: KeyRow[] = allRows.filter((r) => !r.hidden);
 

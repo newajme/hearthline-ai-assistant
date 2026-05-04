@@ -12,4 +12,4 @@ export {
   fmtAge,
   fmtMoney,
 } from "./format";
-export type { Lead, Call, Quote, Business, Page } from "./format";
+export type { Lead, Call, Quote, Business, Page, Ticket, TicketMessage, TicketDetail } from "./format";

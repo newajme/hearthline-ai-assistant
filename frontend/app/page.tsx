@@ -62,6 +62,7 @@ const SOFTWARE_JSONLD = {
     "AI phone receptionist (Vapi + Twilio)",
     "AI chat assistant (web, SMS, WhatsApp)",
     "Photo-to-quote vision pipeline",
+    "Unified support inbox (WhatsApp / SMS / email / web chat tickets)",
     "CRM integration (HubSpot, Pipedrive, Salesforce, ServiceTitan)",
     "Configurable per-trade pricing rules",
     "Live analytics dashboards",

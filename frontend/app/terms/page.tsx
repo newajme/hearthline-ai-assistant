@@ -89,7 +89,7 @@ export default function TermsPage() {
               </a>. Self-hosting is permitted under AGPL-3.0; running your own deployment falls
               outside the scope of these Terms. A separate commercial license is available for
               white-labeling, reselling, or embedding Hearthline in closed-source products —
-              contact codewithmuh@gmail.com.
+              contact contact@codewithmuh.com.
             </p>
 
             <h2>8. Disclaimer of warranties</h2>

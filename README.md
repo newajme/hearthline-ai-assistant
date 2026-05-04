@@ -46,6 +46,10 @@ up the phone.
   the actual API cost (cents per call), no vendor markup.
 - **💬 Multi-channel inbox** — Phone + SMS + WhatsApp + email + web chat on
   one timeline.
+- **🎫 Support tickets** — Inbound WhatsApp / SMS / email / web-chat
+  conversations open tickets in `/dashboard/support` with a threaded reply
+  view, status workflow (open → pending → resolved), and an agent reply box
+  that posts back through the original channel.
 - **📸 Photo-first quoting** — Customer texts a photo → vision pipeline drafts
   a real PDF estimate in <60s with line items, tax, and total.
 - **🌍 10 languages out of the box** — English, Spanish, German, French,
@@ -191,7 +195,7 @@ hearthline/
 ├── frontend/                   # Next.js 15
 │   └── app/
 │       ├── (marketing)/        # /, /faq, /privacy, /terms, /docs
-│       └── dashboard/          # /dashboard/{leads,calls,quotes,customers,settings,test-call}
+│       └── dashboard/          # /dashboard/{leads,calls,quotes,customers,support,settings,test-call}
 └── backend/                    # Django 5
     └── apps/
         ├── core/               # Business, Channel, encrypted-key fields
@@ -201,6 +205,7 @@ hearthline/
         │   ├── services/       # sms, email, scheduling, persistence
         │   └── tests/          # happy-path + auth-matrix tests
         ├── quotes/             # Quote, LineItem (editable + printable PDF)
+        ├── support/            # Tickets, threaded messages, WhatsApp/SMS/email webhooks + reply
         └── ai/                 # Photo → quote vision pipeline
 ```
 
@@ -262,7 +267,7 @@ Hearthline is dual-licensed:
   be released under AGPL-3.0 too.
 - **[Commercial license](COMMERCIAL.md)** for white-labeling, reselling,
   embedding in closed-source products, or done-for-you deployment. Email
-  **codewithmuh@gmail.com** or [book a call](https://calendly.com/contact-codewithmuh/30min).
+  **contact@codewithmuh.com** or [book a call](https://calendly.com/contact-codewithmuh/30min).
 
 ---
 

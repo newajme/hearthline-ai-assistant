@@ -31,9 +31,9 @@ class LoginView(APIView):
     authentication_classes: list = []  # don't require CSRF on first call
 
     def post(self, request):
-        # Throttle: 5 failed attempts / 5 min per IP, 10 / 5 min per username.
-        # Lockouts cool off automatically; uses Django's default cache backend.
-        if is_ratelimited(request, group="login-ip", key="ip", rate="5/5m", increment=True):
+        # Only failed attempts count toward the limit, so a correct password
+        # always unlocks. 10 failures / 5 min per IP, 10 / 5 min per username.
+        if is_ratelimited(request, group="login-ip", key="ip", rate="10/5m", increment=False):
             return Response(
                 {"detail": "Too many login attempts. Try again in a few minutes."},
                 status=429,
@@ -44,9 +44,10 @@ class LoginView(APIView):
         if not identifier or not password:
             return Response({"detail": "Username and password are required."}, status=400)
 
+        user_key = identifier.lower()
         if is_ratelimited(
-            request, group="login-user", key=lambda _g, _r: identifier.lower(),
-            rate="10/5m", increment=True,
+            request, group="login-user", key=lambda _g, _r: user_key,
+            rate="10/5m", increment=False,
         ):
             return Response(
                 {"detail": "Too many login attempts for this account. Try again later."},
@@ -65,6 +66,11 @@ class LoginView(APIView):
                 user = None
 
         if user is None:
+            is_ratelimited(request, group="login-ip", key="ip", rate="10/5m", increment=True)
+            is_ratelimited(
+                request, group="login-user", key=lambda _g, _r: user_key,
+                rate="10/5m", increment=True,
+            )
             return Response({"detail": "Invalid credentials."}, status=401)
         if not user.is_active:
             return Response({"detail": "Account is disabled."}, status=403)

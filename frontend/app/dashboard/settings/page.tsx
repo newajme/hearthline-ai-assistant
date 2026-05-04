@@ -2,9 +2,38 @@ import { fetchJson, type Business, type Page } from "../lib";
 import { getAdminUrl } from "../../lib/api";
 import SettingsTabs from "./SettingsTabs";
 
+const EMPTY_BUSINESS: Business = {
+  id: 0,
+  name: "",
+  slug: "",
+  trade: "general",
+  timezone: "UTC",
+  phone_number: "",
+  voice_persona: "Anna",
+  knowledge_base: "",
+  llm_provider: "anthropic",
+  anthropic_api_key: "",
+  openai_api_key: "",
+  vapi_api_key: "",
+  vapi_phone_number_id: "",
+  twilio_account_sid: "",
+  twilio_auth_token: "",
+  twilio_from_number: "",
+  whatsapp_access_token: "",
+  whatsapp_phone_number_id: "",
+  whatsapp_verify_token: "",
+  has_anthropic_key: false,
+  has_openai_key: false,
+  has_vapi_key: false,
+  has_twilio_creds: false,
+  has_whatsapp_creds: false,
+  channels: [],
+};
+
 export default async function SettingsPage() {
   const data = await fetchJson<Page<Business>>("/businesses/");
-  const biz = data?.results?.[0];
+  const biz = data?.results?.[0] ?? EMPTY_BUSINESS;
+  const isNew = biz.id === 0;
 
   return (
     <>
@@ -14,7 +43,7 @@ export default async function SettingsPage() {
           <p>Business profile, channels, and integrations.</p>
         </div>
         <div className="app-pagebar-actions">
-          {biz && (
+          {!isNew && (
             <a
               href={getAdminUrl(`/core/business/${biz.id}/change/`)}
               target="_blank"
@@ -28,17 +57,13 @@ export default async function SettingsPage() {
       </div>
 
       <div className="app-content">
-        {!biz ? (
-          <div className="empty-card">
-            <h3>No business configured yet</h3>
-            <p>
-              Run <code>docker compose exec backend python manage.py seed_demo</code> or add one
-              from Django admin.
-            </p>
+        {isNew && (
+          <div className="settings-onboarding-banner">
+            <strong>No business configured yet.</strong>
+            <span>Fill in the profile below and hit save to create one.</span>
           </div>
-        ) : (
-          <SettingsTabs business={biz} />
         )}
+        <SettingsTabs business={biz} />
       </div>
     </>
   );

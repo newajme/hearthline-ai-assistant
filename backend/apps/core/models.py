@@ -45,6 +45,11 @@ class Business(models.Model):
     twilio_auth_token = EncryptedCharField(blank=True, default="")
     twilio_from_number = models.CharField(max_length=32, blank=True, default="")  # not a secret
 
+    # WhatsApp Business Cloud API (Meta) — for inbound support tickets.
+    whatsapp_access_token = EncryptedCharField(blank=True, default="")
+    whatsapp_phone_number_id = models.CharField(max_length=64, blank=True, default="")
+    whatsapp_verify_token = EncryptedCharField(blank=True, default="")
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -83,6 +88,18 @@ class Business(models.Model):
     @property
     def resolved_twilio_from(self) -> str:
         return self._resolved("twilio_from_number", "TWILIO_FROM_NUMBER")
+
+    @property
+    def resolved_whatsapp_token(self) -> str:
+        return self._resolved("whatsapp_access_token", "WHATSAPP_ACCESS_TOKEN")
+
+    @property
+    def resolved_whatsapp_phone_id(self) -> str:
+        return self._resolved("whatsapp_phone_number_id", "WHATSAPP_PHONE_NUMBER_ID")
+
+    @property
+    def resolved_whatsapp_verify_token(self) -> str:
+        return self._resolved("whatsapp_verify_token", "WHATSAPP_VERIFY_TOKEN")
 
 
 class Channel(models.Model):

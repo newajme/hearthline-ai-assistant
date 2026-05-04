@@ -26,6 +26,7 @@ function normalize(raw: string | null): TabKey {
 export default function SettingsTabs({ business }: { business: Business }) {
   const router = useRouter();
   const params = useSearchParams();
+  const isNew = business.id === 0;
   const [active, setActive] = useState<TabKey>(() => normalize(params.get("tab")));
 
   const select = useCallback(
@@ -69,14 +70,34 @@ export default function SettingsTabs({ business }: { business: Business }) {
       >
         {active === "profile" && <ProfileForm business={business} />}
         {active === "ai" && (
-          <>
-            <ApiKeysCard business={business} />
-            <KnowledgeForm business={business} />
-          </>
+          isNew ? (
+            <PendingProfileNotice />
+          ) : (
+            <>
+              <ApiKeysCard business={business} />
+              <KnowledgeForm business={business} />
+            </>
+          )
         )}
-        {active === "channels" && <ChannelsEditor business={business} />}
-        {active === "webhooks" && <WebhooksCard />}
+        {active === "channels" && (
+          isNew ? <PendingProfileNotice /> : <ChannelsEditor business={business} />
+        )}
+        {active === "webhooks" && (
+          isNew ? <PendingProfileNotice /> : <WebhooksCard />
+        )}
       </div>
     </>
+  );
+}
+
+function PendingProfileNotice() {
+  return (
+    <article className="dash-card">
+      <h2 style={{ marginTop: 0 }}>Save your business profile first</h2>
+      <p style={{ margin: 0, color: "var(--muted)" }}>
+        Once you create the business in the Profile tab, this section will unlock so you can add
+        keys, channels, and webhook URLs.
+      </p>
+    </article>
   );
 }

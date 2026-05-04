@@ -35,7 +35,7 @@ async function forward(request: NextRequest, ctx: { params: Promise<{ path: stri
     cache: "no-store",
   };
   if (!["GET", "HEAD"].includes(request.method)) {
-    init.body = await request.text();
+    init.body = await request.arrayBuffer();
   }
 
   const upstream = await fetch(url, init);

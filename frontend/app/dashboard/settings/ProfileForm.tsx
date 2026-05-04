@@ -36,13 +36,14 @@ function pickEditable(b: Business): FormState {
 
 export default function ProfileForm({ business }: { business: Business }) {
   const router = useRouter();
+  const isNew = business.id === 0;
   const initial = pickEditable(business);
   const [form, setForm] = useState<FormState>(initial);
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const dirty = JSON.stringify(form) !== JSON.stringify(initial);
+  const dirty = isNew ? form.name.trim().length > 0 : JSON.stringify(form) !== JSON.stringify(initial);
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -54,7 +55,10 @@ export default function ProfileForm({ business }: { business: Business }) {
     if (!dirty || saving) return;
     setSaving(true);
     setError(null);
-    const res = await patchBusiness(business.id, form);
+    const payload = isNew
+      ? { ...form, slug: form.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "default" }
+      : form;
+    const res = await patchBusiness(business.id, payload);
     setSaving(false);
     if (!res.ok) {
       setError(res.error ?? "Failed to save");
@@ -143,7 +147,7 @@ export default function ProfileForm({ business }: { business: Business }) {
           Reset
         </button>
         <button type="button" className="btn btn-primary" onClick={onSave} disabled={!dirty || saving}>
-          {saving ? "Saving…" : "Save changes"}
+          {saving ? "Saving…" : isNew ? "Create business" : "Save changes"}
         </button>
       </div>
     </article>

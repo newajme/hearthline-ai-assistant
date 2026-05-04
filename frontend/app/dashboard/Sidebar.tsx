@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { getAdminUrl } from "../lib/adminUrl";
 
-type Counts = { leads: number; calls: number; quotes: number; businesses: number };
+type Counts = { leads: number; calls: number; quotes: number; businesses: number; tickets: number };
 
 const NAV_OPS: { href: string; label: string; key: keyof Counts | null; icon: React.ReactNode }[] = [
   {
@@ -58,21 +58,40 @@ const NAV_OPS: { href: string; label: string; key: keyof Counts | null; icon: Re
   },
 ];
 
-const NAV_ADMIN = [
+const NAV_ADMIN: { href: string; label: string; key: keyof Counts | null; icon: React.ReactNode }[] = [
+  {
+    href: "/dashboard/support",
+    label: "Support",
+    key: "tickets",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
+    ),
+  },
   {
     href: "/dashboard/settings",
     label: "Settings",
-    key: null as keyof Counts | null,
+    key: null,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
     ),
   },
 ];
 
-export default function Sidebar({ counts }: { counts: Counts }) {
+type SidebarUser = { name: string; business: string };
+
+function initials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+export default function Sidebar({ counts, user }: { counts: Counts; user?: SidebarUser }) {
   const pathname = usePathname();
   const isActive = (href: string) =>
     href === "/dashboard" ? pathname === href : pathname.startsWith(href);
+  const displayName = user?.name?.trim() || "Signed in";
+  const displayBusiness = user?.business?.trim() || "No business yet";
 
   return (
     <aside className="app-sidebar">
@@ -105,6 +124,9 @@ export default function Sidebar({ counts }: { counts: Counts }) {
         >
           {item.icon}
           <span>{item.label}</span>
+          {item.key && counts[item.key] > 0 && (
+            <span className="badge">{counts[item.key]}</span>
+          )}
         </Link>
       ))}
       <a
@@ -119,10 +141,10 @@ export default function Sidebar({ counts }: { counts: Counts }) {
 
       <div className="sidebar-bottom">
         <div className="sidebar-user">
-          <span className="avatar">JD</span>
+          <span className="avatar">{initials(displayName)}</span>
           <div className="sidebar-user-meta">
-            <div className="sidebar-user-name">Jordan Davis</div>
-            <div className="sidebar-user-role">Rolling Shutters Inc.</div>
+            <div className="sidebar-user-name">{displayName}</div>
+            <div className="sidebar-user-role">{displayBusiness}</div>
           </div>
         </div>
       </div>

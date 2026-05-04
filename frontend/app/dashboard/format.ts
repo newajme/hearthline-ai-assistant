@@ -78,11 +78,40 @@ export type Business = {
   twilio_account_sid: string;
   twilio_auth_token: string;
   twilio_from_number: string;
+  whatsapp_access_token: string;
+  whatsapp_phone_number_id: string;
+  whatsapp_verify_token: string;
   has_anthropic_key: boolean;
   has_openai_key: boolean;
   has_vapi_key: boolean;
   has_twilio_creds: boolean;
+  has_whatsapp_creds: boolean;
   channels: Array<{ id: number; kind: string; address: string; is_active: boolean }>;
 };
+
+export type Ticket = {
+  id: number;
+  channel: "whatsapp" | "sms" | "email" | "webchat";
+  sender_id: string;
+  sender_name: string;
+  subject: string;
+  status: "open" | "waiting" | "escalated" | "resolved";
+  human_only: boolean;
+  last_message_at: string | null;
+  created_at: string;
+  last_message_preview: string;
+  message_count: number;
+};
+
+export type TicketMessage = {
+  id: number;
+  direction: "in" | "out";
+  author: "customer" | "ai" | "agent" | "system";
+  body: string;
+  created_at: string;
+  metadata: Record<string, unknown>;
+};
+
+export type TicketDetail = Ticket & { messages: TicketMessage[] };
 
 export type Page<T> = { count: number; results: T[] };

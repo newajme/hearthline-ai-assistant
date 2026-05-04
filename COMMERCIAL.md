@@ -24,7 +24,7 @@ apply to you:
 
 ## How to get one
 
-Email **codewithmuh@gmail.com** with:
+Email **contact@codewithmuh.com** with:
 
 1. Your company name and the trade you operate in (HVAC, plumbing, etc.).
 2. Whether you want: (a) a commercial license only, (b) done-for-you setup,

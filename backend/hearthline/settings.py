@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "apps.calls",
     "apps.quotes",
     "apps.ai",
+    "apps.support",
     "django_ratelimit",
 ]
 

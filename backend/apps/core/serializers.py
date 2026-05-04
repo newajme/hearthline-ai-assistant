@@ -42,6 +42,7 @@ class BusinessSerializer(serializers.ModelSerializer):
     has_openai_key = serializers.SerializerMethodField()
     has_vapi_key = serializers.SerializerMethodField()
     has_twilio_creds = serializers.SerializerMethodField()
+    has_whatsapp_creds = serializers.SerializerMethodField()
     anthropic_api_key = _SecretField()
     openai_api_key = _SecretField()
     vapi_api_key = _SecretField()
@@ -49,6 +50,9 @@ class BusinessSerializer(serializers.ModelSerializer):
     twilio_account_sid = _SecretField()
     twilio_auth_token = _SecretField()
     twilio_from_number = serializers.CharField(required=False, allow_blank=True)
+    whatsapp_access_token = _SecretField()
+    whatsapp_verify_token = _SecretField()
+    whatsapp_phone_number_id = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = Business
@@ -59,7 +63,9 @@ class BusinessSerializer(serializers.ModelSerializer):
             "anthropic_api_key", "openai_api_key", "vapi_api_key",
             "vapi_phone_number_id", "twilio_account_sid", "twilio_auth_token",
             "twilio_from_number",
+            "whatsapp_access_token", "whatsapp_phone_number_id", "whatsapp_verify_token",
             "has_anthropic_key", "has_openai_key", "has_vapi_key", "has_twilio_creds",
+            "has_whatsapp_creds",
             "channels", "created_at", "updated_at",
         ]
 
@@ -76,10 +82,14 @@ class BusinessSerializer(serializers.ModelSerializer):
     def get_has_twilio_creds(self, obj) -> bool:
         return bool(obj.resolved_twilio_sid and obj.resolved_twilio_token)
 
+    def get_has_whatsapp_creds(self, obj) -> bool:
+        return bool(obj.resolved_whatsapp_token and obj.resolved_whatsapp_phone_id)
+
     # --- write semantics: blank = leave alone, "__CLEAR__" = wipe, value = set ---
     SECRET_FIELDS = (
         "anthropic_api_key", "openai_api_key", "vapi_api_key",
         "vapi_phone_number_id", "twilio_account_sid", "twilio_auth_token",
+        "whatsapp_access_token", "whatsapp_verify_token",
     )
 
     def update(self, instance, validated_data):
