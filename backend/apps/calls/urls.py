@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
     path("", views.CallList.as_view(), name="call-list"),
+    path("bulk-delete/", views.bulk_delete_calls, name="call-bulk-delete"),
+    path("<int:pk>/", views.CallDetail.as_view(), name="call-detail"),
     path("webhooks/vapi/", views.VapiWebhook.as_view(), name="vapi-webhook"),
     path("webhooks/twilio/", views.TwilioWebhook.as_view(), name="twilio-webhook"),
     # Vapi custom-LLM mode hits this on every conversation turn.

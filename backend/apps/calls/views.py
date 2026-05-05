@@ -15,6 +15,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django_ratelimit.core import is_ratelimited
 from rest_framework import generics
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -91,6 +92,28 @@ class CallList(generics.ListAPIView):
     queryset = Call.objects.all().order_by("-started_at")
     serializer_class = CallSerializer
     permission_classes = [IsAuthenticated]
+
+
+class CallDetail(generics.RetrieveDestroyAPIView):
+    queryset = Call.objects.all()
+    serializer_class = CallSerializer
+    permission_classes = [IsAuthenticated]
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def bulk_delete_calls(request):
+    """Delete a set of calls by id, or all calls when {"all": true}."""
+    if request.data.get("all") is True:
+        deleted, _ = Call.objects.all().delete()
+        return Response({"deleted": deleted})
+    ids = request.data.get("ids") or []
+    if not isinstance(ids, list) or not all(isinstance(i, int) for i in ids):
+        return Response({"error": "ids must be a list of integers"}, status=400)
+    if not ids:
+        return Response({"deleted": 0})
+    deleted, _ = Call.objects.filter(id__in=ids).delete()
+    return Response({"deleted": deleted})
 
 
 def _openai_to_claude(messages: list) -> list:

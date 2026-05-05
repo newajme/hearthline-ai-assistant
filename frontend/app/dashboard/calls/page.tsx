@@ -2,8 +2,8 @@ import Link from "next/link";
 
 import { getPersonaName } from "@/app/lib/persona";
 
-import { fetchJson, fmtAge, type Call, type Page } from "../lib";
-import { StatusPill } from "../parts";
+import { fetchJson, type Call, type Page } from "../lib";
+import CallsTable from "./CallsTable";
 
 export default async function CallsPage({ searchParams }: { searchParams: Promise<{ provider?: string; q?: string }> }) {
   const params = await searchParams;
@@ -76,45 +76,7 @@ export default async function CallsPage({ searchParams }: { searchParams: Promis
           </div>
         </form>
 
-        <section className="app-table">
-          <div className="app-table-head cols-calls">
-            <span>Caller</span>
-            <span>Provider</span>
-            <span>Summary</span>
-            <span style={{ textAlign: "right" }}>Status</span>
-          </div>
-          {calls.length === 0 ? (
-            <div className="empty-card" style={{ borderRadius: 0, border: "none", background: "white" }}>
-              <h3>No calls match these filters</h3>
-              <p>Wire a Vapi or Twilio webhook to <code>/api/calls/webhooks/vapi/</code>.</p>
-            </div>
-          ) : (
-            calls.map((c) => (
-              <div key={c.id} className="app-table-row cols-calls">
-                <div className="app-row-customer">
-                  <span className="app-row-avatar" style={{ fontSize: 14 }}>📞</span>
-                  <div>
-                    <div className="app-row-title">{c.from_number || "unknown"}</div>
-                    <div className="app-row-sub">→ {c.to_number || "—"}</div>
-                  </div>
-                </div>
-                <div>
-                  <span className="tag" style={{ marginLeft: 0 }}>{c.provider}</span>
-                  <div className="app-row-sub" style={{ marginTop: 4 }}>{c.persona_used || persona}</div>
-                </div>
-                <div>
-                  <div className="app-row-title app-row-title-soft">
-                    {c.summary || (c.transcript ? c.transcript.slice(0, 160) + "…" : "(no transcript)")}
-                  </div>
-                  <div className="app-row-sub">{fmtAge(c.started_at)} · {c.duration_seconds ? `${c.duration_seconds}s` : "—"}</div>
-                </div>
-                <div className="app-row-action">
-                  <StatusPill status={c.status} />
-                </div>
-              </div>
-            ))
-          )}
-        </section>
+        <CallsTable calls={calls} defaultPersona={persona} />
       </div>
     </>
   );

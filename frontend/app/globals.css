@@ -5763,6 +5763,15 @@ select.text-input { cursor: pointer; appearance: none; background-image: url("da
   grid-template-columns: 1.2fr 0.6fr 2fr 1fr;
 }
 
+/* Calls table with checkbox + delete column */
+.app-table-head.cols-calls-select,
+.app-table-row.cols-calls-select {
+  grid-template-columns: 36px 1.2fr 0.6fr 2fr 1fr 36px;
+  align-items: center;
+}
+.app-table-row.cols-calls-select { padding: 10px 14px 10px 14px; }
+.app-table-row.cols-calls-select.is-selected { background: rgba(210, 83, 43, 0.05); }
+
 /* In-table empty state — drops the dashed-card chrome when nested in .app-table */
 .app-table-empty {
   padding: 48px 24px;
