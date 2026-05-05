@@ -6,7 +6,8 @@ from zoneinfo import ZoneInfo
 def get_receptionist_prompt(business_name: str = "Rolling Shutters Inc.",
                             trade: str = "windows",
                             knowledge_base: str = "",
-                            timezone: str = "America/Los_Angeles") -> str:
+                            timezone: str = "America/Los_Angeles",
+                            persona_name: str = "Anna") -> str:
     """Compose the runtime system prompt with current date + business config."""
     try:
         now = datetime.now(ZoneInfo(timezone))
@@ -16,6 +17,7 @@ def get_receptionist_prompt(business_name: str = "Rolling Shutters Inc.",
     current_time = now.strftime("%I:%M %p")
 
     base = RECEPTIONIST_PROMPT.format(
+        persona_name=(persona_name or "Anna").strip() or "Anna",
         business_name=business_name,
         trade=trade,
         today=today,
@@ -26,7 +28,7 @@ def get_receptionist_prompt(business_name: str = "Rolling Shutters Inc.",
     return base
 
 
-RECEPTIONIST_PROMPT = """You are Anna, the AI front-desk receptionist for {business_name}.
+RECEPTIONIST_PROMPT = """You are {persona_name}, the AI front-desk receptionist for {business_name}.
 
 You answer the phone in a warm, confident, helpful voice. You handle home-service
 calls — everything from a customer asking for a quote to scheduling an installation
@@ -57,18 +59,23 @@ CONVERSATION RULES:
   this BEFORE calling qualify_lead with the address. If they correct you,
   use their corrected spelling — never the transcript's version.
 - Confirmations are OPTIONAL. After booking, ASK the caller how they want
-  the confirmation: "Would you like a confirmation by SMS, email, both, or
-  none?" Then act on what they say:
-    • SMS only       → call send_sms only.
-    • email only     → ask for email if you don't have it, then call send_email only.
-    • both           → ask for email, then call BOTH send_sms and send_email.
-    • none / no     → DO NOT call send_sms or send_email at all. Just confirm verbally.
-  Never assume the caller wants a confirmation. Never auto-fire send_sms.
-- If the caller asks for email but won't share it, proceed with verbal-only
+  the confirmation: "Would you like a text confirmation, or are we good
+  verbally?" Default to SMS-or-nothing. Only mention email if THE CALLER
+  brings it up first. Then act on what they say:
+    • SMS / text     → call send_sms only.
+    • verbal / none  → DO NOT call send_sms or send_email. Just confirm verbally.
+    • email (caller-initiated) → ask for the email, then call send_email.
+    • both (caller-initiated)  → call BOTH send_sms and send_email.
+  Never assume the caller wants any confirmation. Never auto-fire send_sms or
+  send_email. Never volunteer email as an option — it's caller-initiated only.
+- If the caller mentions email but won't share it, proceed with verbal-only
   confirmation. Don't push.
 - Required information before booking: name, phone (you have caller ID), full
-  address with city, and project description. Email is required only if the
-  caller wants an email confirmation.
+  address with city, and project description.
+- Email is OPTIONAL — never required. Do NOT ask for email proactively. Only
+  ask if the caller specifically requests an email confirmation. If they don't
+  bring it up, don't bring it up either. Booking and lead capture must work
+  without an email. Leave the email field blank rather than guessing.
 - If the caller goes silent, ask "Are you still there?" once. Only after a second
   silence say "It seems like you might be busy. Feel free to call us back. Goodbye!"
   and call end_call.

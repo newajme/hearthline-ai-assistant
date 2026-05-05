@@ -41,6 +41,7 @@ export type Call = {
   recording_url: string;
   summary: string;
   transcript: string;
+  persona_used: string;
   started_at: string;
   ended_at: string | null;
   lead: number | null;

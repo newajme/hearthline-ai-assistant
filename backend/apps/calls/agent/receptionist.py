@@ -55,11 +55,42 @@ def _openai_client(business=None):
         return None
 
 
-def _resolve_business():
-    for biz in Business.objects.all().order_by("id"):
-        if (biz.anthropic_api_key or "").strip():
+_BIZ_CACHE: dict[str, tuple[float, Business]] = {}
+_BIZ_CACHE_TTL = 60 * 30  # 30 min — covers the longest realistic call
+
+
+def _resolve_business(call_id: str | None = None):
+    """Pick the business that owns this call. Cached per call_id.
+
+    Without a call_id (test-call dashboard, manual invocation) we still query.
+    With one, the lookup is a single dict hit after the first turn.
+    """
+    import time
+    if call_id and call_id in _BIZ_CACHE:
+        ts, biz = _BIZ_CACHE[call_id]
+        if time.time() - ts < _BIZ_CACHE_TTL:
             return biz
-    return Business.objects.order_by("id").first()
+        _BIZ_CACHE.pop(call_id, None)
+
+    biz = None
+    for candidate in Business.objects.all().order_by("id"):
+        if (candidate.anthropic_api_key or "").strip():
+            biz = candidate
+            break
+    if biz is None:
+        biz = Business.objects.order_by("id").first()
+
+    if call_id and biz is not None:
+        if len(_BIZ_CACHE) > 1024:
+            _BIZ_CACHE.clear()
+        _BIZ_CACHE[call_id] = (time.time(), biz)
+    return biz
+
+
+def forget_call(call_id: str | None) -> None:
+    """Drop the cached business for a finished call. Call from the Vapi end-of-call hook."""
+    if call_id:
+        _BIZ_CACHE.pop(call_id, None)
 
 
 def execute_tool(name: str, tool_input: dict, *, caller_phone: str | None = None,
@@ -141,23 +172,48 @@ def _persist_turn(conversation_history: list, caller_phone: str | None,
         logger.warning("[TRANSCRIPT PERSIST] %s", exc)
 
 
+def _user_turn_count(history: list) -> int:
+    """Count caller turns in the running conversation (skips tool_result blocks)."""
+    return sum(
+        1 for m in history
+        if m.get("role") == "user"
+        and isinstance(m.get("content"), str)
+        and (m.get("content") or "").strip()
+    )
+
+
 def handle_conversation_turn(conversation_history: list, caller_phone: str | None = None,
                               call_id: str | None = None) -> dict[str, Any]:
     """Run the agentic loop for one Vapi turn. Returns {text, end_call}."""
     _log_transcript(conversation_history, caller_phone, call_id)
-    biz = _resolve_business()
+
+    if not (caller_phone or "").strip() and _user_turn_count(conversation_history) >= 2:
+        logger.warning(
+            "[NO CALLER PHONE] call_id=%s — Vapi did not send customer.number after 2 turns",
+            call_id,
+        )
+
+    biz = _resolve_business(call_id=call_id)
     biz_name = biz.name if biz else "Hearthline"
     trade = biz.trade if biz else "general"
     kb = biz.knowledge_base if biz else ""
     tz = biz.timezone if biz else "America/Los_Angeles"
+    persona = (getattr(biz, "voice_persona", "") or "Anna").strip() or "Anna"
 
     system_prompt = get_receptionist_prompt(
         business_name=biz_name, trade=trade, knowledge_base=kb, timezone=tz,
+        persona_name=persona,
     )
     if caller_phone:
         system_prompt += (
             f"\n\nCALLER INFO:\n- Caller's phone is {caller_phone}. Use it as the default "
             f"contact unless they ask you to use a different number."
+        )
+    else:
+        system_prompt += (
+            "\n\nCALLER INFO:\n- Caller ID is not available for this call. Ask the caller "
+            "for their phone number early, before calling qualify_lead or book_appointment, "
+            "and pass it as customer_phone."
         )
 
     provider = (getattr(biz, "llm_provider", "") or "anthropic").lower()
@@ -166,7 +222,7 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
         oai = _openai_client(biz)
         if not oai:
             return {
-                "text": "Anna here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",
+                "text": f"{persona} here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",
                 "end_call": False,
             }
         def dispatch(name: str, tool_input: dict) -> dict:
@@ -194,7 +250,7 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
     if not client:
         # Stub — useful for local dev without API keys
         return {
-            "text": "Anna here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",
+            "text": f"{persona} here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",
             "end_call": False,
         }
 

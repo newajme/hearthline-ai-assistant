@@ -6,7 +6,7 @@ import { apiFetch, apiJson, getCurrentUser } from "@/app/lib/api";
 import Sidebar from "./Sidebar";
 import { DashGlobalTopbar } from "./Topbar";
 
-type BusinessLite = { name: string };
+type BusinessLite = { name: string; voice_persona?: string };
 type BusinessPage = { results: BusinessLite[] };
 
 export const metadata: Metadata = {
@@ -43,11 +43,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
     user.email ||
     "Signed in";
   const sidebarBusiness = bizPage?.results?.[0]?.name ?? "";
+  const personaName = (bizPage?.results?.[0]?.voice_persona || "").trim() || "Anna";
   return (
     <div className="app-shell">
       <Sidebar
         counts={{ leads, calls, quotes, businesses, tickets }}
         user={{ name: sidebarName, business: sidebarBusiness }}
+        personaName={personaName}
       />
       <div className="app-main">
         <DashGlobalTopbar user={user} />

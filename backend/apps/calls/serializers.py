@@ -9,6 +9,6 @@ class CallSerializer(serializers.ModelSerializer):
         fields = [
             "id", "business", "lead", "provider", "provider_call_id",
             "from_number", "to_number", "status", "duration_seconds",
-            "recording_url", "transcript", "summary",
+            "recording_url", "transcript", "summary", "persona_used",
             "started_at", "ended_at",
         ]

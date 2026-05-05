@@ -25,6 +25,10 @@ class Call(models.Model):
     recording_url = models.URLField(blank=True)
     transcript = models.TextField(blank=True)
     summary = models.TextField(blank=True)
+    persona_used = models.CharField(
+        max_length=64, blank=True, default="",
+        help_text="Persona name active when this call was answered. Snapshot — survives later renames.",
+    )
     raw_payload = models.JSONField(default=dict, blank=True)
     started_at = models.DateTimeField(auto_now_add=True)
     ended_at = models.DateTimeField(null=True, blank=True)

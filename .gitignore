@@ -34,3 +34,4 @@ screenshots-ref/
 *.png.bak
 .env.vercel*
 .vercel
+hearthline.pem

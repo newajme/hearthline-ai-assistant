@@ -1,13 +1,16 @@
 import Link from "next/link";
 
+import { getPersonaName } from "@/app/lib/persona";
+
 import { fetchJson, fmtAge, fmtMoney, type Call, type Lead, type Page, type Quote } from "./lib";
 import { LeadActionPill, StatusPill } from "./parts";
 
 export default async function OverviewPage() {
-  const [leadsRes, callsRes, quotesRes] = await Promise.all([
+  const [leadsRes, callsRes, quotesRes, persona] = await Promise.all([
     fetchJson<Page<Lead>>("/leads/"),
     fetchJson<Page<Call>>("/calls/"),
     fetchJson<Page<Quote>>("/quotes/"),
+    getPersonaName(),
   ]);
   const leads = leadsRes?.results ?? [];
   const calls = callsRes?.results ?? [];
@@ -26,7 +29,7 @@ export default async function OverviewPage() {
         </div>
         <div className="app-pagebar-actions">
           <Link href="/dashboard/leads" className="btn btn-ghost">View leads →</Link>
-          <Link href="/dashboard/test-call" className="btn btn-primary">▶ Test Anna</Link>
+          <Link href="/dashboard/test-call" className="btn btn-primary">▶ Test {persona}</Link>
         </div>
       </div>
 

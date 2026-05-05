@@ -14,7 +14,8 @@ const STARTERS = [
   "I had a tech here yesterday but my drain is still backing up.",
 ];
 
-export default function TestCall() {
+export default function TestCall({ personaName = "Anna" }: { personaName?: string }) {
+  const personaInitial = (personaName.trim()[0] || "A").toUpperCase();
   const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState("");
   const [phone, setPhone] = useState("+1 (555) 555-0199");
@@ -63,10 +64,10 @@ export default function TestCall() {
     <>
       <div className="app-pagebar">
         <div>
-          <h1>Test Anna</h1>
+          <h1>Test {personaName}</h1>
           <p>
             <Link href="/dashboard" style={{ color: "var(--muted)" }}>← Dashboard</Link>
-            {" · "}Talk to Anna the way Vapi will. Each message hits <code>/api/calls/vapi/chat/completions/</code>.
+            {" · "}Talk to {personaName} the way Vapi will. Each message hits <code>/api/calls/vapi/chat/completions/</code>.
           </p>
         </div>
         <div className="app-pagebar-actions">
@@ -82,8 +83,8 @@ export default function TestCall() {
           <article className="dash-card testcall-panel">
             <div className="dash-card-head">
               <h2 style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span className="testcall-avatar">A</span>
-                Anna · live
+                <span className="testcall-avatar">{personaInitial}</span>
+                {personaName} · live
                 <span className="mock-livefeed">
                   <span className="mock-pulse" /> on call
                 </span>
@@ -99,13 +100,13 @@ export default function TestCall() {
               )}
               {messages.map((m, i) => (
                 <div key={i} className={`testcall-msg ${m.role}`}>
-                  <span className="testcall-msg-avatar">{m.role === "user" ? "U" : "A"}</span>
+                  <span className="testcall-msg-avatar">{m.role === "user" ? "U" : personaInitial}</span>
                   <div className="testcall-msg-bubble">{m.content}</div>
                 </div>
               ))}
               {thinking && (
                 <div className="testcall-msg assistant">
-                  <span className="testcall-msg-avatar">A</span>
+                  <span className="testcall-msg-avatar">{personaInitial}</span>
                   <div className="testcall-msg-bubble typing">
                     <span className="typing-dots"><i /><i /><i /></span>
                   </div>
@@ -145,7 +146,7 @@ export default function TestCall() {
                 <h2>Caller settings</h2>
               </div>
               <label className="testcall-field">
-                <span>Caller phone (sent to Anna as customer.number)</span>
+                <span>Caller phone (sent to {personaName} as customer.number)</span>
                 <input
                   className="search-input"
                   value={phone}
@@ -153,7 +154,7 @@ export default function TestCall() {
                 />
               </label>
               <p style={{ color: "var(--muted)", fontSize: 12.5, marginTop: 12, lineHeight: 1.55 }}>
-                Anna uses this to default-fill the contact phone when she calls{" "}
+                {personaName} uses this to default-fill the contact phone when she calls{" "}
                 <code>qualify_lead</code> or <code>book_appointment</code>. Change it to test how
                 she handles different callers.
               </p>
@@ -191,12 +192,12 @@ export default function TestCall() {
                 <li>
                   <span className="dash-list-id">end_call</span>
                   <div className="dash-list-body">
-                    <div className="dash-list-meta">Signals Vapi to hang up after Anna's farewell.</div>
+                    <div className="dash-list-meta">Signals Vapi to hang up after {personaName}&apos;s farewell.</div>
                   </div>
                 </li>
               </ul>
               <p style={{ marginTop: 14, fontSize: 12.5, color: "var(--muted)" }}>
-                After Anna calls a tool, refresh <Link href="/dashboard/leads">/dashboard/leads</Link> to see the new record.
+                After {personaName} calls a tool, refresh <Link href="/dashboard/leads">/dashboard/leads</Link> to see the new record.
               </p>
             </article>
           </aside>

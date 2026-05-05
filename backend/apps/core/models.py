@@ -41,6 +41,10 @@ class Business(models.Model):
     openai_api_key = EncryptedCharField(blank=True, default="")
     vapi_api_key = EncryptedCharField(blank=True, default="")
     vapi_phone_number_id = EncryptedCharField(blank=True, default="")
+    vapi_assistant_id = models.CharField(
+        max_length=128, blank=True, default="",
+        help_text="Vapi assistant ID — when set, name + voice persona changes auto-sync to Vapi.",
+    )
     twilio_account_sid = EncryptedCharField(blank=True, default="")
     twilio_auth_token = EncryptedCharField(blank=True, default="")
     twilio_from_number = models.CharField(max_length=32, blank=True, default="")  # not a secret

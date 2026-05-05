@@ -1,11 +1,16 @@
 import Link from "next/link";
 
+import { getPersonaName } from "@/app/lib/persona";
+
 import { fetchJson, fmtAge, type Call, type Page } from "../lib";
 import { StatusPill } from "../parts";
 
 export default async function CallsPage({ searchParams }: { searchParams: Promise<{ provider?: string; q?: string }> }) {
   const params = await searchParams;
-  const data = await fetchJson<Page<Call>>("/calls/");
+  const [data, persona] = await Promise.all([
+    fetchJson<Page<Call>>("/calls/"),
+    getPersonaName(),
+  ]);
   let calls = data?.results ?? [];
 
   if (params.provider) calls = calls.filter((c) => c.provider === params.provider);
@@ -27,10 +32,10 @@ export default async function CallsPage({ searchParams }: { searchParams: Promis
       <div className="app-pagebar">
         <div>
           <h1>Calls</h1>
-          <p>Voice and SMS interactions captured by Anna.</p>
+          <p>Voice and SMS interactions captured by {persona}.</p>
         </div>
         <div className="app-pagebar-actions">
-          <Link href="/dashboard/test-call" className="btn btn-primary">▶ Test Anna</Link>
+          <Link href="/dashboard/test-call" className="btn btn-primary">▶ Test {persona}</Link>
         </div>
       </div>
 
@@ -93,7 +98,10 @@ export default async function CallsPage({ searchParams }: { searchParams: Promis
                     <div className="app-row-sub">→ {c.to_number || "—"}</div>
                   </div>
                 </div>
-                <div><span className="tag" style={{ marginLeft: 0 }}>{c.provider}</span></div>
+                <div>
+                  <span className="tag" style={{ marginLeft: 0 }}>{c.provider}</span>
+                  <div className="app-row-sub" style={{ marginTop: 4 }}>{c.persona_used || persona}</div>
+                </div>
                 <div>
                   <div className="app-row-title app-row-title-soft">
                     {c.summary || (c.transcript ? c.transcript.slice(0, 160) + "…" : "(no transcript)")}

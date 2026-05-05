@@ -122,9 +122,10 @@ TOOLS = [
     {
         "name": "send_email",
         "description": (
-            "Send an email to the caller. ONLY call this when the caller has explicitly "
-            "asked for an email confirmation AND has given you their email address. Do NOT "
-            "auto-send. If caller said 'no email' or wants SMS only, skip this tool entirely."
+            "Send an email to the caller. Email is OPTIONAL and CALLER-INITIATED. "
+            "ONLY call this when the caller themselves explicitly asked for an email "
+            "confirmation AND volunteered their email address. Never offer email "
+            "proactively. Never call this without an email the caller actually said."
         ),
         "input_schema": {
             "type": "object",

@@ -7,7 +7,7 @@ import { getAdminUrl } from "../lib/adminUrl";
 
 type Counts = { leads: number; calls: number; quotes: number; businesses: number; tickets: number };
 
-const NAV_OPS: { href: string; label: string; key: keyof Counts | null; icon: React.ReactNode }[] = [
+const buildNavOps = (personaName: string): { href: string; label: string; key: keyof Counts | null; icon: React.ReactNode }[] => [
   {
     href: "/dashboard",
     label: "Overview",
@@ -34,7 +34,7 @@ const NAV_OPS: { href: string; label: string; key: keyof Counts | null; icon: Re
   },
   {
     href: "/dashboard/test-call",
-    label: "Test Anna",
+    label: `Test ${personaName}`,
     key: null,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>
@@ -86,12 +86,21 @@ function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export default function Sidebar({ counts, user }: { counts: Counts; user?: SidebarUser }) {
+export default function Sidebar({
+  counts,
+  user,
+  personaName = "Anna",
+}: {
+  counts: Counts;
+  user?: SidebarUser;
+  personaName?: string;
+}) {
   const pathname = usePathname();
   const isActive = (href: string) =>
     href === "/dashboard" ? pathname === href : pathname.startsWith(href);
   const displayName = user?.name?.trim() || "Signed in";
   const displayBusiness = user?.business?.trim() || "No business yet";
+  const navOps = buildNavOps(personaName);
 
   return (
     <aside className="app-sidebar">
@@ -101,7 +110,7 @@ export default function Sidebar({ counts, user }: { counts: Counts; user?: Sideb
       </Link>
 
       <p className="sidebar-section">Operations</p>
-      {NAV_OPS.map((item) => (
+      {navOps.map((item) => (
         <Link
           key={item.href}
           href={item.href}

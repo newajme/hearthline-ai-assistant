@@ -9,6 +9,7 @@ import time
 import uuid
 
 from django.conf import settings
+from django.db import transaction
 from django.http import JsonResponse, StreamingHttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -270,6 +271,7 @@ class VapiWebhook(APIView):
             "hang": "completed",
         }
 
+        persona_used = (business.voice_persona or "Anna").strip() or "Anna"
         defaults = {
             "business": business,
             "from_number": from_number,
@@ -279,18 +281,35 @@ class VapiWebhook(APIView):
             "recording_url": recording or "",
             "transcript": transcript,
             "summary": summary,
+            "persona_used": persona_used,
             "raw_payload": payload,
         }
-        existing = list(Call.objects.filter(provider="vapi", provider_call_id=provider_call_id).order_by("id"))
-        if not existing:
-            call = Call.objects.create(provider="vapi", provider_call_id=provider_call_id, **defaults)
-        else:
-            call = existing[0]
-            for k, v in defaults.items():
-                setattr(call, k, v)
-            call.save()
-            if len(existing) > 1:
-                Call.objects.filter(pk__in=[c.pk for c in existing[1:]]).delete()
+        with transaction.atomic():
+            existing = list(
+                Call.objects
+                    .select_for_update()
+                    .filter(provider="vapi", provider_call_id=provider_call_id)
+                    .order_by("id")
+            )
+            if not existing:
+                call = Call.objects.create(provider="vapi", provider_call_id=provider_call_id, **defaults)
+            else:
+                call = existing[0]
+                for k, v in defaults.items():
+                    if k == "persona_used" and call.persona_used:
+                        continue
+                    setattr(call, k, v)
+                call.save()
+                if len(existing) > 1:
+                    Call.objects.filter(pk__in=[c.pk for c in existing[1:]]).delete()
+
+        if msg_type in ("end-of-call-report", "hang"):
+            try:
+                from apps.calls.agent.receptionist import forget_call
+                forget_call(provider_call_id)
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("[VAPI] forget_call failed for %s: %s", provider_call_id, exc)
+
         logger.info("[VAPI] %s id=%s call=%s", msg_type, provider_call_id, call.id)
         return Response({"ok": True, "call_id": call.id})
 
