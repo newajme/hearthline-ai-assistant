@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import AnnaDemoLauncher from "./AnnaDemoLauncher";
-import ChatWidget from "./ChatWidget";
+import ChatWidgetLazy from "./ChatWidgetLazy";
+import HearAnnaButton from "./HearAnnaButton";
+import InstallSnippet from "./InstallSnippet";
 import HeroBackdrop from "./HeroBackdrop";
 import LiveTicker from "./LiveTicker";
 import { MarketingTopbar } from "./MarketingShell";
@@ -115,14 +117,15 @@ export default async function HomePage() {
               {t("hero.secondary")} <span aria-hidden>→</span>
             </a>
           </div>
+
+          <HearAnnaButton />
+
           <p className="hero-trades">
             <span className="hero-trades-label">{t("hero.tradesPrefix")}</span>
             <span className="hero-trades-list">{t("hero.tradesList")}</span>
           </p>
 
           <LiveTicker />
-
-          <MockDashboard />
 
           <a href={REPO_URL} target="_blank" rel="noreferrer" className="gh-strip">
             <span>{t("hero.oss")}</span>
@@ -131,6 +134,16 @@ export default async function HomePage() {
             <span className="sep" aria-hidden />
             <span>{t("hero.selfHost")}</span>
           </a>
+
+          <p className="license-ribbon">
+            <span><strong>AGPL-3.0</strong> · self-host free</span>
+            <span className="license-ribbon-sep" aria-hidden />
+            <span>Commercial license available — <a href={DEMO_URL} target="_blank" rel="noreferrer">talk to us</a></span>
+          </p>
+        </section>
+
+        <section className="shell mock-dashboard-section">
+          <MockDashboard />
         </section>
 
         <div className="ember-line" aria-hidden />
@@ -157,12 +170,18 @@ export default async function HomePage() {
             <p className="section-sub">{t("industries.sub")}</p>
           </div>
           <div className="industries-grid industries-grid-wide">
-            {INDUSTRIES.map((it) => (
+            {INDUSTRIES.slice(0, 3).map((it) => (
               <div className={`industry-card tint-${it.tint}`} key={it.name}>
                 <span className="industry-sketch" aria-hidden>{it.sketch}</span>
                 <h3>{it.name}</h3>
                 <p>{it.body}</p>
               </div>
+            ))}
+          </div>
+          <div className="industries-tagrow">
+            <span className="industries-tagrow-label">Same engine for</span>
+            {INDUSTRIES.slice(3).map((it) => (
+              <span key={it.name} className="industries-tag">{it.name}</span>
             ))}
           </div>
           <p className="industries-note">
@@ -211,6 +230,7 @@ export default async function HomePage() {
             <a href={REPO_URL} target="_blank" rel="noreferrer" className="final-cta-self-host">
               {t("finalCta.selfHost")} <span aria-hidden>→</span>
             </a>
+            <InstallSnippet />
           </div>
         </section>
 
@@ -284,7 +304,7 @@ export default async function HomePage() {
         </footer>
       </main>
 
-      <ChatWidget />
+      <ChatWidgetLazy />
     </div>
   );
 }

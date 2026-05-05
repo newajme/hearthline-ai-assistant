@@ -37,7 +37,7 @@ export default function FeatureExplorer() {
           >
             <div className="fexp-row-body">
               <div className="fexp-row-name">{t(f.nameKey)}</div>
-              {active === f.key && <div className="fexp-row-blurb">{t(f.blurbKey)}</div>}
+              <div className="fexp-row-blurb">{t(f.blurbKey)}</div>
             </div>
             <span className="fexp-row-num">{f.num}</span>
           </button>

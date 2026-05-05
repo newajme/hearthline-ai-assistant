@@ -191,9 +191,9 @@ export default function ChatWidget() {
   async function submitIntake(name: string, email: string) {
     const trimmedName = name.trim();
     const trimmedEmail = email.trim();
-    if (!trimmedName) { setIntakeError("Please enter your name."); return; }
+    if (!trimmedName) { setIntakeError(t("chat.intake.errName")); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      setIntakeError("Please enter a valid email."); return;
+      setIntakeError(t("chat.intake.errEmail")); return;
     }
     setStoredIdentity(trimmedName, trimmedEmail);
     setIdentity({ name: trimmedName, email: trimmedEmail });
@@ -257,7 +257,7 @@ export default function ChatWidget() {
       console.error(e);
       pushMessage({
         role: "system",
-        text: "We couldn't reach a human agent right now. Please try again shortly.",
+        text: t("chat.live.unreachable"),
         ts: Date.now(),
       });
       setLiveStatus("error");
@@ -282,7 +282,7 @@ export default function ChatWidget() {
           ...prev,
           {
             role: "system",
-            text: "Welcome back — picking up where you left off.",
+            text: t("chat.live.welcomeBack"),
             ts: Date.now(),
           },
           ...fresh,
@@ -331,7 +331,7 @@ export default function ChatWidget() {
     setClosed(false);
     pushMessage({
       role: "system",
-      text: "You're back with Anna. Want to ask something else?",
+      text: t("chat.live.backToAnna"),
       ts: Date.now(),
     });
   }
@@ -387,15 +387,15 @@ export default function ChatWidget() {
               <span className="chat-avatar">{mode === "live" ? "H" : "A"}</span>
               <div>
                 <div className="chat-name">
-                  {mode === "live" ? "Hearthline Support" : "Anna"} <span className="chat-online" />
+                  {mode === "live" ? t("chat.live.support") : "Anna"} <span className="chat-online" />
                 </div>
                 <div className="chat-role">
                   {mode === "live"
                     ? liveStatus === "connected"
-                      ? "Connected to a human · live"
+                      ? t("chat.live.connected")
                       : liveStatus === "connecting"
-                      ? "Connecting…"
-                      : "Live chat"
+                      ? t("chat.live.connecting")
+                      : t("chat.live.title")
                     : t("chat.role")}
                 </div>
               </div>
@@ -442,7 +442,7 @@ export default function ChatWidget() {
                       onClick={requestLiveChat}
                       style={{ background: "#0f172a", color: "white", borderColor: "#0f172a" }}
                     >
-                      Talk to a human
+                      {t("chat.quick.human")}
                     </button>
                   </>
                 ) : closed ? (
@@ -450,16 +450,16 @@ export default function ChatWidget() {
                     onClick={endLiveChat}
                     style={{ background: "#0f172a", color: "white", borderColor: "#0f172a" }}
                   >
-                    Start a new chat
+                    {t("chat.live.startNew")}
                   </button>
                 ) : (
-                  <button onClick={endLiveChat}>End live chat</button>
+                  <button onClick={endLiveChat}>{t("chat.live.end")}</button>
                 )}
               </div>
 
               {closed && mode === "live" ? (
                 <div className="chat-closed-banner">
-                  This conversation is closed. Start a new chat to send another message.
+                  {t("chat.live.closedBanner")}
                 </div>
               ) : (
                 <form
@@ -470,7 +470,7 @@ export default function ChatWidget() {
                     type="text"
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
-                    placeholder={mode === "live" ? "Message a human…" : t("chat.placeholder")}
+                    placeholder={mode === "live" ? t("chat.live.placeholder") : t("chat.placeholder")}
                     autoFocus
                   />
                   <button type="submit" aria-label={t("chat.send")}>
@@ -499,6 +499,7 @@ function IntakeForm({
   onCancel: () => void;
   onSubmit: (name: string, email: string) => void;
 }) {
+  const { t } = useI18n();
   const [name, setName] = useState(initialName);
   const [email, setEmail] = useState(initialEmail);
   const [submitting, setSubmitting] = useState(false);
@@ -516,38 +517,36 @@ function IntakeForm({
         }
       }}
     >
-      <div className="chat-intake-title">Before we connect you</div>
-      <div className="chat-intake-sub">
-        So our team knows who they're talking to.
-      </div>
+      <div className="chat-intake-title">{t("chat.intake.title")}</div>
+      <div className="chat-intake-sub">{t("chat.intake.sub")}</div>
       <label className="chat-intake-field">
-        <span>Name</span>
+        <span>{t("chat.intake.name")}</span>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Jane Doe"
+          placeholder={t("chat.intake.namePh")}
           autoFocus
           required
         />
       </label>
       <label className="chat-intake-field">
-        <span>Email</span>
+        <span>{t("chat.intake.email")}</span>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="jane@example.com"
+          placeholder={t("chat.intake.emailPh")}
           required
         />
       </label>
       {error && <div className="chat-intake-error">{error}</div>}
       <div className="chat-intake-actions">
         <button type="button" className="chat-intake-cancel" onClick={onCancel}>
-          Cancel
+          {t("chat.intake.cancel")}
         </button>
         <button type="submit" className="chat-intake-submit" disabled={submitting}>
-          {submitting ? "Connecting…" : "Start chat"}
+          {submitting ? t("chat.intake.submitting") : t("chat.intake.submit")}
         </button>
       </div>
     </form>

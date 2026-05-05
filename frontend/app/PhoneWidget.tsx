@@ -3,17 +3,19 @@
 import { useEffect, useState } from "react";
 
 import { Anna } from "./Anna";
+import { useI18n } from "./lib/i18n";
 
-const TRANSCRIPT: Array<{ role: "in" | "out"; text: string; afterMs: number }> = [
-  { role: "in", text: "Hello, I'd like to schedule a repair for my garage door.", afterMs: 700 },
-  { role: "out", text: "I can help with that. Is it a motorised or manual door?", afterMs: 2400 },
-  { role: "in", text: "Motorised — Liftmaster, about 5 years old.", afterMs: 4400 },
-  { role: "out", text: "Got it. Saturday at 9 AM is open. Shall I book it in?", afterMs: 6300 },
+const TRANSCRIPT: Array<{ role: "in" | "out"; key: string; afterMs: number }> = [
+  { role: "in",  key: "phoneWidget.t1", afterMs: 700 },
+  { role: "out", key: "phoneWidget.t2", afterMs: 2400 },
+  { role: "in",  key: "phoneWidget.t3", afterMs: 4400 },
+  { role: "out", key: "phoneWidget.t4", afterMs: 6300 },
 ];
 
 export default function PhoneWidget() {
-  const [seconds, setSeconds] = useState(8 * 60 + 12); // start at 08:12 like the reference
-  const [visible, setVisible] = useState<Array<{ role: "in" | "out"; text: string }>>([]);
+  const { t } = useI18n();
+  const [seconds, setSeconds] = useState(8 * 60 + 12);
+  const [visible, setVisible] = useState<Array<{ role: "in" | "out"; key: string }>>([]);
   const [typingFor, setTypingFor] = useState<"in" | "out" | null>("in");
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function PhoneWidget() {
     TRANSCRIPT.forEach((entry, i) => {
       timers.push(
         setTimeout(() => {
-          setVisible((cur) => [...cur, { role: entry.role, text: entry.text }]);
+          setVisible((cur) => [...cur, { role: entry.role, key: entry.key }]);
           const next = TRANSCRIPT[i + 1];
           setTypingFor(next ? next.role : null);
         }, entry.afterMs),
@@ -50,24 +52,24 @@ export default function PhoneWidget() {
             <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
           </svg>
         </div>
-        <div className="phone-title">Incoming Call</div>
-        <div className="phone-num">+1 (000) 123-4567</div>
+        <div className="phone-title">{t("phoneWidget.incoming")}</div>
+        <div className="phone-num">+1 (415) 555-0142</div>
         <div className="phone-anna">
           <Anna />
-          <span>Anna · Hearthline front desk</span>
+          <span>{t("phoneWidget.frontDesk")}</span>
         </div>
         <div className="phone-call-actions">
           <div className="phone-action">
-            <button className="phone-action-btn decline" aria-label="Decline call">
+            <button className="phone-action-btn decline" aria-label={t("phoneWidget.decline")}>
               <PhoneEnd />
             </button>
-            <span>Decline</span>
+            <span>{t("phoneWidget.decline")}</span>
           </div>
           <div className="phone-action">
-            <button className="phone-action-btn accept" aria-label="Accept call">
+            <button className="phone-action-btn accept" aria-label={t("phoneWidget.accept")}>
               <PhoneIcon />
             </button>
-            <span>Accept</span>
+            <span>{t("phoneWidget.accept")}</span>
           </div>
         </div>
       </div>
@@ -77,7 +79,7 @@ export default function PhoneWidget() {
         <div className="phone-feed-status">
           <span className="phone-feed-pulse">
             <span className="dot-pulse" />
-            Anna is answering…
+            {t("phoneWidget.answering")}
           </span>
           <span className="phone-feed-timer">{mm}:{ss}</span>
         </div>
@@ -90,7 +92,7 @@ export default function PhoneWidget() {
                   <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-7 8-7s8 3 8 7" /></svg>
                 </span>
               )}
-              <span className="phone-feed-text">{b.text}</span>
+              <span className="phone-feed-text">{t(b.key)}</span>
               {b.role === "out" && <span className="phone-feed-avatar out">AI</span>}
             </div>
           ))}

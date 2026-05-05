@@ -41,15 +41,15 @@ const NAMES: Array<[string, string]> = [
   ["Westwood Electrical", "+1 (000) 456-7890"],
   ["Elm Street Landscaping", "demo-008@example.test"],
 ];
-const MESSAGES: Array<{ msg: string; action: Action }> = [
-  { msg: "Confirmed — proceed with the HVAC install for Tuesday.", action: { kind: "deal-won", amount: 12300 } },
-  { msg: "Need a quote on roof replacement, ~2,000 sq ft.", action: { kind: "quote-generated", amount: 8500 } },
-  { msg: "Can someone come this Saturday morning?", action: { kind: "appointment-booked" } },
-  { msg: "Do solar panels qualify for the new state rebate?", action: { kind: "subsidy-checked" } },
-  { msg: "Looking at the smart-thermostat package — what's included?", action: { kind: "quote-generated", amount: 1200 } },
-  { msg: "When will my windows be delivered? Order #5521.", action: { kind: "qualifying" } },
-  { msg: "Following up on the quote — happy to move forward.", action: { kind: "deal-won", amount: 9450 } },
-  { msg: "Drain still backing up after yesterday's visit.", action: { kind: "appointment-booked" } },
+const MESSAGES: Array<{ key: string; action: Action }> = [
+  { key: "mock.msg1", action: { kind: "deal-won", amount: 12300 } },
+  { key: "mock.msg2", action: { kind: "quote-generated", amount: 8500 } },
+  { key: "mock.msg3", action: { kind: "appointment-booked" } },
+  { key: "mock.msg4", action: { kind: "subsidy-checked" } },
+  { key: "mock.msg5", action: { kind: "quote-generated", amount: 1200 } },
+  { key: "mock.msg6", action: { kind: "qualifying" } },
+  { key: "mock.msg7", action: { kind: "deal-won", amount: 9450 } },
+  { key: "mock.msg8", action: { kind: "appointment-booked" } },
 ];
 
 function pickRowAt(id: number, idx: number, t: (k: string) => string): Row {
@@ -62,7 +62,7 @@ function pickRowAt(id: number, idx: number, t: (k: string) => string): Row {
     contactSub,
     assistant: `Anna · ${t(channelKey)}`,
     initial: "A",
-    message: m.msg,
+    message: t(m.key),
     action: m.action,
     ageSec: 0,
   };
@@ -78,7 +78,7 @@ function pickRandomRow(id: number, t: (k: string) => string): Row {
     contactSub,
     assistant: `Anna · ${t(channelKey)}`,
     initial: "A",
-    message: m.msg,
+    message: t(m.key),
     action: m.action,
     ageSec: 0,
   };
@@ -170,7 +170,7 @@ export default function MockDashboard() {
             <div className="mock-crumbs">
               <strong>{t("mock.crumb")}</strong>
               <span className="mock-divider">/</span>
-              <span>Rolling Shutters Inc.</span>
+              <span>{t("mock.business")}</span>
             </div>
             <div className="mock-search">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
