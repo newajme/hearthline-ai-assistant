@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
-import { fmtMoney as fmtMoneyShared, type Business, type Lead, type Quote } from "../../lib";
+import { fmtMoney as fmtMoneyShared, type Business, type Lead, type Quote } from "../../format";
 
 type LineItemDraft = {
   id?: number;
