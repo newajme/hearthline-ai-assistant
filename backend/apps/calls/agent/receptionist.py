@@ -322,6 +322,56 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
 
     provider = (getattr(biz, "llm_provider", "") or "anthropic").lower()
 
+    if provider == "groq":
+        groq_key = (biz.resolved_groq_key if biz else "") or settings.GROQ_API_KEY
+        if not groq_key:
+            return {
+                "text": f"{persona} here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",
+                "end_call": False,
+            }
+        try:
+            import openai as _openai
+            groq_client = _openai.OpenAI(
+                api_key=groq_key,
+                base_url="https://api.groq.com/openai/v1",
+            )
+            # Patch the model name for the Groq loop
+            import apps.calls.agent.openai_loop as _ol
+            _orig_model = _ol.OPENAI_MODEL
+            _ol.OPENAI_MODEL = "llama-3.3-70b-versatile"
+        except ImportError:
+            return {
+                "text": f"{persona} here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",
+                "end_call": False,
+            }
+
+        def _groq_dispatch(name: str, tool_input: dict) -> dict:
+            return execute_tool(name, tool_input, caller_phone=caller_phone, call_id=call_id, business=biz)
+
+        try:
+            result = run_openai_loop(
+                groq_client,
+                system_prompt=system_prompt,
+                tools=TOOLS,
+                conversation_history=conversation_history,
+                execute_tool=_groq_dispatch,
+            )
+        finally:
+            _ol.OPENAI_MODEL = _orig_model
+
+        if result.get("end_call"):
+            if _end_call_already_deferred(call_id):
+                result["end_call"] = True
+            elif len(result.get("text") or "") > 12:
+                _mark_end_call_deferred(call_id)
+                result["end_call"] = False
+        logger.info("[CALL %s · %s] ANNA (groq): %s%s",
+                    call_id or "?", caller_phone or "?",
+                    (result.get("text") or "")[:300],
+                    " [HANGUP]" if result.get("end_call") else "")
+        _persist_turn(conversation_history, caller_phone, call_id, result.get("text") or "")
+        return result
+
     if provider == "gemini":
         gemini_key = (biz.resolved_gemini_key if biz else "") or settings.GEMINI_API_KEY
         if not gemini_key:
