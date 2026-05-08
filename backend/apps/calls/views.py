@@ -184,7 +184,8 @@ def chat_completions(request):
         text = result["text"]
         end_call = result["end_call"]
     except Exception as exc:  # noqa: BLE001 — Vapi must always get a 200 + spoken text, otherwise the live call drops mid-sentence
-        logger.error("[CUSTOM LLM ERROR] %s", exc)
+        import traceback
+        logger.error("[CUSTOM LLM ERROR] %s\n%s", exc, traceback.format_exc())
         text = "I'm sorry, I'm having a technical issue. Please call back in a moment."
         end_call = False
 
