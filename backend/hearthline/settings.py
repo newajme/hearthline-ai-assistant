@@ -201,6 +201,7 @@ LOGGING = {
 # AI
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
 # Voice
 VAPI_API_KEY = os.environ.get("VAPI_API_KEY", "")

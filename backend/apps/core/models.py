@@ -12,6 +12,7 @@ class Business(models.Model):
     LLM_PROVIDER_CHOICES = [
         ("anthropic", "Anthropic Claude"),
         ("openai", "OpenAI GPT"),
+        ("gemini", "Google Gemini"),
     ]
 
     # ISO-4217 codes for every currency Anna may need to speak. The dashboard
@@ -110,6 +111,7 @@ class Business(models.Model):
     # Encrypted at rest via Fernet (apps.core.crypto.EncryptedCharField).
     anthropic_api_key = EncryptedCharField(blank=True, default="")
     openai_api_key = EncryptedCharField(blank=True, default="")
+    gemini_api_key = EncryptedCharField(blank=True, default="")
     vapi_api_key = EncryptedCharField(blank=True, default="")
     vapi_phone_number_id = EncryptedCharField(blank=True, default="")
     vapi_assistant_id = models.CharField(
@@ -147,6 +149,10 @@ class Business(models.Model):
     @property
     def resolved_openai_key(self) -> str:
         return self._resolved("openai_api_key", "OPENAI_API_KEY")
+
+    @property
+    def resolved_gemini_key(self) -> str:
+        return self._resolved("gemini_api_key", "GEMINI_API_KEY")
 
     @property
     def resolved_vapi_key(self) -> str:

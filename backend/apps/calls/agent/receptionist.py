@@ -14,6 +14,7 @@ from apps.calls.services.scheduling import check_availability
 from apps.calls.services.sms import send_sms
 from apps.core.models import Business
 
+from .gemini_loop import run_gemini_loop
 from .openai_loop import run_openai_loop
 from .prompts import get_receptionist_prompt
 from .tools import TOOLS
@@ -320,6 +321,37 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
         )
 
     provider = (getattr(biz, "llm_provider", "") or "anthropic").lower()
+
+    if provider == "gemini":
+        gemini_key = (biz.resolved_gemini_key if biz else "") or settings.GEMINI_API_KEY
+        if not gemini_key:
+            return {
+                "text": f"{persona} here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",
+                "end_call": False,
+            }
+
+        def _gemini_dispatch(name: str, tool_input: dict) -> dict:
+            return execute_tool(name, tool_input, caller_phone=caller_phone, call_id=call_id, business=biz)
+
+        result = run_gemini_loop(
+            gemini_key,
+            system_prompt=system_prompt,
+            tools=TOOLS,
+            conversation_history=conversation_history,
+            execute_tool=_gemini_dispatch,
+        )
+        if result.get("end_call"):
+            if _end_call_already_deferred(call_id):
+                result["end_call"] = True
+            elif len(result.get("text") or "") > 12:
+                _mark_end_call_deferred(call_id)
+                result["end_call"] = False
+        logger.info("[CALL %s · %s] ANNA (gemini): %s%s",
+                    call_id or "?", caller_phone or "?",
+                    (result.get("text") or "")[:300],
+                    " [HANGUP]" if result.get("end_call") else "")
+        _persist_turn(conversation_history, caller_phone, call_id, result.get("text") or "")
+        return result
 
     if provider == "openai":
         oai = _openai_client(biz)
