@@ -7,8 +7,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-not-for-production")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
 _default_allowed_hosts = "localhost,127.0.0.1,backend"
-if DEBUG:
-    _default_allowed_hosts += ",.ngrok-free.app,.ngrok.app,.ngrok.io,.trycloudflare.com"
+if DEBUG: # cite: 1
+    _default_allowed_hosts += ",.ngrok-free.app,.ngrok.app,.ngrok.io,.trycloudflare.com,.cloudshell.dev"
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", _default_allowed_hosts).split(",")
 
 INSTALLED_APPS = [
@@ -35,11 +35,9 @@ INSTALLED_APPS = [
 # re-fires tools across worker boundaries. FileBasedCache is shared by all
 # workers on the same host without needing Redis. Move to Redis when scaling
 # horizontally.
-import os as _os  # noqa: E402
-
-_CACHE_DIR = _os.environ.get("DJANGO_CACHE_DIR", "/var/data/django-cache")
+_CACHE_DIR = os.environ.get("DJANGO_CACHE_DIR", "/var/data/django-cache")
 try:
-    _os.makedirs(_CACHE_DIR, exist_ok=True)
+    os.makedirs(_CACHE_DIR, exist_ok=True)
     _CACHES_BACKEND = {
         "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
         "LOCATION": _CACHE_DIR,
@@ -96,7 +94,7 @@ DATABASES = {
         "NAME": os.environ.get("POSTGRES_DB", "hearthline"),
         "USER": os.environ.get("POSTGRES_USER", "hearthline"),
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "hearthline_dev"),
-        "HOST": os.environ.get("POSTGRES_HOST", "db"),
+        "HOST": os.environ.get("POSTGRES_HOST", "127.0.0.1"),
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }
 }
@@ -171,12 +169,12 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
 CSRF_TRUSTED_ORIGINS = [
-    o.replace("http://", "https://") if o.startswith("http://") else o
-    for o in CORS_ALLOWED_ORIGINS
+    o for o in CORS_ALLOWED_ORIGINS
 ] + [
     "https://*.ngrok-free.app",
     "https://*.ngrok.app",
     "https://*.ngrok.io",
+    "https://*.cloudshell.dev",
 ]
 
 # Logging — surface app-level logs (call transcripts, tool calls) to stdout

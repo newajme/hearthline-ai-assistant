@@ -320,7 +320,8 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
             "now — don't just say you will)."
         )
 
-    provider = (getattr(biz, "llm_provider", "") or "anthropic").lower()
+    # CEO Note: We default to 'gemini' here to take advantage of Google's free tier.
+    provider = (getattr(biz, "llm_provider", "") or "gemini").lower()
 
     if provider == "groq":
         groq_key = (biz.resolved_groq_key if biz else "") or settings.GROQ_API_KEY
@@ -367,7 +368,9 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
         return result
 
     if provider == "gemini":
-        gemini_key = (biz.resolved_gemini_key if biz else "") or settings.GEMINI_API_KEY
+        # CEO Note: This looks for your Gemini key. 
+        # If you pasted your Gemini key into the 'ANTHROPIC_API_KEY' slot in Vercel, this will still work!
+        gemini_key = (biz.resolved_gemini_key if biz else "") or getattr(settings, "GEMINI_API_KEY", None) or settings.ANTHROPIC_API_KEY
         if not gemini_key:
             return {
                 "text": f"{persona} here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",

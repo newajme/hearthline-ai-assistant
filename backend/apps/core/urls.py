@@ -1,8 +1,10 @@
 from django.urls import path
+from django.views.generic.base import RedirectView
 
 from . import auth_views, views
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/admin/', permanent=True)),
     path("businesses/", views.BusinessListCreate.as_view(), name="business-list"),
     path("businesses/<int:pk>/", views.BusinessDetail.as_view(), name="business-detail"),
     path("businesses/<int:pk>/knowledge/upload/", views.KnowledgeUploadView.as_view(), name="business-knowledge-upload"),

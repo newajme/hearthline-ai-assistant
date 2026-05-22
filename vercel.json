@@ -7,7 +7,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://api.hearthline.codewithmuh.com/api/:path*"
+      "destination": "https://amounts-yard-lawsuit-bubble.trycloudflare.com/api/:path*"
     }
   ]
 }

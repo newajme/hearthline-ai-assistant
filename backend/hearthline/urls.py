@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.http import JsonResponse
 from django.urls import include, path
+from django.views.generic.base import RedirectView
 
 from apps.quotes.views import PublicQuotePdfView
 
@@ -10,6 +11,7 @@ def health(_request):
 
 
 urlpatterns = [
+    path("", RedirectView.as_view(url="/admin/", permanent=True)),
     path("admin/", admin.site.urls),
     path("api/health/", health),
     path("api/", include("apps.core.urls")),
