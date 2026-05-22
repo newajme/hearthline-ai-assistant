@@ -14,7 +14,7 @@ books appointments, and sends SMS confirmations. Everything lands in a Next.js
 dashboard backed by Django + Postgres.
 
 - License: **AGPL-3.0** (commercial license available — see `COMMERCIAL.md`)
-- Repo: `github.com/codewithmuh/hearthline`
+- Repo: `github.com/newajme/hearthline-ai-assistant`
 - Creator: Muhammad Rashid (`@codewithmuh`) — content creator, not a SaaS company
 
 ---
