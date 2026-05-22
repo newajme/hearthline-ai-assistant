@@ -1,6 +1,6 @@
 """System prompt for Anna — Hearthline's AI front-desk for home-service teams."""
 from datetime import datetime
-from zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
 # How big numbers should be SPOKEN out loud, by currency. Speech-to-text in
@@ -108,7 +108,7 @@ def get_receptionist_prompt(business_name: str = "Rolling Shutters Inc.",
     """Compose the runtime system prompt with current date + business config."""
     try:
         now = datetime.now(ZoneInfo(timezone))
-    except Exception:  # noqa: BLE001
+    except (ZoneInfoNotFoundError, Exception):  # noqa: BLE001
         now = datetime.now()
     today = now.strftime("%A, %B %d, %Y")
     current_time = now.strftime("%I:%M %p")

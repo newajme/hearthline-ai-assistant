@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import logging
+import time
 from typing import Any
 
 from django.conf import settings
@@ -44,6 +45,7 @@ def _mark_sms_sent(call_id: str | None, to: str, result: dict) -> None:
     if not call_id or not to:
         return
     cache.set(f"sms_sent:{call_id}:{to}", result, timeout=_CALL_STATE_TTL)
+    cache.set(f"sms_any_sent:{call_id}", True, timeout=_CALL_STATE_TTL)
 
 
 def _end_call_already_deferred(call_id: str | None) -> bool:
@@ -87,9 +89,8 @@ def _tools_already_run(call_id: str | None) -> list[str]:
     for tool in sorted(_DEDUPABLE_TOOLS):
         if cache.get(f"tool_done:{call_id}:{tool}") is not None:
             done.append(tool)
-    if cache.get(f"sms_sent:{call_id}:*"):
+    if cache.get(f"sms_any_sent:{call_id}"):
         done.append("send_sms")
-    # send_sms is keyed per-recipient, scan a couple of common recipient keys.
     return done
 
 
@@ -136,20 +137,17 @@ def _resolve_business(call_id: str | None = None):
     Without a call_id (test-call dashboard, manual invocation) we still query.
     With one, the lookup is a single dict hit after the first turn.
     """
-    import time
     if call_id and call_id in _BIZ_CACHE:
         ts, biz = _BIZ_CACHE[call_id]
         if time.time() - ts < _BIZ_CACHE_TTL:
             return biz
         _BIZ_CACHE.pop(call_id, None)
 
-    biz = None
-    for candidate in Business.objects.all().order_by("id"):
-        if (candidate.anthropic_api_key or "").strip():
-            biz = candidate
-            break
-    if biz is None:
-        biz = Business.objects.order_by("id").first()
+    # Query for the first business with an API key, falling back to the first available record.
+    biz = (
+        Business.objects.exclude(anthropic_api_key__isnull=True).exclude(anthropic_api_key="").order_by("id").first()
+        or Business.objects.order_by("id").first()
+    )
 
     if call_id and biz is not None:
         if len(_BIZ_CACHE) > 1024:
