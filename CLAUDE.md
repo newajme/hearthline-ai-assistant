@@ -21,7 +21,7 @@ The product:
 - Writes structured leads into a Django dashboard the business owner uses.
 
 Live demo target: **hearthline.codewithmuh.com**.
-Repo target: **github.com/codewithmuh/hearthline** (public, MIT).
+Repo target: **github.com/newajme/hearthline-ai-assistant** (public, AGPL-3.0).
 
 ## Who's behind it
 

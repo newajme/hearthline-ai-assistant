@@ -34,6 +34,11 @@ services:
     command: >
       sh -c "python manage.py migrate --noinput &&
              python manage.py runserver 0.0.0.0:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/api/health/\")'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     build: ./frontend
@@ -49,7 +54,8 @@ services:
       - /app/.next
     command: npm run dev
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
   # Public HTTPS tunnel via Cloudflare (zero-signup, free, ephemeral URL).
   #     docker compose --profile tunnel up -d tunnel
