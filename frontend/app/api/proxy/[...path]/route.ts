@@ -10,7 +10,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 
-import { API_URL, SESSION_COOKIE } from "@/app/lib/api";
+import { API_URL, SESSION_COOKIE, getApiUrlProblem } from "@/app/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +19,11 @@ async function forward(request: NextRequest, ctx: { params: Promise<{ path: stri
   const tail = path.join("/");
   const search = request.nextUrl.search || "";
   const url = `${API_URL}/${tail}${tail.endsWith("/") ? "" : "/"}${search}`;
+
+  const apiUrlProblem = getApiUrlProblem();
+  if (apiUrlProblem) {
+    return NextResponse.json({ detail: apiUrlProblem }, { status: 500 });
+  }
 
   const session = request.cookies.get(SESSION_COOKIE)?.value;
 
@@ -38,7 +43,15 @@ async function forward(request: NextRequest, ctx: { params: Promise<{ path: stri
     init.body = await request.arrayBuffer();
   }
 
-  const upstream = await fetch(url, init);
+  let upstream: Response;
+  try {
+    upstream = await fetch(url, init);
+  } catch {
+    return NextResponse.json(
+      { detail: "Could not reach the backend API. Check INTERNAL_API_URL / NEXT_PUBLIC_API_URL and confirm the backend is deployed." },
+      { status: 502 },
+    );
+  }
   // 204 / 304 must not have a body — pass through directly.
   if (upstream.status === 204 || upstream.status === 304) {
     return new NextResponse(null, { status: upstream.status });

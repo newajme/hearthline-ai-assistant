@@ -12,6 +12,20 @@ export const API_URL =
   process.env.NEXT_PUBLIC_API_URL ??
   "http://localhost:8000/api";
 
+export function getApiUrlProblem(): string | null {
+  if (process.env.NODE_ENV !== "production") return null;
+  if (!process.env.INTERNAL_API_URL && !process.env.NEXT_PUBLIC_API_URL) {
+    return "Backend URL is not configured. Set INTERNAL_API_URL or NEXT_PUBLIC_API_URL to your Django API URL, including /api.";
+  }
+  if (API_URL.includes("localhost") || API_URL.includes("127.0.0.1")) {
+    return "Backend URL points to localhost in production. Set it to the deployed Django API URL, including /api.";
+  }
+  if (!API_URL.replace(/\/+$/, "").endsWith("/api")) {
+    return "Backend URL is missing the /api suffix. Set INTERNAL_API_URL or NEXT_PUBLIC_API_URL to your Django API URL, including /api.";
+  }
+  return null;
+}
+
 export const SESSION_COOKIE = "hearthline_session";
 
 export { getAdminUrl } from "./adminUrl";
