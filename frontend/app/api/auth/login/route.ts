@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { API_URL, SESSION_COOKIE, extractSessionId } from "@/app/lib/api";
+import { API_URL, SESSION_COOKIE, extractSessionId, getApiUrlProblem } from "@/app/lib/api";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
@@ -11,14 +11,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ detail: "Email and password are required." }, { status: 400 });
   }
 
-  const upstream = await fetch(`${API_URL}/auth/login/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
-    cache: "no-store",
-  });
+  const apiUrlProblem = getApiUrlProblem();
+  if (apiUrlProblem) {
+    return NextResponse.json({ detail: apiUrlProblem }, { status: 500 });
+  }
 
-  const data = await upstream.json().catch(() => ({}));
+  let upstream: Response;
+  try {
+    upstream = await fetch(`${API_URL}/auth/login/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+      cache: "no-store",
+    });
+  } catch {
+    return NextResponse.json(
+      { detail: "Could not reach the backend API. Check INTERNAL_API_URL / NEXT_PUBLIC_API_URL and confirm the backend is deployed." },
+      { status: 502 },
+    );
+  }
+
+  const data = await upstream.json().catch(() => ({
+    detail: "Backend login route did not return JSON. Check that the frontend points to the Django API URL ending in /api.",
+  }));
   if (!upstream.ok) {
     return NextResponse.json(data, { status: upstream.status });
   }
