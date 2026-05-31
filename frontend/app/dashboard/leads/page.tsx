@@ -36,7 +36,7 @@ export default async function LeadsPage({
       <div className="app-pagebar">
         <div>
           <h1>Leads</h1>
-          <p>Every inbound captured and qualified by Hearthline.</p>
+          <p>Every inbound captured and qualified by Workmento.</p>
         </div>
         <div className="app-pagebar-actions">
           <a href={getAdminUrl("/leads/lead/add/")} target="_blank" rel="noreferrer" className="btn btn-primary">+ New lead</a>

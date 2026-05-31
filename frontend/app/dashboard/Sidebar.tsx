@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { getAdminUrl } from "../lib/adminUrl";
+import WorkmentoLogo from "../WorkmentoLogo";
 
 type Counts = { leads: number; calls: number; quotes: number; businesses: number; tickets: number };
 
@@ -79,6 +81,8 @@ const NAV_ADMIN: { href: string; label: string; key: keyof Counts | null; icon: 
 
 type SidebarUser = { name: string; business: string };
 
+const SIDEBAR_STORAGE_KEY = "workmento.sidebar.collapsed";
+
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";
@@ -89,13 +93,27 @@ function initials(name: string): string {
 export default function Sidebar({
   counts,
   user,
-  personaName = "Anna",
+  personaName = "Demi",
 }: {
   counts: Counts;
   user?: SidebarUser;
   personaName?: string;
 }) {
   const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    setCollapsed(localStorage.getItem(SIDEBAR_STORAGE_KEY) === "true");
+  }, []);
+
+  const toggleCollapsed = () => {
+    setCollapsed((current) => {
+      const next = !current;
+      localStorage.setItem(SIDEBAR_STORAGE_KEY, String(next));
+      return next;
+    });
+  };
+
   const isActive = (href: string) =>
     href === "/dashboard" ? pathname === href : pathname.startsWith(href);
   const displayName = user?.name?.trim() || "Signed in";
@@ -103,10 +121,22 @@ export default function Sidebar({
   const navOps = buildNavOps(personaName);
 
   return (
-    <aside className="app-sidebar">
+    <aside className="app-sidebar" data-collapsed={collapsed ? "true" : "false"}>
+      <button
+        type="button"
+        className="sidebar-collapse-toggle"
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        aria-expanded={!collapsed}
+        onClick={toggleCollapsed}
+      >
+        {collapsed ? (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
+        ) : (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+        )}
+      </button>
       <Link href="/" className="brand" title="Back to landing">
-        <span className="brand-mark">H</span>
-        <span>Hearthline</span>
+        <WorkmentoLogo variant="mark" />
       </Link>
 
       <p className="sidebar-section">Operations</p>
@@ -115,9 +145,10 @@ export default function Sidebar({
           key={item.href}
           href={item.href}
           className={`sidebar-link ${isActive(item.href) ? "active" : ""}`}
+          data-tooltip={item.href === "/dashboard/test-call" ? "Test Demi" : item.label}
         >
           {item.icon}
-          <span>{item.label}</span>
+          <span className="sidebar-label">{item.label}</span>
           {item.key && counts[item.key] > 0 && (
             <span className="badge">{counts[item.key]}</span>
           )}
@@ -130,9 +161,10 @@ export default function Sidebar({
           key={item.href}
           href={item.href}
           className={`sidebar-link ${isActive(item.href) ? "active" : ""}`}
+          data-tooltip={item.label}
         >
           {item.icon}
-          <span>{item.label}</span>
+          <span className="sidebar-label">{item.label}</span>
           {item.key && counts[item.key] > 0 && (
             <span className="badge">{counts[item.key]}</span>
           )}
@@ -143,9 +175,10 @@ export default function Sidebar({
         target="_blank"
         rel="noreferrer"
         className="sidebar-link"
+        data-tooltip="Django admin"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
-        <span>Django admin</span>
+        <span className="sidebar-label">Django admin</span>
       </a>
 
       <div className="sidebar-bottom">

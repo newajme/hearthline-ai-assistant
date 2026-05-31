@@ -1,4 +1,4 @@
-"""Bridge tools → Hearthline domain models (Lead, Customer, Conversation, Call)."""
+"""Bridge tools → Workmento domain models (Lead, Customer, Conversation, Call)."""
 from __future__ import annotations
 
 import logging
@@ -233,7 +233,7 @@ def draft_quote_tool(payload: dict[str, Any], verified_phone: str | None = None,
 
     The Lead is found by `vapi_call_id` (the same dedup key used by qualify_lead
     and book_appointment), so all three tools land on one consistent row even
-    if Anna fires them in a different order across turns.
+    if Demi fires them in a different order across turns.
     """
     from apps.quotes.models import LineItem, Quote
     business = _default_business()
@@ -276,7 +276,7 @@ def draft_quote_tool(payload: dict[str, Any], verified_phone: str | None = None,
     notes = (payload.get("notes") or payload.get("summary") or "")[:1000]
     currency = (payload.get("currency") or "USD").strip()[:8]
 
-    # Dedup: one Quote per phone call. If Anna refines the price across turns,
+    # Dedup: one Quote per phone call. If Demi refines the price across turns,
     # update the same Quote row (replace line items, recalc totals) instead of
     # writing a new one. Match by `photo_assessment.drafted_during_call == call_id`.
     quote = (

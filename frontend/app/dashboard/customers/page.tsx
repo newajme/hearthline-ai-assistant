@@ -60,7 +60,7 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
       <div className="app-pagebar">
         <div>
           <h1>Customers</h1>
-          <p>Everyone who has touched a Hearthline channel.</p>
+          <p>Everyone who has touched a Workmento channel.</p>
         </div>
         <div className="app-pagebar-actions">
           <a href={getAdminUrl("/leads/customer/add/")} target="_blank" rel="noreferrer" className="btn btn-primary">+ New customer</a>

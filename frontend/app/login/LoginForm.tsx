@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
+import WorkmentoLogo from "../WorkmentoLogo";
 import { useI18n } from "../lib/i18n";
 
 export default function LoginForm({ next }: { next: string }) {
@@ -41,20 +42,17 @@ export default function LoginForm({ next }: { next: string }) {
 
   return (
     <main className="auth-shell">
-      <Link href="/" className="auth-brand" aria-label="Hearthline home">
-        <span className="brand-mark">
-          <Flame />
-        </span>
-        <span>Hearthline</span>
+      <Link href="/" className="auth-brand" aria-label="Workmento home">
+        <WorkmentoLogo variant="wordmark" />
       </Link>
 
       <form className="auth-card" onSubmit={onSubmit} noValidate>
         <h1 className="auth-title">{t("login.title")}</h1>
         <p className="auth-sub">
           {t("login.sub.pre")}
-          <a href="https://calendly.com/contact-codewithmuh/30min" target="_blank" rel="noreferrer">
+          <Link href="/contact">
             {t("login.sub.cta")}
-          </a>
+          </Link>
           .
         </p>
 
@@ -104,7 +102,7 @@ export default function LoginForm({ next }: { next: string }) {
 
         <p className="auth-foot">
           {t("login.foot.pre")}
-          <a href="mailto:contact@codewithmuh.com">contact@codewithmuh.com</a>.
+          <a href="mailto:support@workmento.com">support@workmento.com</a>.
         </p>
       </form>
 
@@ -112,13 +110,5 @@ export default function LoginForm({ next }: { next: string }) {
         <Link href="/">{t("login.back")}</Link>
       </p>
     </main>
-  );
-}
-
-function Flame() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.5 0 2.5-.5 3-1.5 1-1.6.6-3.4-1-5-1.6-1.6-2-3.4-1-5C12.5 4 12 3 11 2.5 9.5 2 8 2.5 7 4 5.5 6 5 9 6.5 11c.5 1 .5 2.5-.5 3.5z" />
-    </svg>
   );
 }

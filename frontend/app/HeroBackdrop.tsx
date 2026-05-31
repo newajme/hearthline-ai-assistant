@@ -1,4 +1,4 @@
-// Decorative layer for the hero — soft ember glow + very faint architectural line art.
+// Decorative layer for the hero — soft mint glow + very faint architectural line art.
 // All elements are aria-hidden and pointer-events: none.
 
 export default function HeroBackdrop() {

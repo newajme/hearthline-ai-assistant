@@ -20,7 +20,7 @@ apply to you:
   proprietary code that touches Hearthline.
 - You want a **commercial support agreement, SLA, or indemnification**.
 - You want **done-for-you setup**: I'll deploy, configure Vapi + Twilio,
-  tune Anna's prompt for your trade, and hand you a working system.
+  tune Demi's prompt for your trade, and hand you a working system.
 
 ## How to get one
 

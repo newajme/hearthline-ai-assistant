@@ -2,11 +2,11 @@ import { MarketingFooter, MarketingTopbar } from "../MarketingShell";
 
 export const metadata = {
   title: "Terms of Service",
-  description: "The terms governing the use of Hearthline's hosted product and services.",
+  description: "The terms governing the use of Workmento's hosted product and services.",
   alternates: { canonical: "/terms" },
   openGraph: {
-    title: "Hearthline · Terms of Service",
-    description: "The terms governing the use of Hearthline's hosted product and services.",
+    title: "Workmento · Terms of Service",
+    description: "The terms governing the use of Workmento's hosted product and services.",
     url: "/terms",
   },
 };
@@ -26,8 +26,8 @@ export default function TermsPage() {
 
           <article className="legal-doc">
             <p>
-              These Terms of Service ("Terms") govern your access to and use of Hearthline
-              ("Service"), operated by Hearthline ("we", "our", "us"). By creating an
+              These Terms of Service ("Terms") govern your access to and use of Workmento
+              ("Service"), operated by Workmento ("we", "our", "us"). By creating an
               account or using the Service you agree to these Terms.
             </p>
 
@@ -41,9 +41,9 @@ export default function TermsPage() {
             <h2>2. Acceptable use</h2>
             <ul>
               <li>Use the Service only for lawful business communications with consenting parties.</li>
-              <li>Do not use Anna for spam, robocalls, harassment, or any disallowed use under TCPA / CAN-SPAM / GDPR.</li>
+              <li>Do not use Demi for spam, robocalls, harassment, or any disallowed use under TCPA / CAN-SPAM / GDPR.</li>
               <li>Do not attempt to reverse-engineer the AI model or scrape the Service.</li>
-              <li>Do not impersonate a third party or misrepresent Anna's nature when explicitly asked.</li>
+              <li>Do not impersonate a third party or misrepresent Demi's nature when explicitly asked.</li>
             </ul>
             <p>
               We may suspend accounts that violate these rules and reserve the right to
@@ -59,7 +59,7 @@ export default function TermsPage() {
 
             <h2>4. Customer data</h2>
             <p>
-              You retain all rights to the data your customers send to you through Hearthline.
+              You retain all rights to the data your customers send to you through Workmento.
               We process that data on your behalf as your data processor under our{" "}
               <a href="/privacy">Privacy Policy</a> and any applicable Data Processing
               Agreement. You can export or delete your data at any time.
@@ -74,7 +74,7 @@ export default function TermsPage() {
 
             <h2>6. AI output</h2>
             <p>
-              Anna drafts quotes, books appointments, and answers questions based on your
+              Demi drafts quotes, books appointments, and answers questions based on your
               configured pricing rules and knowledge base. AI output can occasionally be
               wrong. You're responsible for reviewing material decisions (large quotes,
               irreversible bookings) before they go to customers, and you can configure
@@ -83,13 +83,13 @@ export default function TermsPage() {
 
             <h2>7. Open-source code</h2>
             <p>
-              The Hearthline reference implementation is published under the GNU AGPL-3.0 license at{" "}
-              <a href="https://github.com/codewithmuh/hearthline" target="_blank" rel="noreferrer">
-                github.com/codewithmuh/hearthline
+              The Workmento reference implementation is published under the GNU AGPL-3.0 license at{" "}
+              <a href="https://github.com/workmento/workmento" target="_blank" rel="noreferrer">
+                github.com/workmento/workmento
               </a>. Self-hosting is permitted under AGPL-3.0; running your own deployment falls
               outside the scope of these Terms. A separate commercial license is available for
-              white-labeling, reselling, or embedding Hearthline in closed-source products —
-              contact contact@codewithmuh.com.
+              white-labeling, reselling, or embedding Workmento in closed-source products —
+              contact contact@workmento.com.
             </p>
 
             <h2>8. Disclaimer of warranties</h2>
@@ -108,7 +108,7 @@ export default function TermsPage() {
             <h2>10. Termination</h2>
             <p>
               You can cancel anytime from the dashboard or by emailing{" "}
-              <a href="mailto:billing@codewithmuh.com">billing@codewithmuh.com</a>. On
+              <a href="mailto:billing@workmento.com">billing@workmento.com</a>. On
               cancellation we keep your data in cold storage for 30 days, then permanently
               delete it.
             </p>
@@ -129,7 +129,7 @@ export default function TermsPage() {
             <h2>13. Contact</h2>
             <p>
               Questions? Reach us at{" "}
-              <a href="mailto:legal@codewithmuh.com">legal@codewithmuh.com</a>.
+              <a href="mailto:legal@workmento.com">legal@workmento.com</a>.
             </p>
           </article>
         </section>

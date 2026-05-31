@@ -12,7 +12,7 @@ and the codebase as of 2026-05-08.
 
 - `CLAUDE.md` is thorough: stack, repo layout, endpoints, agent loop, coding
   conventions, "what NOT to add", brand rules, lessons learned, roadmap.
-- Explicit brand rules prevent common mistakes (Anna persona, no PII on
+- Explicit brand rules prevent common mistakes (Demi persona, no PII on
   marketing page, no fake testimonials, no competitor comparisons).
 - `CONTRIBUTING.md` has a solid PR checklist and code style section.
 - `DEPLOY.md` covers both deploy paths with env var docs, rotation guidance,
@@ -47,7 +47,7 @@ and the codebase as of 2026-05-08.
    generate incorrect license headers.
 2. **Root `vercel.json` referenced but absent** — `CLAUDE.md` lists it in the
    repo layout tree; it doesn't exist. Path A deploy fails silently.
-3. **Tool count mismatch** — `CLAUDE.md` lists 5 Anna tools; the actual
+3. **Tool count mismatch** — `CLAUDE.md` lists 5 Demi tools; the actual
    `tools.py` defines 7 (`qualify_lead`, `check_availability`,
    `book_appointment`, `draft_quote`, `send_sms`, `send_email`, `end_call`).
    README correctly says 7.
@@ -113,7 +113,7 @@ schema has changed across Vercel versions.
 
 #### 3. Fix tool count in `CLAUDE.md`
 
-**File:** `CLAUDE.md`, "How Anna's agent loop works" section.
+**File:** `CLAUDE.md`, "How Demi's agent loop works" section.
 
 Change:
 ```
@@ -233,7 +233,7 @@ Add a "Branch naming" section:
 | Type | Pattern | Example |
 |------|---------|---------|
 | Feature | `feature/<short-description>` | `feature/stripe-deposit` |
-| Bug fix | `fix/<short-description>` | `fix/anna-sms-dedup` |
+| Bug fix | `fix/<short-description>` | `fix/demi-sms-dedup` |
 | Docs | `docs/<short-description>` | `docs/deploy-guide` |
 | Chore | `chore/<short-description>` | `chore/bump-anthropic` |
 
@@ -271,9 +271,9 @@ backend job. Ruff is fast and zero-config for PEP 8.
 
 **File:** `CLAUDE.md`
 
-Add a note explaining what this file is and how Anna uses it:
+Add a note explaining what this file is and how Demi uses it:
 ```
-solar-pakistan-knowledge-base.md  # Domain knowledge injected into Anna's system prompt
+solar-pakistan-knowledge-base.md  # Domain knowledge injected into Demi's system prompt
                                   # for solar / energy-renovation calls in Pakistan.
                                   # Edit this to update pricing, subsidy rules, service area.
 ```

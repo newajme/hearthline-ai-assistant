@@ -178,9 +178,9 @@ function ScenePickup({ t }: { t: (k: string) => string }) {
   return (
     <div className="phone-call">
       <div className="phone-call-label">
-        <span className="scene-anna-dot" /> {t("story.scene.onLine")} · 00:08
+        <span className="scene-demi-dot" /> {t("story.scene.onLine")} · 00:08
       </div>
-      <div className="phone-call-name">Anna</div>
+      <div className="phone-call-name">Demi</div>
       <div className="phone-call-number">ABC Solar Co.</div>
       <div className="phone-call-avatar">
         <span>A</span>
@@ -202,7 +202,7 @@ function SceneSms({ t }: { t: (k: string) => string }) {
         <span className="phone-sms-back" aria-hidden>‹</span>
         <span className="phone-sms-avatar">A</span>
         <div className="phone-sms-titles">
-          <strong>Anna</strong>
+          <strong>Demi</strong>
           <span>ABC Solar Co.</span>
         </div>
       </div>

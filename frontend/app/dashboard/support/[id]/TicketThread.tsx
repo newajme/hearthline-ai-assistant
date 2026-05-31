@@ -14,7 +14,7 @@ const STATUSES: { key: TicketDetail["status"]; label: string }[] = [
 
 const AUTHOR_LABEL: Record<string, string> = {
   customer: "Customer",
-  ai: "Anna (AI)",
+  ai: "Demi (AI)",
   agent: "You",
   system: "System",
 };
@@ -96,7 +96,7 @@ export default function TicketThread({ ticket }: { ticket: TicketDetail }) {
               onChange={(e) => { setReply(e.target.value); setError(null); }}
               placeholder={
                 ticket.human_only
-                  ? "Human-only mode — Anna won't reply automatically. Type your message…"
+                  ? "Human-only mode — Demi won't reply automatically. Type your message…"
                   : "Reply as a human agent (sends on the original channel)…"
               }
               rows={3}
@@ -155,10 +155,10 @@ export default function TicketThread({ ticket }: { ticket: TicketDetail }) {
               disabled={busy === "status"}
               onChange={(e) => patchStatus({ human_only: e.target.checked })}
             />
-            <span>Human-only (mute Anna)</span>
+            <span>Human-only (mute Demi)</span>
           </label>
           <p className="kv-value-muted" style={{ fontSize: 12 }}>
-            When on, new inbound messages are stored but Anna won&apos;t reply automatically.
+            When on, new inbound messages are stored but Demi won&apos;t reply automatically.
           </p>
         </div>
       </aside>

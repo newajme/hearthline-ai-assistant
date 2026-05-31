@@ -2,11 +2,11 @@ import { MarketingFooter, MarketingTopbar } from "../MarketingShell";
 
 export const metadata = {
   title: "Privacy Policy",
-  description: "How Hearthline collects, processes, and protects customer and call data.",
+  description: "How Workmento collects, processes, and protects customer and call data.",
   alternates: { canonical: "/privacy" },
   openGraph: {
-    title: "Hearthline · Privacy Policy",
-    description: "How Hearthline collects, processes, and protects customer and call data.",
+    title: "Workmento · Privacy Policy",
+    description: "How Workmento collects, processes, and protects customer and call data.",
     url: "/privacy",
   },
 };
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
 
           <article className="legal-doc">
             <p>
-              This Privacy Policy explains how Hearthline ("we", "our", "us") collects, uses,
+              This Privacy Policy explains how Workmento ("we", "our", "us") collects, uses,
               and protects information when you use our hosted product, our website, or any
               integrations we provide. We are committed to handling your data and your
               customers' data responsibly.
@@ -41,7 +41,7 @@ export default function PrivacyPage() {
               </li>
               <li>
                 <strong>Customer interactions.</strong> Call audio, transcripts, SMS / chat
-                messages, and any structured data Anna extracts
+                messages, and any structured data Demi extracts
                 (name, phone, address, project description, estimated value).
               </li>
               <li>
@@ -67,7 +67,7 @@ export default function PrivacyPage() {
             </p>
 
             <h2>3. Subprocessors</h2>
-            <p>To deliver Hearthline, we share specific data with the following providers:</p>
+            <p>To deliver Workmento, we share specific data with the following providers:</p>
             <ul>
               <li><strong>Anthropic</strong> (Claude) — transcript &rarr; structured lead extraction.</li>
               <li><strong>Vapi</strong> + <strong>Twilio</strong> — voice and SMS handling.</li>
@@ -90,7 +90,7 @@ export default function PrivacyPage() {
             <p>
               You and your customers have the right to access, correct, export, or delete
               personal data we hold. Contact{" "}
-              <a href="mailto:privacy@codewithmuh.com">privacy@codewithmuh.com</a> and
+              <a href="mailto:privacy@workmento.com">privacy@workmento.com</a> and
               we will respond within 30 days.
             </p>
 
@@ -117,7 +117,7 @@ export default function PrivacyPage() {
             <h2>9. Contact</h2>
             <p>
               Questions? Reach the data-protection team at{" "}
-              <a href="mailto:privacy@codewithmuh.com">privacy@codewithmuh.com</a>.
+              <a href="mailto:privacy@workmento.com">privacy@workmento.com</a>.
             </p>
           </article>
         </section>

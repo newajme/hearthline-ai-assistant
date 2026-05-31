@@ -31,7 +31,7 @@ INSTALLED_APPS = [
 
 # Cache backend choice matters: gunicorn runs 3 workers, and the receptionist
 # uses cache for per-call tool dedupe (sms_sent, tool_done, end_deferred). A
-# locmem cache is per-process so 2 of 3 workers miss every lookup, and Anna
+# locmem cache is per-process so 2 of 3 workers miss every lookup, and Demi
 # re-fires tools across worker boundaries. FileBasedCache is shared by all
 # workers on the same host without needing Redis. Move to Redis when scaling
 # horizontally.

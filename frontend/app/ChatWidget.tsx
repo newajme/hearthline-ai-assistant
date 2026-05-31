@@ -331,7 +331,7 @@ export default function ChatWidget() {
     setClosed(false);
     pushMessage({
       role: "system",
-      text: t("chat.live.backToAnna"),
+      text: t("chat.live.backToDemi"),
       ts: Date.now(),
     });
   }
@@ -384,10 +384,10 @@ export default function ChatWidget() {
         <div className="chat-panel">
           <div className="chat-head">
             <div className="chat-head-left">
-              <span className="chat-avatar">{mode === "live" ? "H" : "A"}</span>
+              <span className="chat-avatar">{mode === "live" ? "H" : "D"}</span>
               <div>
                 <div className="chat-name">
-                  {mode === "live" ? t("chat.live.support") : "Anna"} <span className="chat-online" />
+                  {mode === "live" ? t("chat.live.support") : "Demi"} <span className="chat-online" />
                 </div>
                 <div className="chat-role">
                   {mode === "live"
@@ -417,7 +417,7 @@ export default function ChatWidget() {
                 {messages.map((m, i) => (
                   <div key={i} className={`chat-msg ${m.role}`}>
                     {(m.role === "ai" || m.role === "staff") && (
-                      <span className="chat-msg-avatar">{m.role === "staff" ? "H" : "A"}</span>
+                      <span className="chat-msg-avatar">{m.role === "staff" ? "H" : "D"}</span>
                     )}
                     <div className="chat-msg-bubble">{m.text}</div>
                   </div>

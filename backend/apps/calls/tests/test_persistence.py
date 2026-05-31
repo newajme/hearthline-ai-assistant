@@ -1,4 +1,4 @@
-"""Smoke tests for the tool implementations Anna calls during a live call.
+"""Smoke tests for the tool implementations Demi calls during a live call.
 
 These don't hit Anthropic/OpenAI — they exercise the Django side of the loop:
 the qualify_lead and book_appointment tools that persist Lead/Customer rows.

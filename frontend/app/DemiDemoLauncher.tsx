@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 
-import AnnaDemoModal from "./AnnaDemoModal";
+import DemiDemoModal from "./DemiDemoModal";
 import { useI18n } from "./lib/i18n";
 
 type Variant = "primary" | "onDark";
 
-export default function AnnaDemoLauncher({
+export default function DemiDemoLauncher({
   label,
   variant = "primary",
 }: {
@@ -18,15 +18,15 @@ export default function AnnaDemoLauncher({
   const [open, setOpen] = useState(false);
   const className =
     variant === "onDark"
-      ? "btn btn-anna btn-lg btn-anna-onDark"
-      : "btn btn-anna btn-lg";
+      ? "btn btn-demi btn-lg btn-demi-onDark"
+      : "btn btn-demi btn-lg";
 
   return (
     <>
       <button type="button" className={className} onClick={() => setOpen(true)}>
-        <span className="btn-anna-dot" aria-hidden /> {label ?? t("annaLaunch.cta")}
+        <span className="btn-demi-dot" aria-hidden /> {label ?? t("demiLaunch.cta")}
       </button>
-      <AnnaDemoModal open={open} onClose={() => setOpen(false)} />
+      <DemiDemoModal open={open} onClose={() => setOpen(false)} />
     </>
   );
 }

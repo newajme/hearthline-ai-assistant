@@ -104,7 +104,7 @@ NEXT_PUBLIC_ADMIN_URL=https://api.hearthline.codewithmuh.com/admin
 | Custom LLM URL | `https://api.hearthline.codewithmuh.com/api/calls/vapi/chat/completions/` |
 | Server URL | `https://api.hearthline.codewithmuh.com/api/calls/webhooks/vapi/` |
 | Model | `claude-sonnet-4-6` |
-| First message | `Hi, this is Anna. How can I help?` |
+| First message | `Hi, this is Demi. How can I help?` |
 
 Buy a phone number on Vapi → attach the assistant → call it.
 
@@ -178,7 +178,7 @@ Wire Vapi the same way but at the VPS domain.
 **"Backend unreachable" in the dashboard**
 → Verify `INTERNAL_API_URL` and `NEXT_PUBLIC_API_URL` in Vercel env vars. They must include `/api` suffix and match the path your backend is mounted at — `/_/backend/api/` for Path A, `/api/` for Path B.
 
-**Anna says "I'd love to help, but my AI brain isn't connected"**
+**Demi says "I'd love to help, but my AI brain isn't connected"**
 → `ANTHROPIC_API_KEY` not set on the backend service. Add it in Vercel env vars (Path A) or `.env` on VPS (Path B), then redeploy / restart.
 
 **Vapi webhook 502 / 504**

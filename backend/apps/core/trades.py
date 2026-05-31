@@ -1,7 +1,7 @@
-"""Canonical trade taxonomy for Hearthline.
+"""Canonical trade taxonomy for Workmento.
 
 Imported by both the Business model (`choices`) and the agent tool schema
-so Anna can never extract a trade the data model can't represent.
+so Demi can never extract a trade the data model can't represent.
 """
 
 TRADES: list[tuple[str, str]] = [

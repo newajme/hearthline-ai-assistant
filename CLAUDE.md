@@ -14,7 +14,7 @@ cleaning, pest control). AGPL-3.0 licensed (commercial license available). Built
 Tagline: *"The 24/7 AI front desk for home services."*
 
 The product:
-- A persona named **Anna** answers every inbound call via Vapi, qualifies the
+- A persona named **Demi** answers every inbound call via Vapi, qualifies the
   lead, books a slot, and sends an SMS confirmation.
 - Captures multi-channel touches (phone, SMS, WhatsApp, email, web chat).
 - Drafts quotes live on the call from the configured knowledge base / price list.
@@ -66,7 +66,7 @@ hearthline/
 ├── docker-compose.prod.yml      # VPS production
 ├── Caddyfile                    # auto-HTTPS reverse proxy for VPS
 ├── .env.example                 # all env vars documented
-├── solar-pakistan-knowledge-base.md  # domain knowledge injected into Anna's prompt
+├── solar-pakistan-knowledge-base.md  # domain knowledge injected into Demi's prompt
 ├── scripts/
 │   └── test-quickstart.sh       # smoke-tests the docker-compose stack
 ├── .github/                     # CI, FUNDING, issue/PR templates
@@ -100,10 +100,10 @@ hearthline/
         ├── core/                # Business, Channel, encrypted-key fields
         ├── leads/               # Customer, Lead, Conversation, Message
         │   └── management/commands/seed_demo.py    # populates dashboard
-        ├── calls/               # Call + Vapi/Twilio + Anna agent
+        ├── calls/               # Call + Vapi/Twilio + Demi agent
         │   ├── views.py         # CallList, VapiWebhook, TwilioWebhook, chat_completions
         │   ├── agent/
-        │   │   ├── prompts.py        # Anna's system prompt
+        │   │   ├── prompts.py        # Demi's system prompt
         │   │   ├── tools.py          # 7 tool schemas
         │   │   └── receptionist.py   # agentic loop (Claude + OpenAI)
         │   ├── services/
@@ -133,7 +133,7 @@ hearthline/
 - `POST /api/calls/webhooks/twilio/`           (Twilio voice/SMS)
 - `POST /api/calls/vapi/chat/completions/`     (Vapi custom-LLM, OpenAI-compatible)
 
-## How Anna's agent loop works
+## How Demi's agent loop works
 
 1. Vapi handles STT + TTS, POSTs the running conversation to
    `/api/calls/vapi/chat/completions/` on every turn.
@@ -142,7 +142,7 @@ hearthline/
 3. Claude can call tools (`qualify_lead`, `check_availability`,
    `book_appointment`, `draft_quote`, `send_sms`, `send_email`, `end_call`).
    Tool dispatchers are in `apps/calls/services/`.
-4. Lead/Customer rows are created/updated as Anna learns more.
+4. Lead/Customer rows are created/updated as Demi learns more.
 5. Final response returns as OpenAI completion. SSE streaming supported.
    `X-Vapi-End-Call: true` header tells Vapi to hang up.
 
@@ -205,7 +205,7 @@ and deploys both services. Run migrations from laptop pointed at Neon.
 
 1. **Never frame Hearthline as a "Bravi alternative."** Position as its own
    project. The user explicitly corrected this.
-2. **Anna is the recurring brand character** — voice persona, chat widget AI,
+2. **Demi is the recurring brand character** — voice persona, chat widget AI,
    Test Call simulator. Use her name consistently.
 3. **The user is a content creator.** The repo's purpose is to drive YouTube
    build-along videos and Calendly bookings for done-for-you setups, NOT to
@@ -244,7 +244,7 @@ and deploys both services. Run migrations from laptop pointed at Neon.
 - Django data model (Business, Channel, Customer, Lead, Conversation, Message, Call, Quote, LineItem)
 - Vapi custom-LLM endpoint with structured Claude tool loop
 - OpenAI Vision → drafted quote with line items + tax + total
-- Next.js dashboard: Overview, Leads, Calls, Quotes (editable + browser-print PDF), Customers, Settings, Test Anna
+- Next.js dashboard: Overview, Leads, Calls, Quotes (editable + browser-print PDF), Customers, Settings, Test Demi
 - Lead-detail conversation timeline + extracted_fields JSON inspector
 - `seed_demo` management command
 - Docker Compose local + production stacks
@@ -261,7 +261,7 @@ and deploys both services. Run migrations from laptop pointed at Neon.
 - Subsidy lookup integration (solar / energy renovation)
 - Tech dispatch + GPS routing for booked jobs
 - Review request automation (Google + Trustpilot webhooks)
-- Eval harness for the Anna prompt
+- Eval harness for the Demi prompt
 
 ---
 

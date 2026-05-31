@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const CMD = "git clone github.com/codewithmuh/hearthline && docker compose up";
+const CMD = "git clone github.com/workmento/workmento && cd workmento && docker compose up";
 
 export default function InstallSnippet() {
   const [copied, setCopied] = useState(false);

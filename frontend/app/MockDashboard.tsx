@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import WorkmentoLogo from "./WorkmentoLogo";
 import { useI18n } from "./lib/i18n";
 
 type Action =
@@ -60,8 +61,8 @@ function pickRowAt(id: number, idx: number, t: (k: string) => string): Row {
     id,
     contact,
     contactSub,
-    assistant: `Anna · ${t(channelKey)}`,
-    initial: "A",
+    assistant: `Demi · ${t(channelKey)}`,
+    initial: "D",
     message: t(m.key),
     action: m.action,
     ageSec: 0,
@@ -76,8 +77,8 @@ function pickRandomRow(id: number, t: (k: string) => string): Row {
     id,
     contact,
     contactSub,
-    assistant: `Anna · ${t(channelKey)}`,
-    initial: "A",
+    assistant: `Demi · ${t(channelKey)}`,
+    initial: "D",
     message: t(m.key),
     action: m.action,
     ageSec: 0,
@@ -143,9 +144,7 @@ export default function MockDashboard() {
       <div className="mock-frame">
         <aside className="mock-rail">
           <span className="mock-rail-mark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.5 0 2.5-.5 3-1.5 1-1.6.6-3.4-1-5-1.6-1.6-2-3.4-1-5C12.5 4 12 3 11 2.5 9.5 2 8 2.5 7 4 5.5 6 5 9 6.5 11c.5 1 .5 2.5-.5 3.5z" />
-            </svg>
+            <WorkmentoLogo variant="mark" />
           </span>
           <RailIcon active>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9" /><rect x="14" y="3" width="7" height="5" /><rect x="14" y="12" width="7" height="9" /><rect x="3" y="16" width="7" height="5" /></svg>
@@ -274,7 +273,7 @@ function ActionPill({ action, t }: { action: Action; t: (k: string) => string })
     return <span className="action-pill booked"><Dot color="#2563eb" /> {t("pill.booked")}</span>;
   }
   if (action.kind === "subsidy-checked") {
-    return <span className="action-pill subsidy"><Dot color="#d2532b" /> {t("pill.subsidy")}</span>;
+    return <span className="action-pill subsidy"><Dot color="#00C95C" /> {t("pill.subsidy")}</span>;
   }
   return <span className="action-pill status"><Dot color="#6b7280" /> {t("pill.qualifying")}</span>;
 }

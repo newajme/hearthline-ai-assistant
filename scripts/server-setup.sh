@@ -27,24 +27,34 @@ fi
 # ── 3. Write .env ────────────────────────────────────────────────────────────
 echo "[3/6] Writing .env..."
 SERVER_IP=$(curl -fsSL https://api.ipify.org)
+if ! command -v python3 &>/dev/null; then
+  echo "python3 is required to generate deployment secrets. Install python3 and rerun this script." >&2
+  exit 1
+fi
+
+POSTGRES_PASSWORD=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')
+DJANGO_SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_urlsafe(50))')
+HEARTHLINE_ENCRYPTION_KEY=$(python3 -c 'import base64, os; print(base64.urlsafe_b64encode(os.urandom(32)).decode())')
+HEARTHLINE_ADMIN_PASSWORD=$(python3 -c 'import secrets; print(secrets.token_urlsafe(24))')
+VAPI_WEBHOOK_SECRET=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
 
 cat > /opt/hearthline/.env <<EOF
 # ── Postgres (runs in Docker on this host) ───────────────────────────────────
 POSTGRES_DB=hearthline
 POSTGRES_USER=hearthline
-POSTGRES_PASSWORD=pA22jrOxSvKh3xutKAr69N_QEVsLQUhE
+POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
 
 # ── Django ───────────────────────────────────────────────────────────────────
-DJANGO_SECRET_KEY=04740+^m#yxvh)9apx@r&sncp3*!5g8aiig)#zavvtl@%1t_yax1j@3oi*7#
+DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
 DJANGO_DEBUG=0
-HEARTHLINE_ENCRYPTION_KEY=FWren1Z1wjuu-kZOtxib1Xw8l58EKo7B5BcM5vCN26I=
+HEARTHLINE_ENCRYPTION_KEY=${HEARTHLINE_ENCRYPTION_KEY}
 HEARTHLINE_LOG_LEVEL=INFO
-HEARTHLINE_ADMIN_PASSWORD=-wNCVVQNfR9j4IVlIvVVnw
+HEARTHLINE_ADMIN_PASSWORD=${HEARTHLINE_ADMIN_PASSWORD}
 
 # ── Vapi ─────────────────────────────────────────────────────────────────────
-VAPI_WEBHOOK_SECRET=61b92de2da4b54b3ac365f29088484e5adbe73df1806de0d16d06cda9a0136f1
+VAPI_WEBHOOK_SECRET=${VAPI_WEBHOOK_SECRET}
 
 # ── AI (add your keys) ───────────────────────────────────────────────────────
 ANTHROPIC_API_KEY=
@@ -158,7 +168,7 @@ echo ""
 echo "  API:    https://api.hearthline.${SERVER_IP}.nip.io/api"
 echo "  Admin:  https://api.hearthline.${SERVER_IP}.nip.io/admin"
 echo ""
-echo "  Login:  admin / -wNCVVQNfR9j4IVlIvVVnw"
+echo "  Login:  admin / see HEARTHLINE_ADMIN_PASSWORD in /opt/hearthline/.env"
 echo "============================================================"
 echo ""
 echo "  Next: update your Vercel env var NEXT_PUBLIC_API_URL to:"

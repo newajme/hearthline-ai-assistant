@@ -1,6 +1,5 @@
-import Image from "next/image";
-
 import { getT } from "./lib/i18n-server";
+import WorkmentoLogo from "./WorkmentoLogo";
 
 export default async function MobileAppsBand() {
   const { t } = await getT();
@@ -45,14 +44,10 @@ export default async function MobileAppsBand() {
 
         <div className="apps-band-art" aria-hidden>
           <div className="apps-phone-frame">
-            <Image
-              src="/hearthline-ios-overview.png"
-              alt="Hearthline iOS Overview screen showing today's leads, calls, pipeline and recent activity"
-              width={392}
-              height={848}
-              priority={false}
-              className="apps-phone-img"
-            />
+            <div className="apps-phone-img apps-phone-placeholder">
+              <WorkmentoLogo variant="mark" />
+              <span>Leads, calls, and quotes in your pocket.</span>
+            </div>
           </div>
           <div className="apps-art-glow" aria-hidden />
         </div>

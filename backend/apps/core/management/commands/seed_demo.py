@@ -1,4 +1,4 @@
-"""Seed Hearthline with believable demo data so the dashboard isn't empty.
+"""Seed Workmento with believable demo data so the dashboard isn't empty.
 
 Usage:
     docker compose exec backend python manage.py seed_demo
@@ -62,7 +62,7 @@ QUOTES = [
 
 
 class Command(BaseCommand):
-    help = "Seed Hearthline with believable demo data."
+    help = "Seed Workmento with believable demo data."
 
     def add_arguments(self, parser):
         parser.add_argument("--wipe", action="store_true", help="Delete ALL existing data first.")
@@ -101,7 +101,7 @@ class Command(BaseCommand):
                 "trade": "windows",
                 "timezone": "America/Los_Angeles",
                 "phone_number": "+1 (555) 010-1010",
-                "voice_persona": "Anna",
+                "voice_persona": "Demi",
                 "knowledge_base": (
                     "Standard PVC window: $580 / unit. Wood: $880 / unit. Roofing: $3.60 / sqft asphalt, "
                     "$7.50 / sqft tile. HVAC: 16 SEER 3-ton units start at $8,500 + install. "

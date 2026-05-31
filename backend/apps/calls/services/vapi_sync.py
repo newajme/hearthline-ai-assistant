@@ -1,4 +1,4 @@
-"""Push Hearthline Business config (persona, first message) into the Vapi assistant.
+"""Push Workmento Business config (persona, first message) into the Vapi assistant.
 
 When the dashboard owner edits `voice_persona` or `name`, the Vapi-side
 `firstMessage` should follow. This module performs that sync via Vapi REST API.
@@ -18,7 +18,7 @@ VAPI_API = "https://api.vapi.ai"
 
 def first_message(persona: str, business_name: str) -> str:
     """Compose the assistant's opening line."""
-    persona = (persona or "Anna").strip() or "Anna"
+    persona = (persona or "Demi").strip() or "Demi"
     business_name = (business_name or "").strip()
     if business_name:
         return f"Hi, this is {persona} with {business_name}. Thanks for calling, how can I help you today?"
@@ -49,7 +49,7 @@ def sync_assistant(business) -> dict[str, Any]:
         logger.warning("requests not installed — cannot sync Vapi assistant")
         return {"success": False, "error": "requests not installed"}
 
-    persona = (getattr(business, "voice_persona", "") or "Anna").strip() or "Anna"
+    persona = (getattr(business, "voice_persona", "") or "Demi").strip() or "Demi"
     body = {
         "name": f"{business.name} · {persona}",
         "firstMessage": first_message(persona, business.name),

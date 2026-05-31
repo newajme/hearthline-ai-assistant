@@ -7,18 +7,17 @@ import ArchitectureOverview from "./ArchitectureOverview";
 export const metadata = {
   title: "Docs",
   description:
-    "Self-host Hearthline — Django 5 + DRF backend, Next.js 15 frontend, Vapi + Twilio voice. Stack, architecture, quick start, roadmap.",
+    "Self-host Workmento — Django 5 + DRF backend, Next.js 15 frontend, Vapi + Twilio voice. Stack, architecture, quick start, roadmap.",
   alternates: { canonical: "/docs" },
   openGraph: {
-    title: "Hearthline · Docs",
-    description: "Self-host Hearthline. Stack, architecture, quick start, roadmap.",
+    title: "Workmento · Docs",
+    description: "Self-host Workmento. Stack, architecture, quick start, roadmap.",
     url: "/docs",
   },
 };
 
-const GITHUB_URL = "https://github.com/codewithmuh/hearthline";
-const YT_URL = "https://www.youtube.com/@codewithmuh";
-const REPO_TREE = "https://github.com/codewithmuh/hearthline/blob/main";
+const GITHUB_URL = "https://github.com/workmento/workmento";
+const REPO_TREE = "https://github.com/workmento/workmento/blob/main";
 
 const STACK = [
   {
@@ -38,13 +37,13 @@ const STACK = [
   {
     tag: "Voice",
     title: "Vapi + Twilio (custom-LLM mode)",
-    body: "Vapi POSTs every conversation turn to /api/calls/vapi/chat/completions/. Anna runs an agentic loop server-side and returns the next utterance plus optional X-Vapi-End-Call header.",
+    body: "Vapi POSTs every conversation turn to /api/calls/vapi/chat/completions/. Demi runs an agentic loop server-side and returns the next utterance plus optional X-Vapi-End-Call header.",
     codeHint: "apps/calls/views.py · chat_completions",
     href: `${REPO_TREE}/backend/apps/calls/views.py`,
   },
   {
     tag: "AI Pipeline",
-    title: "Anna · Claude Sonnet 4.6 + GPT-4o vision",
+    title: "Demi · Claude Sonnet 4.6 + GPT-4o vision",
     body: "5-tool loop (qualify_lead, check_availability, book_appointment, send_sms, end_call). Tools persist Customer, Lead, Conversation rows in real time.",
     codeHint: "apps/calls/agent/{prompts,tools,receptionist}.py",
     href: `${REPO_TREE}/backend/apps/calls/agent`,
@@ -69,7 +68,7 @@ const PIPELINE = [
   {
     stage: "Inbound call",
     code: "Vapi · custom-LLM mode",
-    body: "Vapi handles STT + TTS. The caller hears Anna in the voice you picked, in the language you configured.",
+    body: "Vapi handles STT + TTS. The caller hears Demi in the voice you picked, in the language you configured.",
     href: `${REPO_TREE}/backend/apps/calls/views.py`,
   },
   {
@@ -79,7 +78,7 @@ const PIPELINE = [
     href: `${REPO_TREE}/backend/apps/calls/views.py`,
   },
   {
-    stage: "Anna decides what to do next",
+    stage: "Demi decides what to do next",
     code: "agent/receptionist.py",
     body: "Claude Sonnet 4.6 picks from 5 tools — qualify_lead, check_availability, book_appointment, send_sms, end_call — or speaks.",
     href: `${REPO_TREE}/backend/apps/calls/agent/receptionist.py`,
@@ -87,7 +86,7 @@ const PIPELINE = [
   {
     stage: "Tools write to the database",
     code: "services/persistence.py",
-    body: "qualify_lead creates/updates Customer + Lead + Conversation. book_appointment confirms a slot. Every fact Anna learned is persisted.",
+    body: "qualify_lead creates/updates Customer + Lead + Conversation. book_appointment confirms a slot. Every fact Demi learned is persisted.",
     href: `${REPO_TREE}/backend/apps/calls/services/persistence.py`,
   },
   {
@@ -181,9 +180,6 @@ export default async function DocsPage() {
                 >
                   {t("docs.toc.starGh")}
                 </a>
-                <a href={YT_URL} target="_blank" rel="noreferrer" className="docs-toc-yt">
-                  {t("docs.toc.buildAlong")}
-                </a>
               </div>
             </div>
           </aside>
@@ -201,8 +197,8 @@ export default async function DocsPage() {
               <h2 className="docs-h2">{t("docs.h.quickstart")}</h2>
               <pre className="docs-code">
                 <code>{`# 1 — clone
-git clone https://github.com/codewithmuh/hearthline.git
-cd hearthline
+git clone https://github.com/workmento/workmento.git
+cd workmento
 
 # 2 — copy the env template (works without API keys)
 cp .env.example .env
@@ -332,7 +328,7 @@ docker compose up --build
                   GNU AGPL-3.0
                 </a>
                 {t("docs.licenseP.mid")}
-                <a href="mailto:contact@codewithmuh.com">contact@codewithmuh.com</a>
+                <a href="mailto:contact@workmento.com">contact@workmento.com</a>
                 {t("docs.licenseP.post")}
               </p>
               <div className="docs-cta">

@@ -1,11 +1,11 @@
-"""System prompt for Anna — Hearthline's AI front-desk for home-service teams."""
+"""System prompt for Demi — Workmento's AI front-desk for home-service teams."""
 from datetime import datetime
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
 # How big numbers should be SPOKEN out loud, by currency. Speech-to-text in
 # Vapi will otherwise read each digit (one zero zero zero zero zero zero) which
-# makes Anna sound robotic. We hand the model an explicit cheat sheet.
+# makes Demi sound robotic. We hand the model an explicit cheat sheet.
 # Two patterns dominate large-number speech:
 #   - "western": thousand → million → billion. Used by USD, EUR, GBP, etc.
 #   - "south asian": lakh (10^5) → crore (10^7). Used by PKR, INR, BDT,
@@ -103,7 +103,7 @@ def get_receptionist_prompt(business_name: str = "Rolling Shutters Inc.",
                             trade: str = "windows",
                             knowledge_base: str = "",
                             timezone: str = "America/Los_Angeles",
-                            persona_name: str = "Anna",
+                            persona_name: str = "Demi",
                             currency: str = "USD") -> str:
     """Compose the runtime system prompt with current date + business config."""
     try:
@@ -120,7 +120,7 @@ def get_receptionist_prompt(business_name: str = "Rolling Shutters Inc.",
     )
 
     base = RECEPTIONIST_PROMPT.format(
-        persona_name=(persona_name or "Anna").strip() or "Anna",
+        persona_name=(persona_name or "Demi").strip() or "Demi",
         business_name=business_name,
         trade=trade,
         today=today,

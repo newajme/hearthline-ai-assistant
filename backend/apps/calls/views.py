@@ -144,7 +144,7 @@ def _openai_to_claude(messages: list) -> list:
 def chat_completions(request):
     """OpenAI-compatible chat completions endpoint for Vapi's custom LLM mode.
 
-    Vapi POSTs the running conversation here on every turn; we run Anna's agentic
+    Vapi POSTs the running conversation here on every turn; we run Demi's agentic
     loop (Claude + tools) and return a single completion. SSE streaming supported.
     """
     if request.method != "POST":
@@ -259,7 +259,7 @@ class VapiWebhook(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        return Response({"status": "ok", "service": "Hearthline Vapi webhook"})
+        return Response({"status": "ok", "service": "Workmento Vapi webhook"})
 
     def post(self, request):
         if not _verify_vapi_signature(request):
@@ -295,7 +295,7 @@ class VapiWebhook(APIView):
             "hang": "completed",
         }
 
-        persona_used = (business.voice_persona or "Anna").strip() or "Anna"
+        persona_used = (business.voice_persona or "Demi").strip() or "Demi"
         defaults = {
             "business": business,
             "from_number": from_number,

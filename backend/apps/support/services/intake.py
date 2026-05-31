@@ -70,7 +70,7 @@ def handle_inbound(
         logger.info("[SUPPORT INTAKE] ticket=%s human_only — no AI reply", ticket.pk)
         return {"ticket_id": ticket.pk, "reply": "", "sent": False, "human_only": True}
 
-    # WhatsApp gets the full Anna receptionist loop (qualify_lead, draft_quote,
+    # WhatsApp gets the full Demi receptionist loop (qualify_lead, draft_quote,
     # book_appointment) so a customer chat creates real Lead + Quote rows.
     # Other channels still use the lightweight knowledge-base responder.
     if channel == "whatsapp":

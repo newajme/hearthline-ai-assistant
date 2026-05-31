@@ -10,7 +10,7 @@ const EMPTY_BUSINESS: Business = {
   timezone: "UTC",
   currency: "USD",
   phone_number: "",
-  voice_persona: "Anna",
+  voice_persona: "Demi",
   knowledge_base: "",
   llm_provider: "anthropic",
   anthropic_api_key: "",

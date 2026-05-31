@@ -64,7 +64,7 @@ function ChatDemo({ t }: { t: T }) {
       <div className="demo-card-head">
         <span className="chat-avatar">A</span>
         <div>
-          <div className="chat-name">Anna <span className="chat-online" /></div>
+          <div className="chat-name">Demi <span className="chat-online" /></div>
           <div className="chat-role">{t("demo.chat.role")}</div>
         </div>
       </div>
@@ -148,7 +148,7 @@ function KbDemo({ t }: { t: T }) {
         <Bubble role="out">{t("demo.kb.out2")}</Bubble>
       </div>
       <div className="demo-foot">
-        <span className="action-pill subsidy"><span className="action-dot" style={{ background: "#d2532b" }} /> {t("demo.kb.pill")}</span>
+        <span className="action-pill subsidy"><span className="action-dot" style={{ background: "#00C95C" }} /> {t("demo.kb.pill")}</span>
       </div>
     </div>
   );

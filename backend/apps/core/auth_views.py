@@ -1,4 +1,4 @@
-"""Session-based auth endpoints for the Hearthline dashboard.
+"""Session-based auth endpoints for the Workmento dashboard.
 
 POST /api/auth/login/   { username, password }  -> sets sessionid cookie, returns user
 POST /api/auth/logout/                          -> clears session
