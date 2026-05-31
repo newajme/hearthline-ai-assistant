@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { MouseEvent } from "react";
 import { useEffect, useState } from "react";
 
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 import WorkmentoLogo from "./WorkmentoLogo";
+import WorkmentoRouteLoader from "./WorkmentoRouteLoader";
 import { useI18n } from "./lib/i18n";
 
 const DEMO_URL = "/contact";
@@ -31,9 +34,22 @@ export function MarketingTopbar({
   ossPill,
 }: TopbarProps) {
   const { t } = useI18n();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [openingDashboard, setOpeningDashboard] = useState(false);
   const resolvedLinks = links ?? defaultLinks(t);
+  const enhanceLoginCta = pathname === "/";
+
+  function onDashboardLoginClick(ev: MouseEvent<HTMLAnchorElement>) {
+    if (!enhanceLoginCta) return;
+    if (openingDashboard) {
+      ev.preventDefault();
+      return;
+    }
+    setOpen(false);
+    setOpeningDashboard(true);
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -86,6 +102,14 @@ export function MarketingTopbar({
           >
             <Github />
           </a>
+          <Link
+            href="/login?next=/dashboard"
+            className="btn btn-ghost topbar-cta topbar-login-cta"
+            aria-busy={enhanceLoginCta && openingDashboard ? "true" : undefined}
+            onClick={onDashboardLoginClick}
+          >
+            {enhanceLoginCta && openingDashboard ? "Opening dashboard…" : "Log in to dashboard"}
+          </Link>
           <a
             href={DEMO_URL}
             target="_blank"
@@ -141,6 +165,14 @@ export function MarketingTopbar({
             >
               <Github /> {t("topbar.starGh")}
             </a>
+            <Link
+              href="/login?next=/dashboard"
+              className="btn btn-ghost mobile-sheet-btn"
+              aria-busy={enhanceLoginCta && openingDashboard ? "true" : undefined}
+              onClick={onDashboardLoginClick}
+            >
+              {enhanceLoginCta && openingDashboard ? "Opening dashboard…" : "Log in to dashboard"}
+            </Link>
             <a
               href={DEMO_URL}
               target="_blank"
@@ -152,6 +184,8 @@ export function MarketingTopbar({
           </div>
         </div>
       )}
+
+      {enhanceLoginCta && openingDashboard && <WorkmentoRouteLoader />}
     </>
   );
 }

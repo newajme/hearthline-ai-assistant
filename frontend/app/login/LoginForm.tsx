@@ -18,6 +18,7 @@ export default function LoginForm({ next }: { next: string }) {
 
   async function onSubmit(ev: FormEvent) {
     ev.preventDefault();
+    if (busy) return;
     setErr(null);
     setBusy(true);
     try {
@@ -95,7 +96,19 @@ export default function LoginForm({ next }: { next: string }) {
           </button>
         </div>
 
-        <button type="submit" className="btn btn-primary auth-submit" disabled={busy}>
+        <button
+          type="submit"
+          className="btn btn-primary auth-submit"
+          disabled={busy}
+          aria-busy={busy ? "true" : undefined}
+        >
+          {busy && (
+            <img
+              src="/branding/workmento-mark.png"
+              alt=""
+              className="auth-submit-loader"
+            />
+          )}
           {busy ? t("login.submitting") : t("login.submit")}
           {!busy && <span aria-hidden>→</span>}
         </button>

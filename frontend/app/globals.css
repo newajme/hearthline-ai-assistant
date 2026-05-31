@@ -154,6 +154,7 @@ img { max-width: 100%; display: block; }
 }
 .nav-link:hover { color: var(--brand); }
 .topbar-right { display: flex; align-items: center; gap: 8px; }
+.topbar-login-cta { padding-inline: 14px; }
 
 /* ---- Buttons ---- */
 .btn {
@@ -194,6 +195,33 @@ img { max-width: 100%; display: block; }
 .btn-onDark-ghost:hover { background: rgba(255,255,255,0.08); color: white; }
 .gh-btn { display: inline-flex; align-items: center; gap: 8px; }
 .gh-btn svg { flex-shrink: 0; }
+
+.workmento-route-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 24px;
+  background: #101113;
+}
+.workmento-route-loader-gif {
+  width: min(720px, 82vw);
+  height: auto;
+  object-fit: contain;
+}
+.workmento-route-loader-text {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+@media (max-width: 520px) {
+  .workmento-route-loader-gif { width: min(560px, 90vw); }
+}
 
 /* ---- Layout ---- */
 .shell {
@@ -3339,7 +3367,7 @@ img { max-width: 100%; display: block; }
 .app-shell {
   display: grid;
   grid-template-columns: 232px 1fr;
-  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--surface-2);
   transition: grid-template-columns .18s ease;
 }
@@ -3358,26 +3386,26 @@ img { max-width: 100%; display: block; }
   gap: 4px;
   position: sticky;
   top: 0;
-  height: 100vh;
-  overflow-y: auto;
+  height: 100dvh;
+  overflow: hidden;
   z-index: 26;
   transition: padding .18s ease;
 }
 .sidebar-collapse-toggle {
-  position: absolute;
-  top: 22px;
-  right: -12px;
-  z-index: 2;
-  width: 24px;
-  height: 24px;
-  display: grid;
-  place-items: center;
+  width: 100%;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.72);
   color: var(--ink-2);
-  box-shadow: 0 6px 18px rgba(10, 10, 10, 0.08);
   cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
   transition: background .12s ease, border-color .12s ease, color .12s ease, transform .12s ease;
 }
 .sidebar-collapse-toggle svg { width: 14px; height: 14px; }
@@ -3385,7 +3413,6 @@ img { max-width: 100%; display: block; }
   background: white;
   border-color: rgba(10, 10, 10, 0.18);
   color: var(--ink);
-  transform: translateX(-1px);
 }
 .sidebar-collapse-toggle:focus-visible {
   outline: 2px solid var(--brand);
@@ -3396,8 +3423,17 @@ img { max-width: 100%; display: block; }
   border-bottom: 1px solid var(--border);
   margin-bottom: 14px;
   justify-content: center;
+  flex: 0 0 auto;
 }
 .app-sidebar .brand .workmento-logo-mark { width: 34px; height: 34px; }
+.sidebar-nav {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.sidebar-nav::-webkit-scrollbar { display: none; }
 .sidebar-section {
   font-size: 10.5px;
   text-transform: uppercase;
@@ -3421,6 +3457,10 @@ img { max-width: 100%; display: block; }
 }
 .sidebar-link svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.75; }
 .sidebar-link:hover { background: var(--surface-2); color: var(--ink); text-decoration: none; }
+.sidebar-link:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
 .sidebar-link.active {
   background: var(--ink);
   color: white;
@@ -3437,7 +3477,12 @@ img { max-width: 100%; display: block; }
   font-variant-numeric: tabular-nums;
 }
 .sidebar-link.active .badge { background: rgba(255,255,255,0.15); color: white; }
-.sidebar-bottom { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
+.sidebar-bottom {
+  flex: 0 0 auto;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
 .sidebar-user {
   display: flex; align-items: center; gap: 10px;
   padding: 10px 12px;
@@ -3457,7 +3502,6 @@ img { max-width: 100%; display: block; }
 @media (min-width: 881px) {
   .app-sidebar[data-collapsed="true"] {
     padding: 18px 10px;
-    overflow: visible;
   }
   .app-sidebar[data-collapsed="true"] .brand {
     padding: 6px 0 14px;
@@ -3469,44 +3513,40 @@ img { max-width: 100%; display: block; }
     display: none;
   }
   .app-sidebar[data-collapsed="true"] .sidebar-link {
-    position: relative;
     justify-content: center;
     gap: 0;
     padding: 10px 0;
-  }
-  .app-sidebar[data-collapsed="true"] .sidebar-link::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    left: calc(100% + 12px);
-    top: 50%;
-    transform: translateY(-50%) translateX(-3px);
-    opacity: 0;
-    pointer-events: none;
-    white-space: nowrap;
-    padding: 7px 10px;
-    border-radius: 8px;
-    background: #0a0a0a;
-    color: white;
-    box-shadow: 0 10px 24px rgba(10, 10, 10, 0.14);
-    font-size: 12.5px;
-    font-weight: 600;
-    letter-spacing: 0;
-    transition: opacity .12s ease, transform .12s ease;
-  }
-  .app-sidebar[data-collapsed="true"] .sidebar-link:hover::after,
-  .app-sidebar[data-collapsed="true"] .sidebar-link:focus-visible::after {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0);
   }
   .app-sidebar[data-collapsed="true"] .sidebar-user {
     justify-content: center;
     padding: 10px 0;
   }
+  .app-sidebar[data-collapsed="true"] .sidebar-collapse-toggle {
+    min-height: 38px;
+    padding: 0;
+  }
+}
+.sidebar-tooltip {
+  position: fixed;
+  left: 84px;
+  z-index: 1000;
+  transform: translateY(-50%);
+  pointer-events: none;
+  white-space: nowrap;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: #0a0a0a;
+  color: white;
+  box-shadow: 0 10px 24px rgba(10, 10, 10, 0.14);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0;
 }
 
 @media (max-width: 880px) {
   .app-sidebar { padding: 14px 10px; }
   .sidebar-collapse-toggle { display: none; }
+  .sidebar-tooltip { display: none; }
   .sidebar-section, .sidebar-link span:not(.badge) { display: none; }
   .sidebar-link { justify-content: center; padding: 10px 0; }
   .sidebar-link .badge { display: none; }
@@ -6034,6 +6074,16 @@ select.text-input { cursor: pointer; appearance: none; background-image: url("da
   font-size: 14.5px;
 }
 .auth-submit:disabled { opacity: 0.6; cursor: progress; }
+.auth-submit-loader {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  animation: auth-submit-loader-pulse 1s ease-in-out infinite;
+}
+@keyframes auth-submit-loader-pulse {
+  0%, 100% { opacity: 0.58; }
+  50% { opacity: 1; }
+}
 .auth-foot {
   margin: 18px 0 0;
   text-align: center;

@@ -80,6 +80,7 @@ const NAV_ADMIN: { href: string; label: string; key: keyof Counts | null; icon: 
 ];
 
 type SidebarUser = { name: string; business: string };
+type SidebarTooltip = { label: string; top: number } | null;
 
 const SIDEBAR_STORAGE_KEY = "workmento.sidebar.collapsed";
 
@@ -101,17 +102,33 @@ export default function Sidebar({
 }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [tooltip, setTooltip] = useState<SidebarTooltip>(null);
 
   useEffect(() => {
-    setCollapsed(localStorage.getItem(SIDEBAR_STORAGE_KEY) === "true");
+    try {
+      setCollapsed(localStorage.getItem(SIDEBAR_STORAGE_KEY) === "true");
+    } catch {
+      setCollapsed(false);
+    }
   }, []);
 
   const toggleCollapsed = () => {
     setCollapsed((current) => {
       const next = !current;
-      localStorage.setItem(SIDEBAR_STORAGE_KEY, String(next));
+      try {
+        localStorage.setItem(SIDEBAR_STORAGE_KEY, String(next));
+      } catch {
+        // Keep the in-memory toggle usable if storage is unavailable.
+      }
+      if (!next) setTooltip(null);
       return next;
     });
+  };
+
+  const showTooltip = (label: string, target: HTMLElement) => {
+    if (!collapsed || window.innerWidth <= 880) return;
+    const rect = target.getBoundingClientRect();
+    setTooltip({ label, top: rect.top + rect.height / 2 });
   };
 
   const isActive = (href: string) =>
@@ -122,64 +139,68 @@ export default function Sidebar({
 
   return (
     <aside className="app-sidebar" data-collapsed={collapsed ? "true" : "false"}>
-      <button
-        type="button"
-        className="sidebar-collapse-toggle"
-        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        aria-expanded={!collapsed}
-        onClick={toggleCollapsed}
-      >
-        {collapsed ? (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
-        ) : (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
-        )}
-      </button>
       <Link href="/" className="brand" title="Back to landing">
         <WorkmentoLogo variant="mark" />
       </Link>
 
-      <p className="sidebar-section">Operations</p>
-      {navOps.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className={`sidebar-link ${isActive(item.href) ? "active" : ""}`}
-          data-tooltip={item.href === "/dashboard/test-call" ? "Test Demi" : item.label}
-        >
-          {item.icon}
-          <span className="sidebar-label">{item.label}</span>
-          {item.key && counts[item.key] > 0 && (
-            <span className="badge">{counts[item.key]}</span>
-          )}
-        </Link>
-      ))}
+      <nav className="sidebar-nav" aria-label="Dashboard">
+        <p className="sidebar-section">Operations</p>
+        {navOps.map((item) => {
+          const tooltipLabel = item.href === "/dashboard/test-call" ? "Test Demi" : item.label;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`sidebar-link ${isActive(item.href) ? "active" : ""}`}
+              data-tooltip={tooltipLabel}
+              onMouseEnter={(event) => showTooltip(tooltipLabel, event.currentTarget)}
+              onMouseLeave={() => setTooltip(null)}
+              onFocus={(event) => showTooltip(tooltipLabel, event.currentTarget)}
+              onBlur={() => setTooltip(null)}
+            >
+              {item.icon}
+              <span className="sidebar-label">{item.label}</span>
+              {item.key && counts[item.key] > 0 && (
+                <span className="badge">{counts[item.key]}</span>
+              )}
+            </Link>
+          );
+        })}
 
-      <p className="sidebar-section">Admin</p>
-      {NAV_ADMIN.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className={`sidebar-link ${isActive(item.href) ? "active" : ""}`}
-          data-tooltip={item.label}
+        <p className="sidebar-section">Admin</p>
+        {NAV_ADMIN.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`sidebar-link ${isActive(item.href) ? "active" : ""}`}
+            data-tooltip={item.label}
+            onMouseEnter={(event) => showTooltip(item.label, event.currentTarget)}
+            onMouseLeave={() => setTooltip(null)}
+            onFocus={(event) => showTooltip(item.label, event.currentTarget)}
+            onBlur={() => setTooltip(null)}
+          >
+            {item.icon}
+            <span className="sidebar-label">{item.label}</span>
+            {item.key && counts[item.key] > 0 && (
+              <span className="badge">{counts[item.key]}</span>
+            )}
+          </Link>
+        ))}
+        <a
+          href={getAdminUrl()}
+          target="_blank"
+          rel="noreferrer"
+          className="sidebar-link"
+          data-tooltip="Django admin"
+          onMouseEnter={(event) => showTooltip("Django admin", event.currentTarget)}
+          onMouseLeave={() => setTooltip(null)}
+          onFocus={(event) => showTooltip("Django admin", event.currentTarget)}
+          onBlur={() => setTooltip(null)}
         >
-          {item.icon}
-          <span className="sidebar-label">{item.label}</span>
-          {item.key && counts[item.key] > 0 && (
-            <span className="badge">{counts[item.key]}</span>
-          )}
-        </Link>
-      ))}
-      <a
-        href={getAdminUrl()}
-        target="_blank"
-        rel="noreferrer"
-        className="sidebar-link"
-        data-tooltip="Django admin"
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
-        <span className="sidebar-label">Django admin</span>
-      </a>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+          <span className="sidebar-label">Django admin</span>
+        </a>
+      </nav>
 
       <div className="sidebar-bottom">
         <div className="sidebar-user">
@@ -189,7 +210,24 @@ export default function Sidebar({
             <div className="sidebar-user-role">{displayBusiness}</div>
           </div>
         </div>
+        <button
+          type="button"
+          className="sidebar-collapse-toggle"
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-expanded={!collapsed}
+          onClick={toggleCollapsed}
+        >
+          {collapsed ? (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
+          ) : (
+            <>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+              <span className="sidebar-label">Collapse menu</span>
+            </>
+          )}
+        </button>
       </div>
+      {tooltip && <div className="sidebar-tooltip" style={{ top: tooltip.top }}>{tooltip.label}</div>}
     </aside>
   );
 }
