@@ -203,13 +203,15 @@ img { max-width: 100%; display: block; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 18px;
   padding: 24px;
-  background: #101113;
+  padding-top: 28dvh;
+  background: #111315;
 }
 .workmento-route-loader-gif {
-  width: min(720px, 82vw);
+  display: block;
+  width: clamp(280px, 32vw, 420px);
   height: auto;
   object-fit: contain;
 }
@@ -218,9 +220,12 @@ img { max-width: 100%; display: block; }
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.01em;
+  text-align: center;
+  max-width: min(360px, 84vw);
 }
 @media (max-width: 520px) {
-  .workmento-route-loader-gif { width: min(560px, 90vw); }
+  .workmento-route-loader { padding-top: 29dvh; }
+  .workmento-route-loader-gif { width: clamp(220px, 72vw, 310px); }
 }
 
 /* ---- Layout ---- */
@@ -3391,15 +3396,26 @@ img { max-width: 100%; display: block; }
   z-index: 26;
   transition: padding .18s ease;
 }
+.sidebar-header {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  flex: 0 0 auto;
+  min-height: 58px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
 .sidebar-collapse-toggle {
-  width: 100%;
-  min-height: 38px;
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  flex: 0 0 auto;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.72);
   color: var(--ink-2);
   cursor: pointer;
@@ -3419,10 +3435,8 @@ img { max-width: 100%; display: block; }
   outline-offset: 2px;
 }
 .app-sidebar .brand {
-  padding: 6px 10px 14px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 14px;
-  justify-content: center;
+  padding: 0;
+  justify-content: flex-start;
   flex: 0 0 auto;
 }
 .app-sidebar .brand .workmento-logo-mark { width: 34px; height: 34px; }
@@ -3503,8 +3517,17 @@ img { max-width: 100%; display: block; }
   .app-sidebar[data-collapsed="true"] {
     padding: 18px 10px;
   }
+  .app-sidebar[data-collapsed="true"] .sidebar-header {
+    align-items: center;
+    min-height: 84px;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .app-sidebar[data-collapsed="true"] .sidebar-collapse-toggle {
+    margin-left: 0;
+  }
   .app-sidebar[data-collapsed="true"] .brand {
-    padding: 6px 0 14px;
+    justify-content: center;
   }
   .app-sidebar[data-collapsed="true"] .sidebar-section,
   .app-sidebar[data-collapsed="true"] .sidebar-label,
@@ -3520,10 +3543,6 @@ img { max-width: 100%; display: block; }
   .app-sidebar[data-collapsed="true"] .sidebar-user {
     justify-content: center;
     padding: 10px 0;
-  }
-  .app-sidebar[data-collapsed="true"] .sidebar-collapse-toggle {
-    min-height: 38px;
-    padding: 0;
   }
 }
 .sidebar-tooltip {
@@ -3545,6 +3564,7 @@ img { max-width: 100%; display: block; }
 
 @media (max-width: 880px) {
   .app-sidebar { padding: 14px 10px; }
+  .sidebar-header { justify-content: center; }
   .sidebar-collapse-toggle { display: none; }
   .sidebar-tooltip { display: none; }
   .sidebar-section, .sidebar-link span:not(.badge) { display: none; }

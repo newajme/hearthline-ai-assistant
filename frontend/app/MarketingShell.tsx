@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { MouseEvent } from "react";
 import { useEffect, useState } from "react";
 
@@ -13,6 +13,8 @@ import { useI18n } from "./lib/i18n";
 
 const DEMO_URL = "/contact";
 const REPO_URL = "https://github.com/workmento/workmento";
+const DASHBOARD_LOGIN_HREF = "/login?next=/dashboard";
+const DASHBOARD_LOGIN_MIN_LOAD_MS = 3000;
 
 export type NavLink = { href: string; label: string };
 
@@ -34,6 +36,7 @@ export function MarketingTopbar({
   ossPill,
 }: TopbarProps) {
   const { t } = useI18n();
+  const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -43,13 +46,22 @@ export function MarketingTopbar({
 
   function onDashboardLoginClick(ev: MouseEvent<HTMLAnchorElement>) {
     if (!enhanceLoginCta) return;
+    ev.preventDefault();
     if (openingDashboard) {
-      ev.preventDefault();
       return;
     }
     setOpen(false);
     setOpeningDashboard(true);
+    router.prefetch(DASHBOARD_LOGIN_HREF);
+    window.setTimeout(() => {
+      router.push(DASHBOARD_LOGIN_HREF);
+    }, DASHBOARD_LOGIN_MIN_LOAD_MS);
   }
+
+  useEffect(() => {
+    if (!enhanceLoginCta) return;
+    router.prefetch(DASHBOARD_LOGIN_HREF);
+  }, [enhanceLoginCta, router]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -103,9 +115,10 @@ export function MarketingTopbar({
             <Github />
           </a>
           <Link
-            href="/login?next=/dashboard"
+            href={DASHBOARD_LOGIN_HREF}
             className="btn btn-ghost topbar-cta topbar-login-cta"
             aria-busy={enhanceLoginCta && openingDashboard ? "true" : undefined}
+            aria-disabled={enhanceLoginCta && openingDashboard ? "true" : undefined}
             onClick={onDashboardLoginClick}
           >
             {enhanceLoginCta && openingDashboard ? "Opening dashboard…" : "Log in to dashboard"}
@@ -166,9 +179,10 @@ export function MarketingTopbar({
               <Github /> {t("topbar.starGh")}
             </a>
             <Link
-              href="/login?next=/dashboard"
+              href={DASHBOARD_LOGIN_HREF}
               className="btn btn-ghost mobile-sheet-btn"
               aria-busy={enhanceLoginCta && openingDashboard ? "true" : undefined}
+              aria-disabled={enhanceLoginCta && openingDashboard ? "true" : undefined}
               onClick={onDashboardLoginClick}
             >
               {enhanceLoginCta && openingDashboard ? "Opening dashboard…" : "Log in to dashboard"}

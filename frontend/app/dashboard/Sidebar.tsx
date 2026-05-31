@@ -139,9 +139,24 @@ export default function Sidebar({
 
   return (
     <aside className="app-sidebar" data-collapsed={collapsed ? "true" : "false"}>
-      <Link href="/" className="brand" title="Back to landing">
-        <WorkmentoLogo variant="mark" />
-      </Link>
+      <header className="sidebar-header">
+        <Link href="/" className="brand" title="Back to landing">
+          <WorkmentoLogo variant="mark" />
+        </Link>
+        <button
+          type="button"
+          className="sidebar-collapse-toggle"
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-expanded={!collapsed}
+          onClick={toggleCollapsed}
+        >
+          {collapsed ? (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+          )}
+        </button>
+      </header>
 
       <nav className="sidebar-nav" aria-label="Dashboard">
         <p className="sidebar-section">Operations</p>
@@ -210,22 +225,6 @@ export default function Sidebar({
             <div className="sidebar-user-role">{displayBusiness}</div>
           </div>
         </div>
-        <button
-          type="button"
-          className="sidebar-collapse-toggle"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          aria-expanded={!collapsed}
-          onClick={toggleCollapsed}
-        >
-          {collapsed ? (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
-          ) : (
-            <>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
-              <span className="sidebar-label">Collapse menu</span>
-            </>
-          )}
-        </button>
       </div>
       {tooltip && <div className="sidebar-tooltip" style={{ top: tooltip.top }}>{tooltip.label}</div>}
     </aside>
