@@ -14,21 +14,19 @@ const fraunces = Fraunces({
   axes: ["SOFT", "opsz"],
 });
 
-const SITE_URL = "https://hearthline.codewithmuh.com";
+const SITE_URL = "https://workmento.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Hearthline — The 24/7 AI front desk for home-service teams",
-    template: "%s · Hearthline",
+    default: "Workmento — The 24/7 AI front desk for home-service teams",
+    template: "%s · Workmento",
   },
   description:
     "Phone, SMS, WhatsApp, email, chat — every customer touchpoint qualified, quoted, and dispatched without anyone picking up the phone.",
-  applicationName: "Hearthline",
+  applicationName: "Workmento",
   generator: "Next.js",
-  authors: [{ name: "Muhammad Rashid", url: "https://codewithmuh.com" }],
-  creator: "Muhammad Rashid (@codewithmuh)",
-  publisher: "Hearthline",
+  publisher: "Workmento",
   keywords: [
     "AI receptionist",
     "AI front desk",
@@ -39,14 +37,14 @@ export const metadata: Metadata = {
     "Twilio AI",
     "missed call automation",
     "open source AI receptionist",
-    "Anna AI",
+    "Demi AI",
   ],
   category: "business",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    siteName: "Hearthline",
-    title: "Hearthline — The 24/7 AI front desk for home-service teams",
+    siteName: "Workmento",
+    title: "Workmento — The 24/7 AI front desk for home-service teams",
     description:
       "Phone, SMS, WhatsApp, email, chat — every customer touchpoint qualified, quoted, and dispatched without anyone picking up the phone.",
     url: SITE_URL,
@@ -54,15 +52,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hearthline — The 24/7 AI front desk for home-service teams",
+    title: "Workmento — The 24/7 AI front desk for home-service teams",
     description:
-      "Anna answers, qualifies, and books — so your crew sleeps and your calendar fills itself.",
-    site: "@codewithmuh",
-    creator: "@codewithmuh",
+      "Demi answers, qualifies, and books — so your crew sleeps and your calendar fills itself.",
   },
   appleWebApp: {
     capable: true,
-    title: "Hearthline",
+    title: "Workmento",
     statusBarStyle: "black-translucent",
   },
   robots: {
@@ -78,9 +74,9 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/branding/workmento-mark.png", type: "image/png" },
     ],
-    apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/branding/workmento-mark.png", type: "image/png" }],
   },
 };
 
@@ -88,40 +84,28 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fbf6ee" },
-    { media: "(prefers-color-scheme: dark)",  color: "#0b0b0f" },
+      { media: "(prefers-color-scheme: light)", color: "#F7FBF8" },
+      { media: "(prefers-color-scheme: dark)",  color: "#07110C" },
   ],
 };
 
 const ORG_JSONLD = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "Hearthline",
+  name: "Workmento",
   url: SITE_URL,
-  logo: `${SITE_URL}/icon.svg`,
+  logo: `${SITE_URL}/branding/workmento-mark.png`,
   description:
     "Open-source 24/7 AI front desk for home-service teams — phone, SMS, WhatsApp, email, chat.",
-  founder: {
-    "@type": "Person",
-    name: "Muhammad Rashid",
-    url: "https://codewithmuh.com",
-  },
-  sameAs: [
-    "https://github.com/codewithmuh/hearthline",
-    "https://www.youtube.com/@codewithmuh",
-    "https://www.linkedin.com/in/muhammad-rashid-daha/",
-    "https://x.com/codewithmuh",
-    "https://codewithmuh.com",
-  ],
 };
 
 const WEBSITE_JSONLD = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Hearthline",
+  name: "Workmento",
   url: SITE_URL,
   inLanguage: "en",
-  publisher: { "@type": "Organization", name: "Hearthline" },
+  publisher: { "@type": "Organization", name: "Workmento" },
 };
 
 const THEME_INIT = `(function(){try{var s=localStorage.getItem('hl-theme');var m=window.matchMedia('(prefers-color-scheme: dark)').matches;var t=s||(m?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;

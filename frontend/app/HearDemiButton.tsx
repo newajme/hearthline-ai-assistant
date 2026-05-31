@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const SAMPLE_SRC = "/anna-sample.mp3";
+const SAMPLE_SRC = "/demi-sample.mp3";
 const TRANSCRIPT =
-  "“Hi, this is Anna with ABC Solar Co. I can help you tonight — what’s going on at home?”";
+  "“Hi, this is Demi with ABC Solar Co. I can help you tonight — what’s going on at home?”";
 
-export default function HearAnnaButton() {
+export default function HearDemiButton() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
   const [available, setAvailable] = useState<boolean | null>(null);
@@ -36,21 +36,21 @@ export default function HearAnnaButton() {
   if (available === false) return null;
 
   return (
-    <div className="hear-anna">
-      <button type="button" className={`hear-anna-btn ${playing ? "is-playing" : ""}`} onClick={toggle} aria-label={playing ? "Pause sample" : "Play sample"}>
-        <span className="hear-anna-icon" aria-hidden>
+    <div className="hear-demi">
+      <button type="button" className={`hear-demi-btn ${playing ? "is-playing" : ""}`} onClick={toggle} aria-label={playing ? "Pause sample" : "Play sample"}>
+        <span className="hear-demi-icon" aria-hidden>
           {playing ? (
             <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>
           ) : (
             <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7 5l13 7-13 7V5z" /></svg>
           )}
         </span>
-        <span>Hear Anna · 15s sample</span>
-        <span className="hear-anna-progress" aria-hidden>
-          <span className="hear-anna-progress-bar" style={{ width: `${progress}%` }} />
+        <span>Hear Demi · 15s sample</span>
+        <span className="hear-demi-progress" aria-hidden>
+          <span className="hear-demi-progress-bar" style={{ width: `${progress}%` }} />
         </span>
       </button>
-      <p className="hear-anna-transcript">{TRANSCRIPT}</p>
+      <p className="hear-demi-transcript">{TRANSCRIPT}</p>
       <audio
         ref={audioRef}
         src={SAMPLE_SRC}

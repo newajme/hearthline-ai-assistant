@@ -12,16 +12,16 @@ export const FAQS: FaqItem[] = [
     q: "How long does setup take?",
     category: "Setup",
     aText:
-      "About 30 minutes for the basics — business hours, service area, pricing rules, and a phone number to forward. Tuning Anna's voice and pricing rules to your exact business is a few hours of iteration after that.",
+      "About 30 minutes for the basics — business hours, service area, pricing rules, and a phone number to forward. Tuning Demi's voice and pricing rules to your exact business is a few hours of iteration after that.",
   },
   {
-    q: "Does Anna sound like a robot?",
+    q: "Does Demi sound like a robot?",
     category: "Product",
     aText:
-      "No — Anna runs on the latest neural voices (ElevenLabs by default; configurable). You pick the voice; most customers can't tell it's AI in a short call.",
+      "No — Demi runs on the latest neural voices (ElevenLabs by default; configurable). You pick the voice; most customers can't tell it's AI in a short call.",
   },
   {
-    q: "What languages does Anna support?",
+    q: "What languages does Demi support?",
     category: "Product",
     aText:
       "English, French, Spanish, German, Italian, Dutch, and Portuguese out of the box. Other languages work too — they just haven't been tuned to a brand voice yet.",
@@ -30,7 +30,7 @@ export const FAQS: FaqItem[] = [
     q: "Can I keep my existing phone number?",
     category: "Setup",
     aText:
-      "Yes. We forward your existing line to Hearthline, or you can publish a new dedicated number. SMS / WhatsApp routing works the same way.",
+      "Yes. We forward your existing line to Workmento, or you can publish a new dedicated number. SMS / WhatsApp routing works the same way.",
   },
   {
     q: "Which CRMs do you sync with?",
@@ -39,7 +39,7 @@ export const FAQS: FaqItem[] = [
       "HubSpot, Pipedrive, Salesforce, Zoho, and ServiceTitan have first-class integrations. Anything else can be wired through Zapier or the REST API — every interaction is just a Lead row.",
   },
   {
-    q: "What happens if Anna can't answer something?",
+    q: "What happens if Demi can't answer something?",
     category: "Product",
     aText:
       "She politely takes a detailed message, files it as a hot lead in your CRM, and pings whoever's on call. No customer is left hanging.",
@@ -57,13 +57,13 @@ export const FAQS: FaqItem[] = [
       "For self-host: free under AGPL-3.0. For done-for-you setup: a flat platform fee plus per-minute call usage. Most home-service teams land between $390–$890 / month all-in. Book a demo for an exact quote.",
   },
   {
-    q: "Can I try Hearthline before paying?",
+    q: "Can I try Workmento before paying?",
     category: "Pricing",
     aText:
       "Yes. The whole stack is open-source — clone the repo and run it locally with one Docker command, no credit card. For done-for-you setup we run a 14-day pilot before invoicing.",
   },
   {
-    q: "Can I host Hearthline myself?",
+    q: "Can I host Workmento myself?",
     category: "Open source",
     aText:
       "Yes — the whole stack is open source under AGPL-3.0. A commercial license is available for white-labeling, reselling, or running closed-source forks. See the docs for the self-host quick start.",

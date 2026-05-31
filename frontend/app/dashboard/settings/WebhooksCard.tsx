@@ -9,7 +9,7 @@ export default function WebhooksCard() {
         <li>
           <div>
             <div className="integrations-name">Vapi · custom LLM</div>
-            <div className="integrations-sub">Anna&apos;s agentic loop runs on every call turn.</div>
+            <div className="integrations-sub">Demi&apos;s agentic loop runs on every call turn.</div>
           </div>
           <code className="vapi-url">/api/calls/vapi/chat/completions/</code>
         </li>

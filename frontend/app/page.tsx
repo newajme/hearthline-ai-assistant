@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import AnnaDemoLauncher from "./AnnaDemoLauncher";
+import DemiDemoLauncher from "./DemiDemoLauncher";
 import ChatWidgetLazy from "./ChatWidgetLazy";
-import HearAnnaButton from "./HearAnnaButton";
+import HearDemiButton from "./HearDemiButton";
 import InstallSnippet from "./InstallSnippet";
 import HeroBackdrop from "./HeroBackdrop";
 import LiveTicker from "./LiveTicker";
@@ -13,22 +13,23 @@ import MobileAppsBand from "./MobileAppsBand";
 import MockDashboard from "./MockDashboard";
 import FeatureExplorer from "./FeatureExplorer";
 import StatsBand from "./StatsBand";
+import WorkmentoLogo from "./WorkmentoLogo";
 import { getT } from "./lib/i18n-server";
 
-const SITE_URL = "https://hearthline.codewithmuh.com";
-const DEMO_URL = "https://calendly.com/contact-codewithmuh/30min";
-const REPO_URL = "https://github.com/codewithmuh/hearthline";
+const SITE_URL = "https://workmento.com";
+const DEMO_URL = "/contact";
+const REPO_URL = "https://github.com/workmento/workmento";
 
 export const metadata: Metadata = {
-  title: "Hearthline — The 24/7 AI front desk for home-service teams",
+  title: "Workmento — The 24/7 AI front desk for home-service teams",
   description:
-    "Anna answers, qualifies, and books — so your crew sleeps and your calendar fills itself. Open-source AI receptionist for HVAC, plumbing, roofing, solar, and more.",
+    "Demi answers, qualifies, and books — so your crew sleeps and your calendar fills itself. Open-source AI receptionist for HVAC, plumbing, roofing, solar, and more.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    title: "Hearthline — The 24/7 AI front desk for home-service teams",
+    title: "Workmento — The 24/7 AI front desk for home-service teams",
     description:
-      "Anna answers, qualifies, and books — so your crew sleeps and your calendar fills itself.",
+      "Demi answers, qualifies, and books — so your crew sleeps and your calendar fills itself.",
     url: SITE_URL,
   },
 };
@@ -36,12 +37,12 @@ export const metadata: Metadata = {
 const SOFTWARE_JSONLD = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "Hearthline",
+  name: "Workmento",
   applicationCategory: "BusinessApplication",
   applicationSubCategory: "AI Receptionist",
   operatingSystem: "Web, Linux, Docker",
   description:
-    "Open-source 24/7 AI front desk for home-service teams — phone, SMS, WhatsApp, email, chat. Anna qualifies leads and books appointments automatically.",
+    "Open-source 24/7 AI front desk for home-service teams — phone, SMS, WhatsApp, email, chat. Demi qualifies leads and books appointments automatically.",
   url: SITE_URL,
   license: "https://www.gnu.org/licenses/agpl-3.0.html",
   isAccessibleForFree: true,
@@ -51,14 +52,9 @@ const SOFTWARE_JSONLD = {
     priceCurrency: "USD",
     description: "Self-host under AGPL-3.0. Done-for-you setup available.",
   },
-  author: {
-    "@type": "Person",
-    name: "Muhammad Rashid",
-    url: "https://codewithmuh.com",
-  },
   publisher: {
     "@type": "Organization",
-    name: "Hearthline",
+    name: "Workmento",
   },
   aggregateRating: undefined,
   featureList: [
@@ -91,7 +87,7 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(SOFTWARE_JSONLD) }}
       />
-      <MarketingTopbar showBuiltBy />
+      <MarketingTopbar />
 
       <main>
         {/* HERO */}
@@ -107,7 +103,7 @@ export default async function HomePage() {
           </h1>
           <p className="hero-sub">{t("hero.sub")}</p>
           <div className="hero-actions">
-            <AnnaDemoLauncher />
+            <DemiDemoLauncher />
             <a
               href={DEMO_URL}
               target="_blank"
@@ -118,7 +114,7 @@ export default async function HomePage() {
             </a>
           </div>
 
-          <HearAnnaButton />
+          <HearDemiButton />
 
           <p className="hero-trades">
             <span className="hero-trades-label">{t("hero.tradesPrefix")}</span>
@@ -146,11 +142,11 @@ export default async function HomePage() {
           <MockDashboard />
         </section>
 
-        <div className="ember-line" aria-hidden />
+        <div className="mint-line" aria-hidden />
 
         <MissedCallStory />
 
-        <div className="ember-line" aria-hidden />
+        <div className="mint-line" aria-hidden />
 
         <section className="shell section-tight" id="features">
           <div className="section-head">
@@ -161,7 +157,7 @@ export default async function HomePage() {
           <FeatureExplorer />
         </section>
 
-        <div className="ember-line" aria-hidden />
+        <div className="mint-line" aria-hidden />
 
         <section className="shell section-tight" id="industries">
           <div className="section-head">
@@ -192,7 +188,7 @@ export default async function HomePage() {
 
         <MobileAppsBand />
 
-        <div className="ember-line" aria-hidden />
+        <div className="mint-line" aria-hidden />
 
         <StatsBand />
 
@@ -214,15 +210,15 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <div className="ember-line" aria-hidden />
+        <div className="mint-line" aria-hidden />
 
         <section className="shell section-tight">
           <div className="final-cta">
-            <span className="final-cta-mark"><Flame /></span>
+            <span className="final-cta-mark"><WorkmentoLogo variant="mark" /></span>
             <h2 className="final-cta-title">{t("finalCta.title")}</h2>
             <p className="final-cta-sub">{t("finalCta.sub")}</p>
             <div className="final-cta-actions">
-              <AnnaDemoLauncher variant="onDark" />
+              <DemiDemoLauncher variant="onDark" />
               <a href={DEMO_URL} target="_blank" rel="noreferrer" className="btn btn-onDark-ghost">
                 {t("btn.bookDemo")}
               </a>
@@ -237,8 +233,7 @@ export default async function HomePage() {
         <footer className="shell footer">
           <div>
             <div className="brand" style={{ marginBottom: 12 }}>
-              <span className="brand-mark"><Flame /></span>
-              <span>Hearthline</span>
+              <WorkmentoLogo variant="wordmark" />
             </div>
             <p className="footer-tag">{t("footer.tag")}</p>
           </div>
@@ -261,59 +256,14 @@ export default async function HomePage() {
             <Link href="/terms">{t("footer.terms")}</Link>
           </div>
 
-          <div className="creator-credit">
-            <div className="creator-credit-text">
-              <p className="creator-credit-eyebrow">{t("footer.builtBy")}</p>
-              <a href="https://codewithmuh.com" target="_blank" rel="noreferrer author" className="creator-credit-name">
-                Muhammad Rashid · <span>codewithmuh.com</span>
-              </a>
-              <p className="creator-credit-bio">{t("footer.bio")}</p>
-            </div>
-            <div className="creator-credit-socials">
-              <a href="https://codewithmuh.com" target="_blank" rel="noreferrer author" className="social-btn" aria-label="codewithmuh.com">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
-                <span>codewithmuh.com</span>
-              </a>
-              <a href="https://www.linkedin.com/in/muhammad-rashid-daha/" target="_blank" rel="noreferrer" className="social-btn" aria-label="LinkedIn">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.3 6.5a1.78 1.78 0 0 1-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0 0 13 14.19a.66.66 0 0 0 0 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
-                <span>LinkedIn</span>
-              </a>
-              <a href="https://www.youtube.com/@codewithmuh" target="_blank" rel="noreferrer" className="social-btn" aria-label="YouTube">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1 31.3 31.3 0 0 0 .5-5.8 31.3 31.3 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6z"/></svg>
-                <span>YouTube</span>
-              </a>
-              <a href="https://x.com/codewithmuh" target="_blank" rel="noreferrer" className="social-btn" aria-label="X / Twitter">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                <span>@codewithmuh</span>
-              </a>
-              <a href="https://github.com/codewithmuh/hearthline" target="_blank" rel="noreferrer" className="social-btn" aria-label="GitHub">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.13 0 1.54-.01 2.79-.01 3.16 0 .31.21.68.8.56C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
-                <span>GitHub</span>
-              </a>
-            </div>
-          </div>
-
           <div className="footer-bottom">
-            <span>© {new Date().getFullYear()} Hearthline · {t("footer.copyright")}</span>
-            <span>
-              {t("footer.builtBy")}{" "}
-              <a href="https://codewithmuh.com" target="_blank" rel="noreferrer author">@codewithmuh</a>
-              {" "}{t("footer.bottomTail")}
-            </span>
+            <span>© {new Date().getFullYear()} Workmento · {t("footer.copyright")}</span>
           </div>
         </footer>
       </main>
 
       <ChatWidgetLazy />
     </div>
-  );
-}
-
-function Flame() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.5 0 2.5-.5 3-1.5 1-1.6.6-3.4-1-5-1.6-1.6-2-3.4-1-5C12.5 4 12 3 11 2.5 9.5 2 8 2.5 7 4 5.5 6 5 9 6.5 11c.5 1 .5 2.5-.5 3.5z" />
-    </svg>
   );
 }
 

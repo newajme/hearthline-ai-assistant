@@ -78,7 +78,7 @@ export default function KnowledgeForm({ business }: { business: Business }) {
           {error && <span className="settings-saved-err">{error}</span>}
           {!error && savedAt && <span className="settings-saved-ok">Saved · {savedAt.toLocaleTimeString()}</span>}
           {!error && !savedAt && dirty && <span className="settings-saved-dirty">Unsaved changes</span>}
-          {!dirty && !savedAt && !error && <span className="dash-card-meta">Used by Anna on every call</span>}
+          {!dirty && !savedAt && !error && <span className="dash-card-meta">Used by Demi on every call</span>}
         </div>
       </div>
 
@@ -86,7 +86,7 @@ export default function KnowledgeForm({ business }: { business: Business }) {
         className="text-input text-input-area"
         value={value}
         onChange={(e) => { setValue(e.target.value); setSavedAt(null); setError(null); }}
-        placeholder="Pricing, service area, hours, common objections — anything Anna should know."
+        placeholder="Pricing, service area, hours, common objections — anything Demi should know."
         rows={10}
       />
 

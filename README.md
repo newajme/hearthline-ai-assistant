@@ -54,7 +54,7 @@ up the phone.
   Italian, Portuguese, Dutch, Chinese, Japanese, Arabic (RTL).
 - **📱 Mobile apps** *(coming soon)* — Native iPhone (SwiftUI) and Android
   (Kotlin/Compose) companion apps point at the same Django backend. Push
-  alerts when Anna books a job, lead detail + conversation timeline, quotes
+  alerts when Demi books a job, lead detail + conversation timeline, quotes
   openable and editable in-app. Self-hosters set their own API URL.
 - **🚐 Tech dispatch** *(roadmap)* — Booked job auto-routes to the closest
   tech with GPS + ETA SMS.

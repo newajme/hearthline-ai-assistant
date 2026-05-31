@@ -5,7 +5,7 @@ from .trades import TRADES
 
 
 class Business(models.Model):
-    """A home-services business using Hearthline."""
+    """A home-services business using Workmento."""
 
     TRADE_CHOICES = TRADES
 
@@ -16,7 +16,7 @@ class Business(models.Model):
         ("groq", "Groq (free)"),
     ]
 
-    # ISO-4217 codes for every currency Anna may need to speak. The dashboard
+    # ISO-4217 codes for every currency Demi may need to speak. The dashboard
     # formats with Intl.NumberFormat using the matching locale; the spoken
     # guide for big-number conventions lives in apps/calls/agent/prompts.py.
     CURRENCY_CHOICES = [
@@ -89,11 +89,11 @@ class Business(models.Model):
     timezone = models.CharField(max_length=64, default="UTC")
     currency = models.CharField(
         max_length=3, choices=CURRENCY_CHOICES, default="USD",
-        help_text="ISO-4217 code Anna quotes prices in and the dashboard formats with.",
+        help_text="ISO-4217 code Demi quotes prices in and the dashboard formats with.",
     )
     phone_number = models.CharField(max_length=32, blank=True, help_text="Public business line")
     voice_persona = models.CharField(
-        max_length=64, default="Anna",
+        max_length=64, default="Demi",
         help_text="Display name for the AI receptionist"
     )
     knowledge_base = models.TextField(
@@ -105,7 +105,7 @@ class Business(models.Model):
         max_length=16,
         choices=LLM_PROVIDER_CHOICES,
         default="anthropic",
-        help_text="Which LLM powers Anna and lead extraction.",
+        help_text="Which LLM powers Demi and lead extraction.",
     )
 
     # Provider credentials. When set, override the global env-var defaults.

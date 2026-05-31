@@ -35,3 +35,4 @@ screenshots-ref/
 .env.vercel*
 .vercel
 hearthline.pem
+.env*

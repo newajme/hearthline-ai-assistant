@@ -6,11 +6,11 @@ import FaqList from "./FaqList";
 
 export const metadata = {
   title: "FAQ",
-  description: "Common questions about Hearthline — pricing, setup, integrations, security, and more.",
+  description: "Common questions about Workmento — pricing, setup, integrations, security, and more.",
   alternates: { canonical: "/faq" },
   openGraph: {
-    title: "Hearthline · FAQ",
-    description: "Common questions about Hearthline — pricing, setup, integrations, security, and more.",
+    title: "Workmento · FAQ",
+    description: "Common questions about Workmento — pricing, setup, integrations, security, and more.",
     url: "/faq",
   },
 };
@@ -57,7 +57,7 @@ export default async function FaqPage() {
             <p className="final-cta-sub">{t("faq.finalSub")}</p>
             <div className="final-cta-actions">
               <a
-                href="https://calendly.com/contact-codewithmuh/30min"
+                href="/contact"
                 target="_blank"
                 rel="noreferrer"
                 className="btn btn-onDark btn-lg"

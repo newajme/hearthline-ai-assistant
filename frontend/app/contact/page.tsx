@@ -11,8 +11,8 @@ import { MarketingFooter, MarketingTopbar } from "../MarketingShell";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
-const CALENDLY = "https://calendly.com/contact-codewithmuh/30min";
-const SUPPORT_EMAIL = "contact@codewithmuh.com";
+const CALENDLY = "mailto:sales@workmento.com";
+const SUPPORT_EMAIL = "support@workmento.com";
 
 export default function ContactPage() {
   const { t } = useI18n();
@@ -86,7 +86,7 @@ export default function ContactPage() {
                 body={t("contact.ch1.body")}
                 cta={`${t("contact.ch1.cta")} →`}
                 href={CALENDLY}
-                accent="#d2532b"
+                accent="#00C95C"
               />
               <ChannelCard
                 icon={<MailIcon />}
@@ -100,63 +100,10 @@ export default function ContactPage() {
                 icon={<GhIcon />}
                 title={t("contact.ch3.title")}
                 body={t("contact.ch3.body")}
-                cta="github.com/codewithmuh/hearthline"
-                href="https://github.com/codewithmuh/hearthline/issues"
+                cta="GitHub issues"
+                href="https://github.com/workmento/workmento/issues"
                 accent="#16a34a"
               />
-
-              <div className="contact-creator">
-                <div className="contact-creator-head">
-                  <div className="contact-creator-avatar" aria-hidden>MR</div>
-                  <div>
-                    <div className="contact-creator-name">Muhammad Rashid</div>
-                    <div className="contact-creator-role">{t("contact.creatorRole")}</div>
-                  </div>
-                </div>
-                <p className="contact-creator-bio">{t("contact.creatorBio")}</p>
-                <div className="contact-creator-socials">
-                  <a
-                    href="https://codewithmuh.com"
-                    target="_blank"
-                    rel="noreferrer author"
-                    className="contact-social"
-                  >
-                    <Globe /> codewithmuh.com
-                  </a>
-                  <a
-                    href="https://www.youtube.com/@codewithmuh"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="contact-social"
-                  >
-                    <Yt /> YouTube · 25K+
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/muhammad-rashid-daha/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="contact-social"
-                  >
-                    <In /> LinkedIn
-                  </a>
-                  <a
-                    href="https://x.com/codewithmuh"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="contact-social"
-                  >
-                    <X /> @codewithmuh
-                  </a>
-                  <a
-                    href="https://github.com/codewithmuh"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="contact-social"
-                  >
-                    <Gh /> GitHub
-                  </a>
-                </div>
-              </div>
             </aside>
 
             {/* RIGHT — ticket form */}

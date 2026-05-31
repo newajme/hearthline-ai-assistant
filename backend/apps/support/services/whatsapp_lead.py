@@ -1,4 +1,4 @@
-"""Run Anna's full receptionist loop over a WhatsApp ticket.
+"""Run Demi's full receptionist loop over a WhatsApp ticket.
 
 Reuses apps.calls.agent.receptionist.handle_conversation_turn so the same
 brain (qualify_lead, draft_quote, book_appointment, send_sms, end_call) that
@@ -7,10 +7,10 @@ number is mapped to caller_phone, and the ticket id is mapped to call_id so
 tool dedupe still works.
 
 Side effects:
-- After Anna's turn, if a Quote was just drafted for this conversation, we
+- After Demi's turn, if a Quote was just drafted for this conversation, we
   render the PDF and send it as a WhatsApp document to the customer. This
   is the WA equivalent of the spoken "I'm texting you the breakdown" that
-  Anna does on phone calls.
+  Demi does on phone calls.
 
 Returns the assistant's reply text (or "" when nothing to say).
 """
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 HISTORY_LIMIT = 20
 
 
-def _history_for_anna(ticket: Ticket) -> list[dict]:
+def _history_for_demi(ticket: Ticket) -> list[dict]:
     rows = list(
         TicketMessage.objects.filter(ticket=ticket)
         .order_by("-created_at")
@@ -64,7 +64,7 @@ def _public_quote_url(quote: Quote) -> str:
 
 
 def _maybe_send_pdf(ticket: Ticket, call_id: str) -> None:
-    """If Anna just drafted a Quote for this WA conversation, render + send PDF."""
+    """If Demi just drafted a Quote for this WA conversation, render + send PDF."""
     quote = (
         Quote.objects.filter(photo_assessment__drafted_during_call=call_id)
         .order_by("-created_at")
@@ -110,8 +110,8 @@ def _maybe_send_pdf(ticket: Ticket, call_id: str) -> None:
 
 
 def reply_for_whatsapp_ticket(ticket: Ticket) -> str:
-    """Run one Anna turn against the ticket and return her reply text."""
-    history = _history_for_anna(ticket)
+    """Run one Demi turn against the ticket and return her reply text."""
+    history = _history_for_demi(ticket)
     if not history:
         return ""
     caller_phone = (ticket.sender_id or "").strip() or None

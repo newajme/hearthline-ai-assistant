@@ -43,7 +43,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     user.email ||
     "Signed in";
   const sidebarBusiness = bizPage?.results?.[0]?.name ?? "";
-  const personaName = (bizPage?.results?.[0]?.voice_persona || "").trim() || "Anna";
+  const personaName = (bizPage?.results?.[0]?.voice_persona || "").trim() || "Demi";
   return (
     <div className="app-shell">
       <Sidebar

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { Anna } from "./Anna";
+import { Demi } from "./Demi";
 import { useI18n } from "./lib/i18n";
 
 type Phase = "ringing" | "live" | "ended";
@@ -12,21 +12,21 @@ type Phase = "ringing" | "live" | "ended";
 type Bubble = { role: "in" | "out"; text: string };
 
 const SCRIPT_KEYS: Array<{ role: "in" | "out"; key: string; afterMs: number }> = [
-  { role: "out", key: "annaModal.line1", afterMs: 600 },
-  { role: "in",  key: "annaModal.line2", afterMs: 2600 },
-  { role: "out", key: "annaModal.line3", afterMs: 4800 },
-  { role: "in",  key: "annaModal.line4", afterMs: 7000 },
-  { role: "out", key: "annaModal.line5", afterMs: 9000 },
+  { role: "out", key: "demiModal.line1", afterMs: 600 },
+  { role: "in",  key: "demiModal.line2", afterMs: 2600 },
+  { role: "out", key: "demiModal.line3", afterMs: 4800 },
+  { role: "in",  key: "demiModal.line4", afterMs: 7000 },
+  { role: "out", key: "demiModal.line5", afterMs: 9000 },
 ];
 
-const DEMO_URL = "https://calendly.com/contact-codewithmuh/30min";
+const DEMO_URL = "/contact";
 
 type Props = {
   open: boolean;
   onClose: () => void;
 };
 
-export default function AnnaDemoModal({ open, onClose }: Props) {
+export default function DemiDemoModal({ open, onClose }: Props) {
   const { t } = useI18n();
   const [phase, setPhase] = useState<Phase>("ringing");
   const [seconds, setSeconds] = useState(0);
@@ -98,18 +98,18 @@ export default function AnnaDemoModal({ open, onClose }: Props) {
 
   return createPortal(
     <div
-      className="anna-modal-backdrop"
+      className="demi-modal-backdrop"
       role="dialog"
       aria-modal="true"
-      aria-label="Anna live demo"
+      aria-label="Demi live demo"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="anna-modal" ref={dialogRef}>
+      <div className="demi-modal" ref={dialogRef}>
         <button
           ref={closeBtnRef}
-          className="anna-modal-close"
+          className="demi-modal-close"
           aria-label="Close demo"
           onClick={onClose}
           type="button"
@@ -120,78 +120,78 @@ export default function AnnaDemoModal({ open, onClose }: Props) {
           </svg>
         </button>
 
-        <div className="anna-modal-head">
-          <span className="anna-modal-eyebrow">
-            <span className="dot-pulse" aria-hidden /> {t("annaModal.eyebrow")}
+        <div className="demi-modal-head">
+          <span className="demi-modal-eyebrow">
+            <span className="dot-pulse" aria-hidden /> {t("demiModal.eyebrow")}
           </span>
-          <h3 className="anna-modal-title">{t("annaModal.title")}</h3>
+          <h3 className="demi-modal-title">{t("demiModal.title")}</h3>
         </div>
 
-        <div className="anna-modal-stage">
+        <div className="demi-modal-stage">
           {/* Phone card */}
-          <div className={`anna-phone phase-${phase}`}>
-            <div className="anna-phone-glow" aria-hidden />
-            <div className="anna-phone-avatar">
+          <div className={`demi-phone phase-${phase}`}>
+            <div className="demi-phone-glow" aria-hidden />
+            <div className="demi-phone-avatar">
               {phase === "ringing" && (
                 <>
                   <span className="phone-avatar-ring" />
                   <span className="phone-avatar-ring delay" />
                 </>
               )}
-              <Anna size={56} />
+              <Demi size={56} />
             </div>
-            <div className="anna-phone-name">Anna · Hearthline</div>
-            <div className="anna-phone-status">
-              {phase === "ringing" && t("annaModal.statusRinging")}
+            <div className="demi-phone-name">Demi · Workmento</div>
+            <div className="demi-phone-status">
+              {phase === "ringing" && t("demiModal.statusRinging")}
               {phase === "live" && (
                 <>
-                  <span className="dot-pulse" aria-hidden /> {t("annaModal.statusConnected")} · {mm}:{ss}
+                  <span className="dot-pulse" aria-hidden /> {t("demiModal.statusConnected")} · {mm}:{ss}
                 </>
               )}
-              {phase === "ended" && t("annaModal.statusEnded")}
+              {phase === "ended" && t("demiModal.statusEnded")}
             </div>
           </div>
 
           {/* Transcript feed */}
-          <div className="anna-feed" aria-live="polite">
+          <div className="demi-feed" aria-live="polite">
             {phase === "ringing" && (
-              <div className="anna-feed-empty">
-                <span className="anna-feed-empty-dots"><i /><i /><i /></span>
-                <span>{t("annaModal.dialing")}</span>
+              <div className="demi-feed-empty">
+                <span className="demi-feed-empty-dots"><i /><i /><i /></span>
+                <span>{t("demiModal.dialing")}</span>
               </div>
             )}
             {phase !== "ringing" && (
               <>
                 {bubbles.map((b, i) => (
-                  <div key={i} className={`anna-feed-bubble ${b.role}`}>
-                    <span className="anna-feed-avatar">
-                      {b.role === "out" ? "A" : (
+                  <div key={i} className={`demi-feed-bubble ${b.role}`}>
+                    <span className="demi-feed-avatar">
+                      {b.role === "out" ? "D" : (
                         <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-7 8-7s8 3 8 7" /></svg>
                       )}
                     </span>
-                    <span className="anna-feed-text">{b.text}</span>
+                    <span className="demi-feed-text">{b.text}</span>
                   </div>
                 ))}
                 {typingFor && phase === "live" && (
-                  <div className={`anna-feed-bubble ${typingFor} typing`}>
-                    <span className="anna-feed-avatar">
-                      {typingFor === "out" ? "A" : (
+                  <div className={`demi-feed-bubble ${typingFor} typing`}>
+                    <span className="demi-feed-avatar">
+                      {typingFor === "out" ? "D" : (
                         <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-7 8-7s8 3 8 7" /></svg>
                       )}
                     </span>
-                    <span className="anna-feed-text">
+                    <span className="demi-feed-text">
                       <span className="typing-dots"><i /><i /><i /></span>
                     </span>
                   </div>
                 )}
                 {phase === "ended" && (
-                  <div className="anna-feed-summary">
-                    <div className="anna-feed-summary-title">{t("annaModal.summaryTitle")}</div>
+                  <div className="demi-feed-summary">
+                    <div className="demi-feed-summary-title">{t("demiModal.summaryTitle")}</div>
                     <ul>
-                      <li>{t("annaModal.summary1")}</li>
-                      <li>{t("annaModal.summary2")}</li>
-                      <li>{t("annaModal.summary3")}</li>
-                      <li>{t("annaModal.summary4")}</li>
+                      <li>{t("demiModal.summary1")}</li>
+                      <li>{t("demiModal.summary2")}</li>
+                      <li>{t("demiModal.summary3")}</li>
+                      <li>{t("demiModal.summary4")}</li>
                     </ul>
                   </div>
                 )}
@@ -200,14 +200,14 @@ export default function AnnaDemoModal({ open, onClose }: Props) {
           </div>
         </div>
 
-        <div className="anna-modal-foot">
-          <p className="anna-modal-foot-note">{t("annaModal.foot")}</p>
-          <div className="anna-modal-actions">
+        <div className="demi-modal-foot">
+          <p className="demi-modal-foot-note">{t("demiModal.foot")}</p>
+          <div className="demi-modal-actions">
             <a href={DEMO_URL} target="_blank" rel="noreferrer" className="btn btn-primary">
-              {t("annaModal.bookReal")}
+              {t("demiModal.bookReal")}
             </a>
             <Link href="/dashboard/test-call" className="btn btn-ghost" onClick={onClose}>
-              {t("annaModal.openSim")} →
+              {t("demiModal.openSim")} →
             </Link>
           </div>
         </div>

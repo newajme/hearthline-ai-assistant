@@ -1,19 +1,26 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 
 export const runtime = "nodejs";
-export const alt = "Hearthline — The 24/7 AI front desk for home services";
+export const alt = "Workmento — The 24/7 AI front desk for home services";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+const WORKMENTO_MARK = path.join(process.cwd(), "public", "branding", "workmento-mark.png");
+
 export default async function OpengraphImage() {
+  const mark = await readFile(WORKMENTO_MARK);
+  const markSrc = `data:image/png;base64,${mark.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
         style={{
           width: "100%",
           height: "100%",
-          background: "linear-gradient(135deg, #0b0b0f 0%, #1a1410 60%, #2a1810 100%)",
-          color: "#fbf6ee",
+          background: "linear-gradient(135deg, #07110c 0%, #0d1c14 60%, #123923 100%)",
+          color: "#f1fff7",
           display: "flex",
           flexDirection: "column",
           padding: "72px 88px",
@@ -27,27 +34,18 @@ export default async function OpengraphImage() {
             alignItems: "center",
             gap: 14,
             fontSize: 28,
-            color: "#f4a261",
+            color: "#78FFBE",
             letterSpacing: 1,
           }}
         >
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              background: "#f4a261",
-              color: "#0b0b0f",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 22,
-              fontWeight: 700,
-            }}
-          >
-            H
-          </div>
-          <span style={{ fontWeight: 600 }}>Hearthline</span>
+          <img
+            src={markSrc}
+            alt="Workmento logo mark"
+            width={36}
+            height={36}
+            style={{ objectFit: "contain" }}
+          />
+          <span style={{ fontWeight: 600 }}>Workmento</span>
         </div>
 
         <div
@@ -74,26 +72,26 @@ export default async function OpengraphImage() {
           <div
             style={{
               fontSize: 30,
-              color: "#cdbfae",
+              color: "#cde6d8",
               maxWidth: 920,
               lineHeight: 1.35,
               fontFamily: "sans-serif",
             }}
           >
-            Anna answers, qualifies, and books — so your crew sleeps and your calendar fills itself.
+            Demi answers, qualifies, and books — so your crew sleeps and your calendar fills itself.
           </div>
           <div
             style={{
               display: "flex",
               gap: 16,
               fontSize: 22,
-              color: "#9c8b78",
+              color: "#92aa9f",
               fontFamily: "sans-serif",
             }}
           >
             <span>Open-source · AGPL-3.0</span>
             <span>·</span>
-            <span>by codewithmuh</span>
+            <span>Self-hostable AI receptionist</span>
           </div>
         </div>
       </div>

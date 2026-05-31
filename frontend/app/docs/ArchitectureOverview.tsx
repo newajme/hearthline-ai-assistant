@@ -19,7 +19,7 @@ const STAGES = [
   },
   {
     num: "03",
-    title: "Django + Anna",
+    title: "Django + Demi",
     body: "Claude tool loop, persists to Postgres",
     icon: <BrainIcon />,
     accent: "var(--brand)",

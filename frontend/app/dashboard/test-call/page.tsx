@@ -3,7 +3,7 @@ import { getPersonaName } from "@/app/lib/persona";
 import TestCall from "./TestCall";
 
 export const metadata = {
-  title: "Hearthline · Test agent",
+  title: "Workmento · Test agent",
 };
 
 export default async function TestCallPage() {

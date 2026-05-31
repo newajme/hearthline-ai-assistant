@@ -1,14 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import type { MouseEvent } from "react";
 import { useEffect, useState } from "react";
 
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
+import WorkmentoLogo from "./WorkmentoLogo";
+import WorkmentoRouteLoader from "./WorkmentoRouteLoader";
 import { useI18n } from "./lib/i18n";
 
-const DEMO_URL = "https://calendly.com/contact-codewithmuh/30min";
-const REPO_URL = "https://github.com/codewithmuh/hearthline";
+const DEMO_URL = "/contact";
+const REPO_URL = "https://github.com/workmento/workmento";
+const DASHBOARD_LOGIN_HREF = "/login?next=/dashboard";
+const DASHBOARD_LOGIN_MIN_LOAD_MS = 3000;
 
 export type NavLink = { href: string; label: string };
 
@@ -22,19 +28,40 @@ function defaultLinks(t: (k: string) => string): NavLink[] {
 
 type TopbarProps = {
   links?: NavLink[];
-  showBuiltBy?: boolean;
   ossPill?: string;
 };
 
 export function MarketingTopbar({
   links,
-  showBuiltBy = false,
   ossPill,
 }: TopbarProps) {
   const { t } = useI18n();
+  const router = useRouter();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [openingDashboard, setOpeningDashboard] = useState(false);
   const resolvedLinks = links ?? defaultLinks(t);
+  const enhanceLoginCta = pathname === "/";
+
+  function onDashboardLoginClick(ev: MouseEvent<HTMLAnchorElement>) {
+    if (!enhanceLoginCta) return;
+    ev.preventDefault();
+    if (openingDashboard) {
+      return;
+    }
+    setOpen(false);
+    setOpeningDashboard(true);
+    router.prefetch(DASHBOARD_LOGIN_HREF);
+    window.setTimeout(() => {
+      router.push(DASHBOARD_LOGIN_HREF);
+    }, DASHBOARD_LOGIN_MIN_LOAD_MS);
+  }
+
+  useEffect(() => {
+    if (!enhanceLoginCta) return;
+    router.prefetch(DASHBOARD_LOGIN_HREF);
+  }, [enhanceLoginCta, router]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -59,22 +86,11 @@ export function MarketingTopbar({
     <div className={`topbar-wrap ${scrolled ? "is-scrolled" : ""}`}>
       <header className="topbar">
         <div className="brand-cluster">
-          <Link href="/" className="brand" aria-label="Hearthline home">
-            <span className="brand-mark"><Flame /></span>
-            <span>Hearthline</span>
+          <Link href="/" className="brand" aria-label="Workmento home">
+            <span className="brand-logo-desktop"><WorkmentoLogo variant="wordmark" /></span>
+            <span className="brand-logo-compact"><WorkmentoLogo variant="wordmark" /></span>
             {ossPill && <span className="oss-pill">{ossPill}</span>}
           </Link>
-          {showBuiltBy && (
-            <a
-              href="https://codewithmuh.com"
-              target="_blank"
-              rel="noreferrer author"
-              className="built-by-pill"
-              title="Built by codewithmuh"
-            >
-              {t("topbar.builtBy")} <strong>codewithmuh</strong>
-            </a>
-          )}
         </div>
 
         <nav className="nav-links" aria-label="Primary">
@@ -98,6 +114,15 @@ export function MarketingTopbar({
           >
             <Github />
           </a>
+          <Link
+            href={DASHBOARD_LOGIN_HREF}
+            className="btn btn-ghost topbar-cta topbar-login-cta"
+            aria-busy={enhanceLoginCta && openingDashboard ? "true" : undefined}
+            aria-disabled={enhanceLoginCta && openingDashboard ? "true" : undefined}
+            onClick={onDashboardLoginClick}
+          >
+            {enhanceLoginCta && openingDashboard ? "Opening dashboard…" : "Log in to dashboard"}
+          </Link>
           <a
             href={DEMO_URL}
             target="_blank"
@@ -153,6 +178,15 @@ export function MarketingTopbar({
             >
               <Github /> {t("topbar.starGh")}
             </a>
+            <Link
+              href={DASHBOARD_LOGIN_HREF}
+              className="btn btn-ghost mobile-sheet-btn"
+              aria-busy={enhanceLoginCta && openingDashboard ? "true" : undefined}
+              aria-disabled={enhanceLoginCta && openingDashboard ? "true" : undefined}
+              onClick={onDashboardLoginClick}
+            >
+              {enhanceLoginCta && openingDashboard ? "Opening dashboard…" : "Log in to dashboard"}
+            </Link>
             <a
               href={DEMO_URL}
               target="_blank"
@@ -164,6 +198,8 @@ export function MarketingTopbar({
           </div>
         </div>
       )}
+
+      {enhanceLoginCta && openingDashboard && <WorkmentoRouteLoader />}
     </>
   );
 }
@@ -178,8 +214,7 @@ function MarketingFooterInner() {
     <footer className="shell footer">
       <div>
         <div className="brand" style={{ marginBottom: 12 }}>
-          <span className="brand-mark"><Flame /></span>
-          <span>Hearthline</span>
+          <WorkmentoLogo variant="wordmark" />
         </div>
         <p className="footer-tag">{t("footer.tag")}</p>
       </div>
@@ -203,23 +238,9 @@ function MarketingFooterInner() {
         <Link href="/terms">{t("footer.terms")}</Link>
       </div>
       <div className="footer-bottom">
-        <span>© {new Date().getFullYear()} Hearthline. {t("footer.copyright")}</span>
-        <span>
-          {t("footer.builtBy")}{" "}
-          <a href="https://codewithmuh.com" target="_blank" rel="noreferrer author">
-            @codewithmuh
-          </a>
-        </span>
+        <span>© {new Date().getFullYear()} Workmento. {t("footer.copyright")}</span>
       </div>
     </footer>
-  );
-}
-
-export function Flame() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.5 0 2.5-.5 3-1.5 1-1.6.6-3.4-1-5-1.6-1.6-2-3.4-1-5C12.5 4 12 3 11 2.5 9.5 2 8 2.5 7 4 5.5 6 5 9 6.5 11c.5 1 .5 2.5-.5 3.5z" />
-    </svg>
   );
 }
 

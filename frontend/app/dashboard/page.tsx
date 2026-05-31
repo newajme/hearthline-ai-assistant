@@ -63,7 +63,7 @@ export default async function OverviewPage() {
           {leads.length === 0 ? (
             <div className="empty-card" style={{ borderRadius: 0, border: "none", background: "white", margin: 0 }}>
               <h3>No leads yet</h3>
-              <p>As soon as Hearthline takes a call, leads land here in real time.</p>
+              <p>As soon as Workmento takes a call, leads land here in real time.</p>
             </div>
           ) : (
             leads.slice(0, 6).map((lead) => (

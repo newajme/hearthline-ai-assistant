@@ -1,4 +1,4 @@
-"""Anna — agentic loop. Claude calls tools until done, returns final spoken text."""
+"""Demi — agentic loop. Claude calls tools until done, returns final spoken text."""
 from __future__ import annotations
 
 import json
@@ -226,8 +226,8 @@ def _log_transcript(history: list, caller_phone: str | None, call_id: str | None
 
 
 def _persist_turn(conversation_history: list, caller_phone: str | None,
-                   call_id: str | None, anna_reply: str) -> None:
-    """Save the latest user turn + Anna's reply to the Lead's Conversation timeline.
+                   call_id: str | None, demi_reply: str) -> None:
+    """Save the latest user turn + Demi's reply to the Lead's Conversation timeline.
 
     Best-effort — never crashes the agent if the lookup fails. Looks for a Lead
     already opened for this call (by vapi_call_id) and appends Messages to it.
@@ -252,10 +252,10 @@ def _persist_turn(conversation_history: list, caller_phone: str | None,
                 conversation=convo, direction="in", role="user",
                 body=last_user["content"][:2000],
             )
-        if anna_reply:
+        if demi_reply:
             Message.objects.create(
                 conversation=convo, direction="out", role="assistant",
-                body=anna_reply[:2000],
+                body=demi_reply[:2000],
             )
     except Exception as exc:  # noqa: BLE001 — best-effort timeline persistence; never crash the live call on a DB hiccup
         logger.warning("[TRANSCRIPT PERSIST] %s", exc)
@@ -283,11 +283,11 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
         )
 
     biz = _resolve_business(call_id=call_id)
-    biz_name = biz.name if biz else "Hearthline"
+    biz_name = biz.name if biz else "Workmento"
     trade = biz.trade if biz else "general"
     kb = biz.knowledge_base if biz else ""
     tz = biz.timezone if biz else "America/Los_Angeles"
-    persona = (getattr(biz, "voice_persona", "") or "Anna").strip() or "Anna"
+    persona = (getattr(biz, "voice_persona", "") or "Demi").strip() or "Demi"
     currency = (getattr(biz, "currency", "") or "USD").upper()
 
     system_prompt = get_receptionist_prompt(
@@ -358,7 +358,7 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
             elif len(result.get("text") or "") > 12:
                 _mark_end_call_deferred(call_id)
                 result["end_call"] = False
-        logger.info("[CALL %s · %s] ANNA (groq): %s%s",
+        logger.info("[CALL %s · %s] DEMI (groq): %s%s",
                     call_id or "?", caller_phone or "?",
                     (result.get("text") or "")[:300],
                     " [HANGUP]" if result.get("end_call") else "")
@@ -391,7 +391,7 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
             elif len(result.get("text") or "") > 12:
                 _mark_end_call_deferred(call_id)
                 result["end_call"] = False
-        logger.info("[CALL %s · %s] ANNA (gemini): %s%s",
+        logger.info("[CALL %s · %s] DEMI (gemini): %s%s",
                     call_id or "?", caller_phone or "?",
                     (result.get("text") or "")[:300],
                     " [HANGUP]" if result.get("end_call") else "")
@@ -426,7 +426,7 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
                 logger.info("[END_CALL DEFERRED] hangup deferred so Vapi can play closing message")
                 _mark_end_call_deferred(call_id)
                 result["end_call"] = False
-        logger.info("[CALL %s · %s] ANNA: %s%s",
+        logger.info("[CALL %s · %s] DEMI: %s%s",
                     call_id or "?", caller_phone or "?",
                     (result.get("text") or "")[:300],
                     " [HANGUP]" if result.get("end_call") else "")
@@ -453,7 +453,7 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
 
     # If the model said "let me do X for you" without firing the tool (and
     # didn't max out tokens), nudge it explicitly. This breaks the "I'll
-    # draft / I'll book / I'll send" loop where Anna keeps verbalizing intent
+    # draft / I'll book / I'll send" loop where Demi keeps verbalizing intent
     # without ever calling the tool.
     if (response.stop_reason in ("end_turn", "stop_sequence")
             and not any(b.type == "tool_use" for b in response.content)):
@@ -542,7 +542,7 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
         else:
             response_text = "Is there anything else I can help you with?"
 
-    # Safety net: if Anna fired end_call WITH a non-trivial closing message in
+    # Safety net: if Demi fired end_call WITH a non-trivial closing message in
     # the same turn, defer the hangup so Vapi finishes playing the audio first.
     # Next turn, the model fires end_call alone with empty text → real hangup.
     # BUT defer only once per call — if we've already deferred this call_id,
@@ -555,7 +555,7 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
             _mark_end_call_deferred(call_id)
             should_end = False
 
-    logger.info("[CALL %s · %s] ANNA: %s%s",
+    logger.info("[CALL %s · %s] DEMI: %s%s",
                 call_id or "?", caller_phone or "?",
                 response_text[:300], " [HANGUP]" if should_end else "")
     _persist_turn(conversation_history, caller_phone, call_id, response_text)

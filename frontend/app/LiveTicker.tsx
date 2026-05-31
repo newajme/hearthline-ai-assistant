@@ -16,7 +16,7 @@ const ICONS: Record<Kind, { color: string; symbol: string }> = {
   call: { color: "#16a34a", symbol: "●" },
   quote: { color: "#7c3aed", symbol: "●" },
   deal: { color: "#16a34a", symbol: "✓" },
-  subsidy: { color: "#d2532b", symbol: "●" },
+  subsidy: { color: "#00C95C", symbol: "●" },
   booked: { color: "#2563eb", symbol: "●" },
   sms: { color: "#0ea5e9", symbol: "●" },
 };

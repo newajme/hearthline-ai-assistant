@@ -175,12 +175,12 @@ export default function ProfileForm({ business }: { business: Business }) {
           />
         </Field>
 
-        <Field label="AI persona" hint="Display name Anna uses on calls.">
+        <Field label="AI persona" hint="Display name Demi uses on calls.">
           <input
             className="text-input"
             value={form.voice_persona}
             onChange={(e) => update("voice_persona", e.target.value)}
-            placeholder="Anna"
+            placeholder="Demi"
           />
         </Field>
 
@@ -206,7 +206,7 @@ export default function ProfileForm({ business }: { business: Business }) {
           </select>
         </Field>
 
-        <Field label="Currency" hint="Anna quotes prices in this currency. Dashboard formats accordingly." full>
+        <Field label="Currency" hint="Demi quotes prices in this currency. Dashboard formats accordingly." full>
           <select
             className="text-input"
             value={form.currency}

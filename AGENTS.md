@@ -9,7 +9,7 @@ Read this before touching any file. The full project context lives in `CLAUDE.md
 
 **Hearthline** is an open-source AI front desk for home-service businesses (HVAC,
 plumbing, roofing, solar, electrical, landscaping, cleaning, pest control).
-A voice persona named **Anna** answers inbound calls via Vapi, qualifies leads,
+A voice persona named **Demi** answers inbound calls via Vapi, qualifies leads,
 books appointments, and sends SMS confirmations. Everything lands in a Next.js
 dashboard backed by Django + Postgres.
 
@@ -62,9 +62,9 @@ hearthline/
         ├── core/                # Business, Channel, encrypted-key fields
         ├── leads/               # Customer, Lead, Conversation, Message
         │   └── management/commands/seed_demo.py
-        ├── calls/               # Call + Vapi/Twilio handlers + Anna agent loop
+        ├── calls/               # Call + Vapi/Twilio handlers + Demi agent loop
         │   ├── agent/
-        │   │   ├── prompts.py        # Anna's system prompt
+        │   │   ├── prompts.py        # Demi's system prompt
         │   │   ├── tools.py          # 7 tool schemas
         │   │   └── receptionist.py   # agentic loop (Claude + OpenAI)
         │   ├── services/
@@ -92,13 +92,13 @@ POST /api/calls/vapi/chat/completions/   (Vapi custom-LLM, OpenAI-compatible)
 
 ---
 
-## Anna's agent loop (how it works)
+## Demi's agent loop (how it works)
 
 1. Vapi handles STT + TTS, POSTs the conversation to `/api/calls/vapi/chat/completions/` each turn.
 2. Django converts OpenAI-format messages → Claude/OpenAI format, runs `receptionist.py`.
-3. Anna can call 7 tools: `qualify_lead`, `check_availability`, `book_appointment`,
+3. Demi can call 7 tools: `qualify_lead`, `check_availability`, `book_appointment`,
    `draft_quote`, `send_sms`, `send_email`, `end_call`.
-4. Lead/Customer rows are created/updated as Anna learns more.
+4. Lead/Customer rows are created/updated as Demi learns more.
 5. Response returns as an OpenAI completion. `X-Vapi-End-Call: true` tells Vapi to hang up.
 
 Missing `ANTHROPIC_API_KEY` → friendly stub response, never crashes.
@@ -154,7 +154,7 @@ URLs:
 
 ## Brand rules
 
-- The AI receptionist is always called **Anna** — not "the bot", "the assistant", etc.
+- The AI receptionist is always called **Demi** — not "the bot", "the assistant", etc.
 - Creator credit: "by codewithmuh" — links to codewithmuh.com, YouTube, LinkedIn, X, GitHub.
 - Never position Hearthline as an alternative to a named competitor.
 - Marketing page mock data: `Customer 001`–`Customer 008`, `+1 (000) 123-4567`, `example.test` emails.

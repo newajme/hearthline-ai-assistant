@@ -1,4 +1,4 @@
-"""Anthropic tool schema for Anna's home-service receptionist."""
+"""Anthropic tool schema for Demi's home-service receptionist."""
 
 from apps.core.trades import TRADE_KEYS
 

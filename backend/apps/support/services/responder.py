@@ -70,12 +70,12 @@ def _history(ticket: Ticket) -> list[dict]:
 
 
 def generate_reply(ticket: Ticket) -> str:
-    """Run one Sonnet call against the ticket history and return Anna's reply text.
+    """Run one Sonnet call against the ticket history and return Demi's reply text.
 
     Caller is responsible for persisting and sending the reply.
     """
     business = ticket.business
-    persona = business.voice_persona or "Anna"
+    persona = business.voice_persona or "Demi"
 
     client = _client(business)
     if not client:

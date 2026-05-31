@@ -15,8 +15,8 @@ const STARTERS = [
   "I had a tech here yesterday but my drain is still backing up.",
 ];
 
-export default function TestCall({ personaName = "Anna" }: { personaName?: string }) {
-  const personaInitial = (personaName.trim()[0] || "A").toUpperCase();
+export default function TestCall({ personaName = "Demi" }: { personaName?: string }) {
+  const personaInitial = (personaName.trim()[0] || "D").toUpperCase();
   const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState("");
   const [phone, setPhone] = useState("+1 (555) 555-0199");

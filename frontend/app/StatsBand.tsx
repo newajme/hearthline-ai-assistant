@@ -67,7 +67,7 @@ export default function StatsBand() {
             </div>
             <div className="stats-card-label">{t("stats.cardA.label")}</div>
           </div>
-          <div className="stats-card ember">
+          <div className="stats-card mint">
             <div className="stats-card-num">
               {n2}
               <span className="stats-card-suffix">s</span>

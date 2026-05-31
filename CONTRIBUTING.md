@@ -33,7 +33,7 @@ docker compose exec backend python manage.py seed_demo --wipe
 - Improve copy / accessibility / mobile responsiveness on the dashboard
 - Add more unit tests for `apps/calls/agent/`
 - Improve the seed data — more realistic transcripts, more variety
-- Translate Anna's prompt for non-English markets
+- Translate Demi's prompt for non-English markets
 
 **Medium:**
 - Stripe deposit on quote acceptance
@@ -43,7 +43,7 @@ docker compose exec backend python manage.py seed_demo --wipe
 
 **Big (talk to us first):**
 - Multi-tenant auth + per-business data isolation
-- Eval harness for the Anna prompt
+- Eval harness for the Demi prompt
 
 ## PR checklist
 

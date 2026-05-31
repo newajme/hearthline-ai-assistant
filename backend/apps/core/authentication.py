@@ -1,6 +1,6 @@
 """DRF authentication that uses the Django session but skips CSRF.
 
-The Hearthline API is reached only through the Next.js server-side proxy
+The Workmento API is reached only through the Next.js server-side proxy
 (`/api/proxy/...`), which forwards the httpOnly session cookie. Browsers
 never call the Django API directly, so DRF's default CSRF check (designed
 for browser-issued unsafe requests) is redundant and blocks legitimate

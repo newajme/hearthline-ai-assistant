@@ -1,4 +1,4 @@
-"""Create or update the default Hearthline admin user.
+"""Create or update the default Workmento admin user.
 
 Usage:
     docker compose exec backend python manage.py seed_admin
@@ -17,7 +17,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Seed or update the default Hearthline admin user."
+    help = "Seed or update the default Workmento admin user."
 
     def add_arguments(self, parser):
         parser.add_argument(

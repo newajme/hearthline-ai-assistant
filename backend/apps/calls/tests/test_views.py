@@ -18,7 +18,7 @@ class ChatCompletionsAuthTests(TestCase):
     def test_accepts_when_no_secret_configured(self):
         # Dev mode: VAPI_WEBHOOK_SECRET unset → endpoint open.
         with patch("apps.calls.agent.receptionist.handle_conversation_turn") as mock_turn:
-            mock_turn.return_value = {"text": "Hi, this is Anna.", "end_call": False}
+            mock_turn.return_value = {"text": "Hi, this is Demi.", "end_call": False}
             res = self.client.post(
                 self.url,
                 data='{"messages":[{"role":"user","content":"hello"}]}',
@@ -26,7 +26,7 @@ class ChatCompletionsAuthTests(TestCase):
             )
         self.assertEqual(res.status_code, 200)
         body = res.json()
-        self.assertEqual(body["choices"][0]["message"]["content"], "Hi, this is Anna.")
+        self.assertEqual(body["choices"][0]["message"]["content"], "Hi, this is Demi.")
 
     def test_rejects_when_secret_configured_and_missing(self):
         with self.settings(VAPI_WEBHOOK_SECRET="topsecret"):
