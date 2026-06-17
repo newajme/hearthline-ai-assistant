@@ -34,7 +34,8 @@ class BusinessDetail(generics.RetrieveUpdateDestroyAPIView):
 # adding non-secret CharFields here — they're already returned by the regular
 # serializer.
 REVEALABLE_FIELDS = {
-    "anthropic_api_key", "openai_api_key", "vapi_api_key", "vapi_phone_number_id",
+    "anthropic_api_key", "openai_api_key", "gemini_api_key", "groq_api_key",
+    "vapi_api_key", "vapi_phone_number_id",
     "twilio_account_sid", "twilio_auth_token", "whatsapp_access_token",
     "whatsapp_verify_token",
 }

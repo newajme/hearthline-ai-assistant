@@ -14,10 +14,18 @@ type KeyRow = {
   masked: string;
 };
 
+type LlmProvider = Business["llm_provider"];
+
+const PROVIDERS: Array<{ value: LlmProvider; label: string; model: string }> = [
+  { value: "anthropic", label: "Claude", model: "Anthropic · claude-sonnet-4-6" },
+  { value: "openai", label: "OpenAI", model: "GPT · gpt-4o" },
+  { value: "gemini", label: "Gemini", model: "Google · gemini-2.0-flash" },
+  { value: "groq", label: "Groq", model: "Llama · llama-3.3-70b-versatile" },
+];
+
 export default function ApiKeysCard({ business }: { business: Business }) {
   const router = useRouter();
   const provider = business.llm_provider || "anthropic";
-  const usingOpenAI = provider === "openai";
   const allRows: (KeyRow & { hidden?: boolean })[] = [
     {
       field: "anthropic_api_key",
@@ -25,7 +33,7 @@ export default function ApiKeysCard({ business }: { business: Business }) {
       hint: "Required — Claude powers Demi and lead extraction.",
       configured: business.has_anthropic_key,
       masked: business.anthropic_api_key,
-      hidden: usingOpenAI,
+      hidden: provider !== "anthropic",
     },
     {
       field: "openai_api_key",
@@ -33,7 +41,23 @@ export default function ApiKeysCard({ business }: { business: Business }) {
       hint: "Required — GPT powers Demi and lead extraction.",
       configured: business.has_openai_key,
       masked: business.openai_api_key,
-      hidden: !usingOpenAI,
+      hidden: provider !== "openai",
+    },
+    {
+      field: "gemini_api_key",
+      label: "Google Gemini API key",
+      hint: "Required — Gemini powers Demi when selected.",
+      configured: business.has_gemini_key,
+      masked: business.gemini_api_key,
+      hidden: provider !== "gemini",
+    },
+    {
+      field: "groq_api_key",
+      label: "Groq API key",
+      hint: "Required — Groq powers Demi when selected.",
+      configured: business.has_groq_key,
+      masked: business.groq_api_key,
+      hidden: provider !== "groq",
     },
     { field: "vapi_api_key", label: "Vapi API key", hint: "For programmatic call placement (optional).", configured: business.has_vapi_key, masked: business.vapi_api_key },
     { field: "vapi_phone_number_id", label: "Vapi phone number ID", hint: "Public number Vapi answers on.", configured: !!business.vapi_phone_number_id, masked: business.vapi_phone_number_id },
@@ -92,7 +116,7 @@ export default function ApiKeysCard({ business }: { business: Business }) {
     router.refresh();
   }
 
-  async function setProvider(next: "anthropic" | "openai") {
+  async function setProvider(next: LlmProvider) {
     if (next === provider) return;
     setSaving(true);
     setError(null);
@@ -120,28 +144,20 @@ export default function ApiKeysCard({ business }: { business: Business }) {
       <div className="provider-toggle" role="radiogroup" aria-label="LLM provider for Demi">
         <span className="provider-toggle-label">LLM provider</span>
         <div className="provider-toggle-options">
-          <button
-            type="button"
-            role="radio"
-            aria-checked={provider === "anthropic"}
-            className={`provider-pill ${provider === "anthropic" ? "is-active" : ""}`}
-            onClick={() => setProvider("anthropic")}
-            disabled={saving}
-          >
-            <strong>Claude</strong>
-            <span>Anthropic · {`claude-sonnet-4-6`}</span>
-          </button>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={provider === "openai"}
-            className={`provider-pill ${provider === "openai" ? "is-active" : ""}`}
-            onClick={() => setProvider("openai")}
-            disabled={saving}
-          >
-            <strong>OpenAI</strong>
-            <span>GPT · gpt-4o</span>
-          </button>
+          {PROVIDERS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              role="radio"
+              aria-checked={provider === option.value}
+              className={`provider-pill ${provider === option.value ? "is-active" : ""}`}
+              onClick={() => setProvider(option.value)}
+              disabled={saving}
+            >
+              <strong>{option.label}</strong>
+              <span>{option.model}</span>
+            </button>
+          ))}
         </div>
         <p className="provider-toggle-hint">
           Powers Demi and lead extraction. Switch any time — the unused provider&apos;s key isn&apos;t needed.

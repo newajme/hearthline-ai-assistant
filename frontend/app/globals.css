@@ -7153,7 +7153,7 @@ select.text-input { cursor: pointer; appearance: none; background-image: url("da
 }
 .provider-toggle-options {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 .provider-pill {
@@ -7188,6 +7188,14 @@ select.text-input { cursor: pointer; appearance: none; background-image: url("da
 }
 [data-theme="dark"] .provider-pill { background: var(--surface-3); }
 [data-theme="dark"] .provider-pill.is-active { background: var(--brand); border-color: var(--brand); }
+
+@media (max-width: 900px) {
+  .provider-toggle-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  .provider-toggle-options { grid-template-columns: 1fr; }
+}
 
 /* ============================================================
    Google Translate Element — hide its UI, keep our switcher

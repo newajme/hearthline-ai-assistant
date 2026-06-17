@@ -115,9 +115,11 @@ export type Business = {
   phone_number: string;
   voice_persona: string;
   knowledge_base: string;
-  llm_provider: "anthropic" | "openai";
+  llm_provider: "anthropic" | "openai" | "gemini" | "groq";
   anthropic_api_key: string;
   openai_api_key: string;
+  gemini_api_key: string;
+  groq_api_key: string;
   vapi_api_key: string;
   vapi_phone_number_id: string;
   twilio_account_sid: string;
@@ -128,6 +130,8 @@ export type Business = {
   whatsapp_verify_token: string;
   has_anthropic_key: boolean;
   has_openai_key: boolean;
+  has_gemini_key: boolean;
+  has_groq_key: boolean;
   has_vapi_key: boolean;
   has_twilio_creds: boolean;
   has_whatsapp_creds: boolean;

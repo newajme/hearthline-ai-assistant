@@ -40,11 +40,15 @@ class BusinessSerializer(serializers.ModelSerializer):
     channels = ChannelSerializer(many=True, read_only=True)
     has_anthropic_key = serializers.SerializerMethodField()
     has_openai_key = serializers.SerializerMethodField()
+    has_gemini_key = serializers.SerializerMethodField()
+    has_groq_key = serializers.SerializerMethodField()
     has_vapi_key = serializers.SerializerMethodField()
     has_twilio_creds = serializers.SerializerMethodField()
     has_whatsapp_creds = serializers.SerializerMethodField()
     anthropic_api_key = _SecretField()
     openai_api_key = _SecretField()
+    gemini_api_key = _SecretField()
+    groq_api_key = _SecretField()
     vapi_api_key = _SecretField()
     vapi_phone_number_id = _SecretField()
     twilio_account_sid = _SecretField()
@@ -60,13 +64,13 @@ class BusinessSerializer(serializers.ModelSerializer):
             "id", "name", "slug", "trade", "timezone", "currency",
             "phone_number", "voice_persona", "knowledge_base",
             "llm_provider",
-            "anthropic_api_key", "openai_api_key", "vapi_api_key",
+            "anthropic_api_key", "openai_api_key", "gemini_api_key", "groq_api_key", "vapi_api_key",
             "vapi_phone_number_id", "vapi_assistant_id",
             "twilio_account_sid", "twilio_auth_token",
             "twilio_from_number",
             "whatsapp_access_token", "whatsapp_phone_number_id", "whatsapp_verify_token",
             "has_anthropic_key", "has_openai_key", "has_vapi_key", "has_twilio_creds",
-            "has_whatsapp_creds",
+            "has_gemini_key", "has_groq_key", "has_whatsapp_creds",
             "channels", "created_at", "updated_at",
         ]
 
@@ -76,6 +80,12 @@ class BusinessSerializer(serializers.ModelSerializer):
 
     def get_has_openai_key(self, obj) -> bool:
         return bool(obj.resolved_openai_key)
+
+    def get_has_gemini_key(self, obj) -> bool:
+        return bool(obj.resolved_gemini_key)
+
+    def get_has_groq_key(self, obj) -> bool:
+        return bool(obj.resolved_groq_key)
 
     def get_has_vapi_key(self, obj) -> bool:
         return bool(obj.resolved_vapi_key)
@@ -88,7 +98,7 @@ class BusinessSerializer(serializers.ModelSerializer):
 
     # --- write semantics: blank = leave alone, "__CLEAR__" = wipe, value = set ---
     SECRET_FIELDS = (
-        "anthropic_api_key", "openai_api_key", "vapi_api_key",
+        "anthropic_api_key", "openai_api_key", "gemini_api_key", "groq_api_key", "vapi_api_key",
         "vapi_phone_number_id", "twilio_account_sid", "twilio_auth_token",
         "whatsapp_access_token", "whatsapp_verify_token",
     )
