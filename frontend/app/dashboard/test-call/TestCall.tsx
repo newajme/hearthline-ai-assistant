@@ -3,10 +3,13 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
-const VAPI_SECRET = process.env.NEXT_PUBLIC_VAPI_SECRET ?? "";
-
 type Msg = { role: "user" | "assistant"; content: string };
+type AiStatus = {
+  provider: string;
+  provider_label: string;
+  available: boolean;
+  message: string;
+};
 
 const STARTERS = [
   "Hi, my AC stopped working and I need someone to come look at it today.",
@@ -22,14 +25,35 @@ export default function TestCall({ personaName = "Demi" }: { personaName?: strin
   const [phone, setPhone] = useState("+1 (555) 555-0199");
   const [thinking, setThinking] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
+  const [checkingStatus, setCheckingStatus] = useState(true);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function checkProvider() {
+      setCheckingStatus(true);
+      try {
+        const res = await fetch("/api/test-call", { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = (await res.json()) as AiStatus;
+        if (!cancelled) setAiStatus(data);
+      } catch (err) {
+        if (!cancelled) setError(err instanceof Error ? err.message : String(err));
+      } finally {
+        if (!cancelled) setCheckingStatus(false);
+      }
+    }
+    checkProvider();
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, thinking]);
 
   async function send(text: string) {
-    if (!text.trim() || thinking) return;
+    if (!text.trim() || thinking || !aiStatus?.available) return;
     const userMsg: Msg = { role: "user", content: text };
     const next = [...messages, userMsg];
     setMessages(next);
@@ -37,19 +61,29 @@ export default function TestCall({ personaName = "Demi" }: { personaName?: strin
     setThinking(true);
     setError(null);
     try {
-      const res = await fetch(`${API_URL}/calls/vapi/chat/completions/`, {
+      const res = await fetch("/api/test-call", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(VAPI_SECRET ? { "Authorization": `Bearer ${VAPI_SECRET}` } : {}),
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: next,
           call: { customer: { number: phone.replace(/[^\d+]/g, "") } },
         }),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
+      if (!res.ok) {
+        const configError = data?.error?.code === "ai_provider_unconfigured" ? data.error : null;
+        if (configError) {
+          setMessages(messages);
+          setAiStatus({
+            provider: configError.provider,
+            provider_label: configError.provider_label,
+            available: false,
+            message: configError.message,
+          });
+          return;
+        }
+        throw new Error(data?.detail ?? data?.error?.message ?? `HTTP ${res.status}`);
+      }
       const reply: string = data?.choices?.[0]?.message?.content ?? "(no response)";
       setMessages((m) => [...m, { role: "assistant", content: reply }]);
     } catch (err) {
@@ -64,24 +98,35 @@ export default function TestCall({ personaName = "Demi" }: { personaName?: strin
     setError(null);
   }
 
+  const providerUnavailable = !checkingStatus && aiStatus?.available === false;
+
   return (
     <>
       <div className="app-pagebar">
         <div>
           <h1>Test {personaName}</h1>
           <p>
-            <Link href="/dashboard" style={{ color: "var(--muted)" }}>← Dashboard</Link>
+            <Link href="/dashboard" className="btn btn-back">← Dashboard</Link>
             {" · "}Talk to {personaName} the way Vapi will. Each message hits <code>/api/calls/vapi/chat/completions/</code>.
           </p>
         </div>
         <div className="app-pagebar-actions">
-          <Link href="/dashboard/settings" className="btn btn-ghost">Vapi setup ↗</Link>
+          <Link href="/dashboard/settings?tab=ai" className="btn btn-ghost">AI setup ↗</Link>
           <button type="button" className="btn btn-ghost" onClick={reset}>↻ Reset</button>
         </div>
       </div>
 
       <div className="app-content">
         {error && <div className="banner-error">Backend error: {error}</div>}
+        {providerUnavailable && (
+          <div className="setup-state-card">
+            <div>
+              <strong>Connect your AI provider before testing Demi.</strong>
+              <p>{aiStatus?.provider_label ?? "Selected provider"} is selected but does not have a configured usable key.</p>
+            </div>
+            <Link href="/dashboard/settings?tab=ai" className="btn btn-brand">Connect AI provider</Link>
+          </div>
+        )}
 
         <div className="testcall-grid">
           <article className="dash-card testcall-panel">
@@ -99,7 +144,7 @@ export default function TestCall({ personaName = "Demi" }: { personaName?: strin
             <div className="testcall-thread" ref={scrollRef}>
               {messages.length === 0 && (
                 <div className="testcall-empty">
-                  <p>Pretend you're a customer calling. Tap a starter or type your own message.</p>
+                  <p>{providerUnavailable ? "AI provider setup is required before a test conversation can start." : "Pretend you're a customer calling. Tap a starter or type your own message."}</p>
                 </div>
               )}
               {messages.map((m, i) => (
@@ -121,7 +166,7 @@ export default function TestCall({ personaName = "Demi" }: { personaName?: strin
             {messages.length === 0 && (
               <div className="testcall-starters">
                 {STARTERS.map((s) => (
-                  <button key={s} type="button" onClick={() => send(s)}>{s}</button>
+                  <button key={s} type="button" onClick={() => send(s)} disabled={checkingStatus || providerUnavailable}>{s}</button>
                 ))}
               </div>
             )}
@@ -135,10 +180,10 @@ export default function TestCall({ personaName = "Demi" }: { personaName?: strin
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder="Type a customer message…"
-                disabled={thinking}
+                disabled={thinking || checkingStatus || providerUnavailable}
                 autoFocus
               />
-              <button type="submit" className="btn btn-primary" disabled={thinking || !draft.trim()}>
+              <button type="submit" className="btn btn-primary" disabled={thinking || checkingStatus || providerUnavailable || !draft.trim()}>
                 Send →
               </button>
             </form>

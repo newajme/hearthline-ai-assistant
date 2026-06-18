@@ -14,13 +14,24 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .models import UserProfile
+from .serializers import UserProfileSerializer
+
 
 def _serialize(user) -> dict:
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+    display_name = (user.first_name or "").strip()
+    src = display_name or user.username or user.email or "U"
+    parts = [part for part in src.replace("_", " ").replace(".", " ").split() if part]
+    initials = ((parts[0][0] + parts[-1][0]) if len(parts) >= 2 else src[:2]).upper()
     return {
         "id": user.id,
         "username": user.username,
         "email": user.email,
         "first_name": user.first_name,
+        "display_name": display_name,
+        "avatar_url": profile.avatar_url,
+        "initials": initials,
         "is_staff": user.is_staff,
     }
 
@@ -94,3 +105,16 @@ class MeView(APIView):
 
     def get(self, request):
         return Response({"user": _serialize(request.user)})
+
+
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"profile": UserProfileSerializer(request.user).data})
+
+    def patch(self, request):
+        serializer = UserProfileSerializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"profile": UserProfileSerializer(request.user).data})

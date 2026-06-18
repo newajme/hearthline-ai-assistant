@@ -135,7 +135,7 @@ export default function QuoteEditor({
         <div>
           <h1>{quote.reference}</h1>
           <p>
-            <Link href="/dashboard/quotes" style={{ color: "var(--muted)" }}>← All quotes</Link>
+            <Link href="/dashboard/quotes" className="btn btn-back">← Back to quotes</Link>
             {" · "}For <Link href={`/dashboard/leads/${quote.lead}`} style={{ color: "var(--brand)" }}>Lead #{quote.lead}</Link>
             {" · created "}{fmtDate(quote.created_at)}
           </p>
@@ -145,7 +145,7 @@ export default function QuoteEditor({
             {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
           {quote.drafted_by_ai && <span className="tag brand">AI-drafted</span>}
-          <button type="button" className="btn btn-ghost" onClick={delQuote}>Delete</button>
+          <button type="button" className="btn btn-ghost btn-danger-ghost" onClick={delQuote}>Delete</button>
           <button type="button" className="btn btn-ghost" onClick={downloadPdf}>Download PDF</button>
           <button type="button" className="btn btn-primary" onClick={save} disabled={saving}>
             {saving ? "Saving…" : "Save changes"}

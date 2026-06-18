@@ -30,7 +30,7 @@ export default async function OverviewPage() {
           <p>Live operations across phone, SMS, and chat.</p>
         </div>
         <div className="app-pagebar-actions">
-          <Link href="/dashboard/leads" className="btn btn-ghost">View leads →</Link>
+          <Link href="/dashboard/leads" className="btn btn-brand">View leads →</Link>
           <Link href="/dashboard/test-call" className="btn btn-primary">▶ Test {persona}</Link>
         </div>
       </div>

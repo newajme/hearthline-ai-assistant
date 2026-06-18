@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { fetchJson, fmtAge, fmtMoney, type Lead, type Page, type Quote, type Call } from "../../lib";
-import { getAdminUrl } from "../../../lib/api";
 import { getActiveCurrency } from "../../../lib/currency";
 import { LeadActionPill, StatusPill } from "../../parts";
 
@@ -25,14 +24,13 @@ export default async function LeadDetail({ params }: { params: Promise<{ id: str
         <div>
           <h1>{lead.customer?.name || "Unknown contact"}</h1>
           <p>
-            <Link href="/dashboard/leads" style={{ color: "var(--muted)" }}>← All leads</Link>
+            <Link href="/dashboard/leads" className="btn btn-back">← Back to leads</Link>
             {" · Lead #"}{lead.id}
             {lead.customer?.phone ? ` · ${lead.customer.phone}` : ""}
           </p>
         </div>
         <div className="app-pagebar-actions">
           <LeadActionPill lead={lead} currency={currency} />
-          <a href={getAdminUrl(`/leads/lead/${lead.id}/change/`)} target="_blank" rel="noreferrer" className="btn btn-ghost">Edit ↗</a>
         </div>
       </div>
 

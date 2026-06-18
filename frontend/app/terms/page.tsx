@@ -81,15 +81,11 @@ export default function TermsPage() {
               human-in-the-loop thresholds in your dashboard.
             </p>
 
-            <h2>7. Open-source code</h2>
+            <h2>7. Third-party components</h2>
             <p>
-              The Workmento reference implementation is published under the GNU AGPL-3.0 license at{" "}
-              <a href="https://github.com/workmento/workmento" target="_blank" rel="noreferrer">
-                github.com/workmento/workmento
-              </a>. Self-hosting is permitted under AGPL-3.0; running your own deployment falls
-              outside the scope of these Terms. A separate commercial license is available for
-              white-labeling, reselling, or embedding Workmento in closed-source products —
-              contact contact@workmento.com.
+              For any AGPL-covered components included in the Service, required materials are
+              available as <a href="mailto:legal@workmento.com">Corresponding Source</a>.
+              This notice does not change the hosted Service terms above.
             </p>
 
             <h2>8. Disclaimer of warranties</h2>

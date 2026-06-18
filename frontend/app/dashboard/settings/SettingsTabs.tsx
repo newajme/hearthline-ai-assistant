@@ -9,6 +9,7 @@ import KnowledgeForm from "./KnowledgeForm";
 import ApiKeysCard from "./ApiKeysCard";
 import ChannelsEditor from "./ChannelsEditor";
 import WebhooksCard from "./WebhooksCard";
+import UserProfileForm, { type UserProfile } from "./UserProfileForm";
 
 type TabKey = "profile" | "ai" | "channels" | "webhooks";
 
@@ -23,7 +24,7 @@ function normalize(raw: string | null): TabKey {
   return TABS.some((t) => t.key === raw) ? (raw as TabKey) : "profile";
 }
 
-export default function SettingsTabs({ business }: { business: Business }) {
+export default function SettingsTabs({ business, profile }: { business: Business; profile: UserProfile }) {
   const router = useRouter();
   const params = useSearchParams();
   const isNew = business.id === 0;
@@ -68,7 +69,12 @@ export default function SettingsTabs({ business }: { business: Business }) {
         role="tabpanel"
         aria-labelledby={`settings-tab-${active}`}
       >
-        {active === "profile" && <ProfileForm business={business} />}
+        {active === "profile" && (
+          <>
+            <UserProfileForm profile={profile} />
+            <ProfileForm business={business} />
+          </>
+        )}
         {active === "ai" && (
           isNew ? (
             <PendingProfileNotice />

@@ -7,8 +7,8 @@ import type { Business } from "../lib";
 import { patchBusiness } from "./api";
 
 const TRADES = [
-  "windows", "roofing", "hvac", "plumbing", "solar", "doors",
-  "renovation", "electrical", "landscaping", "cleaning", "pest_control", "general",
+  "hvac", "plumbing", "windows", "roofing", "solar", "renovation",
+  "electrical", "garage", "landscaping", "cleaning", "pest", "general",
 ];
 const TIMEZONES = [
   "America/Los_Angeles", "America/Denver", "America/Chicago", "America/New_York",
@@ -143,7 +143,7 @@ export default function ProfileForm({ business }: { business: Business }) {
       <div className="settings-profile-head">
         <span className="settings-profile-mark">{(form.name || "?").slice(0, 1).toUpperCase()}</span>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h2 style={{ margin: 0 }}>{form.name || "Untitled business"}</h2>
+          <h2 style={{ margin: 0 }}>Business profile</h2>
           <p className="settings-profile-sub">
             {form.trade || "—"} · {form.timezone || "UTC"}
           </p>
@@ -223,7 +223,7 @@ export default function ProfileForm({ business }: { business: Business }) {
         <button type="button" className="btn btn-ghost" onClick={onReset} disabled={!dirty || saving}>
           Reset
         </button>
-        <button type="button" className="btn btn-primary" onClick={onSave} disabled={!dirty || saving}>
+        <button type="button" className="btn btn-brand" onClick={onSave} disabled={!dirty || saving}>
           {saving ? "Saving…" : isNew ? "Create business" : "Save changes"}
         </button>
       </div>

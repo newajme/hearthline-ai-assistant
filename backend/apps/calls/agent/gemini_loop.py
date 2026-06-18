@@ -56,8 +56,15 @@ def run_gemini_loop(
     except ImportError:
         logger.error("google-generativeai not installed — run: pip install google-generativeai")
         return {
-            "text": "My AI brain isn't connected right now. Please call back in a moment.",
+            "text": "",
             "end_call": False,
+            "configuration_error": {
+                "code": "ai_provider_unconfigured",
+                "message": "Connect your AI provider before testing Demi.",
+                "detail": "The Google Gemini SDK is not installed.",
+                "provider": "gemini",
+                "provider_label": "Google Gemini",
+            },
         }
 
     genai.configure(api_key=api_key)

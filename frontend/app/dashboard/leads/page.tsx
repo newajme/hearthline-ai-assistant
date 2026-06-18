@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { fetchJson, type Lead, type Page } from "../lib";
-import { getAdminUrl } from "../../lib/api";
 import { getActiveCurrency } from "../../lib/currency";
 import LeadsTable from "./LeadsTable";
 
@@ -39,7 +38,7 @@ export default async function LeadsPage({
           <p>Every inbound captured and qualified by Workmento.</p>
         </div>
         <div className="app-pagebar-actions">
-          <a href={getAdminUrl("/leads/lead/add/")} target="_blank" rel="noreferrer" className="btn btn-primary">+ New lead</a>
+          <Link href="/dashboard/leads/new" className="btn btn-brand">+ New lead</Link>
         </div>
       </div>
 

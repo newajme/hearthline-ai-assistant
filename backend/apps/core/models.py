@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from .crypto import EncryptedCharField
@@ -211,3 +212,15 @@ class Channel(models.Model):
 
     def __str__(self) -> str:
         return f"{self.business.name} · {self.kind}: {self.address}"
+
+
+class UserProfile(models.Model):
+    """Dashboard profile data owned by one signed-in user."""
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="workmento_profile")
+    avatar_url = models.URLField(blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"Profile · {self.user}"

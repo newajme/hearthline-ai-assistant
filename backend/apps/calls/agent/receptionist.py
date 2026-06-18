@@ -9,6 +9,7 @@ from typing import Any
 from django.conf import settings
 from django.core.cache import cache
 
+from apps.ai.providers import PROVIDERS, missing_key_message, resolve_api_key
 from apps.calls.services.email import send_email
 from apps.calls.services.persistence import book_appointment_tool, draft_quote_tool, qualify_lead_tool
 from apps.calls.services.scheduling import check_availability
@@ -94,15 +95,12 @@ def _tools_already_run(call_id: str | None) -> list[str]:
     return done
 
 
-def _client(business=None):
-    biz_key = (business.resolved_anthropic_key if business else "")
-    env_key = settings.ANTHROPIC_API_KEY
-    key = biz_key or env_key
+def _client(business=None, api_key: str = ""):
+    key = api_key or (business.resolved_anthropic_key if business else "") or settings.ANTHROPIC_API_KEY
     logger.info(
-        "[KEY] biz=%s biz_key_len=%d env_key_len=%d total_businesses=%d",
+        "[KEY] biz=%s selected_key_len=%d total_businesses=%d",
         getattr(business, "id", None),
-        len(biz_key or ""),
-        len(env_key or ""),
+        len(key or ""),
         Business.objects.count(),
     )
     if not key:
@@ -119,6 +117,20 @@ def _openai_client(business=None):
     key = (business.resolved_openai_key if business else "") or settings.OPENAI_API_KEY
     if not key:
         return None
+
+
+def _configuration_error(provider_name: str, provider_label: str, message: str) -> dict[str, Any]:
+    return {
+        "text": "",
+        "end_call": False,
+        "configuration_error": {
+            "code": "ai_provider_unconfigured",
+            "message": "Connect your AI provider before testing Demi.",
+            "detail": message,
+            "provider": provider_name,
+            "provider_label": provider_label,
+        },
+    }
     try:
         import openai  # noqa: WPS433
         return openai.OpenAI(api_key=key)
@@ -143,11 +155,7 @@ def _resolve_business(call_id: str | None = None):
             return biz
         _BIZ_CACHE.pop(call_id, None)
 
-    # Query for the first business with an API key, falling back to the first available record.
-    biz = (
-        Business.objects.exclude(anthropic_api_key__isnull=True).exclude(anthropic_api_key="").order_by("id").first()
-        or Business.objects.order_by("id").first()
-    )
+    biz = Business.objects.order_by("id").first()
 
     if call_id and biz is not None:
         if len(_BIZ_CACHE) > 1024:
@@ -249,12 +257,12 @@ def _persist_turn(conversation_history: list, caller_phone: str | None,
         )
         if last_user:
             Message.objects.create(
-                conversation=convo, direction="in", role="user",
+                conversation=convo, direction="in", role="customer",
                 body=last_user["content"][:2000],
             )
         if demi_reply:
             Message.objects.create(
-                conversation=convo, direction="out", role="assistant",
+                conversation=convo, direction="out", role="ai",
                 body=demi_reply[:2000],
             )
     except Exception as exc:  # noqa: BLE001 — best-effort timeline persistence; never crash the live call on a DB hiccup
@@ -318,27 +326,23 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
             "now — don't just say you will)."
         )
 
-    # CEO Note: We default to 'gemini' here to take advantage of Google's free tier.
-    provider = (getattr(biz, "llm_provider", "") or "gemini").lower()
+    provider = (getattr(biz, "llm_provider", "") or "anthropic").lower()
+    provider_cfg = PROVIDERS.get(provider)
+    if provider_cfg is None:
+        return _configuration_error(provider, provider, "Unsupported AI provider selection.")
+    provider_key = resolve_api_key(provider_cfg, biz)
+    if not provider_key:
+        return _configuration_error(provider_cfg.name, provider_cfg.label, missing_key_message(provider_cfg))
 
     if provider == "groq":
-        groq_key = (biz.resolved_groq_key if biz else "") or settings.GROQ_API_KEY
-        if not groq_key:
-            return {
-                "text": f"{persona} here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",
-                "end_call": False,
-            }
         try:
             import openai as _openai
             groq_client = _openai.OpenAI(
-                api_key=groq_key,
+                api_key=provider_key,
                 base_url="https://api.groq.com/openai/v1",
             )
         except ImportError:
-            return {
-                "text": f"{persona} here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",
-                "end_call": False,
-            }
+            return _configuration_error(provider_cfg.name, provider_cfg.label, "The OpenAI-compatible SDK is not installed.")
 
         def _groq_dispatch(name: str, tool_input: dict) -> dict:
             return execute_tool(name, tool_input, caller_phone=caller_phone, call_id=call_id, business=biz)
@@ -366,20 +370,16 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
         return result
 
     if provider == "gemini":
-        # CEO Note: This looks for your Gemini key. 
-        # If you pasted your Gemini key into the 'ANTHROPIC_API_KEY' slot in Vercel, this will still work!
-        gemini_key = (biz.resolved_gemini_key if biz else "") or getattr(settings, "GEMINI_API_KEY", None) or settings.ANTHROPIC_API_KEY
-        if not gemini_key:
-            return {
-                "text": f"{persona} here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",
-                "end_call": False,
-            }
+        try:
+            import google.generativeai  # noqa: F401,WPS433
+        except ImportError:
+            return _configuration_error(provider_cfg.name, provider_cfg.label, "The Google Gemini SDK is not installed.")
 
         def _gemini_dispatch(name: str, tool_input: dict) -> dict:
             return execute_tool(name, tool_input, caller_phone=caller_phone, call_id=call_id, business=biz)
 
         result = run_gemini_loop(
-            gemini_key,
+            provider_key,
             system_prompt=system_prompt,
             tools=TOOLS,
             conversation_history=conversation_history,
@@ -401,10 +401,7 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
     if provider == "openai":
         oai = _openai_client(biz)
         if not oai:
-            return {
-                "text": f"{persona} here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",
-                "end_call": False,
-            }
+            return _configuration_error(provider_cfg.name, provider_cfg.label, "The OpenAI SDK is not installed.")
         def dispatch(name: str, tool_input: dict) -> dict:
             return execute_tool(name, tool_input, caller_phone=caller_phone, call_id=call_id, business=biz)
 
@@ -433,13 +430,9 @@ def handle_conversation_turn(conversation_history: list, caller_phone: str | Non
         _persist_turn(conversation_history, caller_phone, call_id, result.get("text") or "")
         return result
 
-    client = _client(biz)
+    client = _client(biz, provider_key)
     if not client:
-        # Stub — useful for local dev without API keys
-        return {
-            "text": f"{persona} here. I'd love to help, but my AI brain isn't connected right now. Please call back in a moment.",
-            "end_call": False,
-        }
+        return _configuration_error(provider_cfg.name, provider_cfg.label, "The Anthropic SDK is not installed.")
 
     response = client.messages.create(
         model=CLAUDE_MODEL,
