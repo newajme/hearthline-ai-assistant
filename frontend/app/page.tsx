@@ -4,7 +4,6 @@ import Link from "next/link";
 import DemiDemoLauncher from "./DemiDemoLauncher";
 import ChatWidgetLazy from "./ChatWidgetLazy";
 import HearDemiButton from "./HearDemiButton";
-import InstallSnippet from "./InstallSnippet";
 import HeroBackdrop from "./HeroBackdrop";
 import LiveTicker from "./LiveTicker";
 import { MarketingTopbar } from "./MarketingShell";
@@ -18,12 +17,11 @@ import { getT } from "./lib/i18n-server";
 
 const SITE_URL = "https://workmento.com";
 const DEMO_URL = "/contact";
-const REPO_URL = "https://github.com/workmento/workmento";
 
 export const metadata: Metadata = {
   title: "Workmento — The 24/7 AI front desk for home-service teams",
   description:
-    "Demi answers, qualifies, and books — so your crew sleeps and your calendar fills itself. Open-source AI receptionist for HVAC, plumbing, roofing, solar, and more.",
+    "Demi answers, qualifies, and books so your crew sleeps and your calendar fills itself. AI customer operations for HVAC, plumbing, roofing, solar, and more.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -40,17 +38,15 @@ const SOFTWARE_JSONLD = {
   name: "Workmento",
   applicationCategory: "BusinessApplication",
   applicationSubCategory: "AI Receptionist",
-  operatingSystem: "Web, Linux, Docker",
+  operatingSystem: "Web",
   description:
-    "Open-source 24/7 AI front desk for home-service teams — phone, SMS, WhatsApp, email, chat. Demi qualifies leads and books appointments automatically.",
+    "24/7 AI customer operations and front desk for home-service teams across phone, SMS, WhatsApp, email, and chat. Demi qualifies leads and books appointments automatically.",
   url: SITE_URL,
-  license: "https://www.gnu.org/licenses/agpl-3.0.html",
-  isAccessibleForFree: true,
   offers: {
     "@type": "Offer",
     price: "0",
     priceCurrency: "USD",
-    description: "Self-host under AGPL-3.0. Done-for-you setup available.",
+    description: "Book a demo to review Workmento for your business.",
   },
   publisher: {
     "@type": "Organization",
@@ -108,34 +104,20 @@ export default async function HomePage() {
               href={DEMO_URL}
               target="_blank"
               rel="noreferrer"
-              className="hero-secondary-link"
+              className="btn btn-ghost hero-secondary-link"
             >
-              {t("hero.secondary")} <span aria-hidden>→</span>
+              {t("btn.bookDemo")}
             </a>
           </div>
-
-          <HearDemiButton />
 
           <p className="hero-trades">
             <span className="hero-trades-label">{t("hero.tradesPrefix")}</span>
             <span className="hero-trades-list">{t("hero.tradesList")}</span>
           </p>
 
+          <HearDemiButton />
+
           <LiveTicker />
-
-          <a href={REPO_URL} target="_blank" rel="noreferrer" className="gh-strip">
-            <span>{t("hero.oss")}</span>
-            <span className="sep" aria-hidden />
-            <strong>{t("hero.star")}</strong>
-            <span className="sep" aria-hidden />
-            <span>{t("hero.selfHost")}</span>
-          </a>
-
-          <p className="license-ribbon">
-            <span><strong>AGPL-3.0</strong> · self-host free</span>
-            <span className="license-ribbon-sep" aria-hidden />
-            <span>Commercial license available — <a href={DEMO_URL} target="_blank" rel="noreferrer">talk to us</a></span>
-          </p>
         </section>
 
         <section className="shell mock-dashboard-section">
@@ -223,10 +205,6 @@ export default async function HomePage() {
                 {t("btn.bookDemo")}
               </a>
             </div>
-            <a href={REPO_URL} target="_blank" rel="noreferrer" className="final-cta-self-host">
-              {t("finalCta.selfHost")} <span aria-hidden>→</span>
-            </a>
-            <InstallSnippet />
           </div>
         </section>
 

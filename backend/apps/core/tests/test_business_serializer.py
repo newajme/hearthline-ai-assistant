@@ -5,6 +5,7 @@ from django.test import TestCase, override_settings
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 from apps.core.models import Business
+from apps.core.auth_views import ProfileView
 from apps.core.serializers import BusinessSerializer
 from apps.core.views import REVEALABLE_FIELDS, RevealKeyView
 
@@ -163,3 +164,53 @@ class RevealProviderKeyTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(_digest(response.data["value"]), _digest(self.business.gemini_api_key))
+
+
+class UserProfileApiTests(TestCase):
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        self.view = ProfileView.as_view()
+        user_model = get_user_model()
+        self.user = user_model.objects.create_user(
+            username="profile-user",
+            email="profile@example.test",
+            password="unused",
+        )
+        self.other_user = user_model.objects.create_user(
+            username="other-user",
+            email="other@example.test",
+            password="unused",
+        )
+
+    def test_user_can_update_only_own_profile(self):
+        request = self.factory.patch(
+            "/",
+            {"display_name": "Avery Stone", "avatar_url": "https://example.test/avatar.png"},
+            format="json",
+        )
+        force_authenticate(request, user=self.user)
+
+        response = self.view(request)
+
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.other_user.refresh_from_db()
+        self.assertEqual(self.user.first_name, "Avery Stone")
+        self.assertEqual(self.user.workmento_profile.avatar_url, "https://example.test/avatar.png")
+        self.assertEqual(self.other_user.first_name, "")
+        self.assertFalse(hasattr(self.other_user, "workmento_profile"))
+        self.assertEqual(response.data["profile"]["initials"], "AS")
+
+    def test_profile_does_not_allow_email_edit(self):
+        request = self.factory.patch(
+            "/",
+            {"display_name": "Owner", "email": "changed@example.test"},
+            format="json",
+        )
+        force_authenticate(request, user=self.user)
+
+        response = self.view(request)
+
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.email, "profile@example.test")

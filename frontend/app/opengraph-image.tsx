@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 export const runtime = "nodejs";
-export const alt = "Workmento — The 24/7 AI front desk for home services";
+export const alt = "Workmento — AI customer operations for home services";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -67,7 +67,7 @@ export default async function OpengraphImage() {
               flexWrap: "wrap",
             }}
           >
-            The 24/7 AI front desk for home services.
+            AI customer operations for home services.
           </div>
           <div
             style={{
@@ -78,7 +78,7 @@ export default async function OpengraphImage() {
               fontFamily: "sans-serif",
             }}
           >
-            Demi answers, qualifies, and books — so your crew sleeps and your calendar fills itself.
+            Demi answers, qualifies, and books across calls, messages, quotes, and support.
           </div>
           <div
             style={{
@@ -89,9 +89,9 @@ export default async function OpengraphImage() {
               fontFamily: "sans-serif",
             }}
           >
-            <span>Open-source · AGPL-3.0</span>
+            <span>AI receptionist</span>
             <span>·</span>
-            <span>Self-hostable AI receptionist</span>
+            <span>Customer-operations platform</span>
           </div>
         </div>
       </div>

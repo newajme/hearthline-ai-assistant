@@ -1,170 +1,112 @@
 import Link from "next/link";
 
-import { getT } from "../lib/i18n-server";
 import { MarketingFooter, MarketingTopbar } from "../MarketingShell";
-import ArchitectureOverview from "./ArchitectureOverview";
 
 export const metadata = {
-  title: "Docs",
+  title: "Help & Getting Started",
   description:
-    "Self-host Workmento — Django 5 + DRF backend, Next.js 15 frontend, Vapi + Twilio voice. Stack, architecture, quick start, roadmap.",
+    "Set up Workmento for your business profile, AI provider, channels, knowledge base, Demi testing, and dashboard review.",
   alternates: { canonical: "/docs" },
   openGraph: {
-    title: "Workmento · Docs",
-    description: "Self-host Workmento. Stack, architecture, quick start, roadmap.",
+    title: "Workmento · Help & Getting Started",
+    description: "Customer onboarding help for setting up Workmento and Demi.",
     url: "/docs",
   },
 };
 
-const GITHUB_URL = "https://github.com/workmento/workmento";
-const REPO_TREE = "https://github.com/workmento/workmento/blob/main";
-
-const STACK = [
+const SETUP = [
   {
-    tag: "Backend",
-    title: "Django 5 + DRF",
-    body: "5 apps · 8 models · Vapi custom-LLM endpoint · Twilio webhooks · service layer for Claude orchestration + OpenAI Vision.",
-    codeHint: "backend/apps/",
-    href: `${REPO_TREE}/backend/apps`,
+    tag: "Business profile",
+    title: "Complete your company details",
+    body: "Add your business name, service area, hours, trade focus, emergency rules, and the customer promises Demi should follow.",
   },
   {
-    tag: "Frontend",
-    title: "Next.js 15 + React 19",
-    body: "App Router, server components, real-time dashboard with KPIs, lead detail, quote line items, customers, settings.",
-    codeHint: "frontend/app/dashboard/",
-    href: `${REPO_TREE}/frontend/app/dashboard`,
+    tag: "AI provider",
+    title: "Choose Claude, OpenAI, Gemini, or Groq",
+    body: "Pick the provider that matches your budget, response style, and compliance needs. You can update the provider from settings as your workflow changes.",
   },
   {
-    tag: "Voice",
-    title: "Vapi + Twilio (custom-LLM mode)",
-    body: "Vapi POSTs every conversation turn to /api/calls/vapi/chat/completions/. Demi runs an agentic loop server-side and returns the next utterance plus optional X-Vapi-End-Call header.",
-    codeHint: "apps/calls/views.py · chat_completions",
-    href: `${REPO_TREE}/backend/apps/calls/views.py`,
+    tag: "Secure keys",
+    title: "Enter API keys safely",
+    body: "Paste provider keys only in the secure settings fields. Workmento stores keys for your workspace and never asks you to send them through chat or email.",
   },
   {
-    tag: "AI Pipeline",
-    title: "Demi · Claude Sonnet 4.6 + GPT-4o vision",
-    body: "5-tool loop (qualify_lead, check_availability, book_appointment, send_sms, end_call). Tools persist Customer, Lead, Conversation rows in real time.",
-    codeHint: "apps/calls/agent/{prompts,tools,receptionist}.py",
-    href: `${REPO_TREE}/backend/apps/calls/agent`,
+    tag: "Channels",
+    title: "Connect phone, WhatsApp, SMS, and chat",
+    body: "Add the channels your customers already use, then decide which ones Demi answers directly and which should route to your team.",
   },
   {
-    tag: "Database",
-    title: "Postgres 16",
-    body: "Single docker volume. Seed command included — one shell command and you have 8 leads, 5 calls, 4 quotes to play with.",
-    codeHint: "manage.py seed_demo --wipe",
-    href: `${REPO_TREE}/backend/apps/leads/management/commands/seed_demo.py`,
+    tag: "Knowledge base",
+    title: "Teach Demi your real rules",
+    body: "Upload service descriptions, pricing guidance, warranty language, scheduling rules, and FAQs so Demi answers from your business policy.",
   },
   {
-    tag: "Infra",
-    title: "Docker Compose",
-    body: "Three services: db, backend, frontend. Hot-reload mounted on both apps. No build tooling, no Vercel config required.",
-    codeHint: "docker-compose.yml",
-    href: `${REPO_TREE}/docker-compose.yml`,
+    tag: "Test call",
+    title: "Test Demi before going live",
+    body: "Run a simulated call, review the transcript, adjust your instructions, and repeat until the handoff feels right for your customers.",
   },
 ];
 
-const PIPELINE = [
+const REVIEW = [
   {
-    stage: "Inbound call",
-    code: "Vapi · custom-LLM mode",
-    body: "Vapi handles STT + TTS. The caller hears Demi in the voice you picked, in the language you configured.",
-    href: `${REPO_TREE}/backend/apps/calls/views.py`,
+    stage: "Leads",
+    body: "Review newly qualified leads, project details, urgency, estimated value, and recommended next actions.",
   },
   {
-    stage: "Every turn POSTs the transcript",
-    code: "POST /api/calls/vapi/chat/completions/",
-    body: "OpenAI-compatible payload. Django converts it to Claude format and runs the agent loop.",
-    href: `${REPO_TREE}/backend/apps/calls/views.py`,
+    stage: "Calls",
+    body: "Open call records to inspect transcripts, summaries, customer intent, and any follow-up Demi scheduled.",
   },
   {
-    stage: "Demi decides what to do next",
-    code: "agent/receptionist.py",
-    body: "Claude Sonnet 4.6 picks from 5 tools — qualify_lead, check_availability, book_appointment, send_sms, end_call — or speaks.",
-    href: `${REPO_TREE}/backend/apps/calls/agent/receptionist.py`,
+    stage: "Customers",
+    body: "Keep contact details, preferences, and interaction history in one place for your office team.",
   },
   {
-    stage: "Tools write to the database",
-    code: "services/persistence.py",
-    body: "qualify_lead creates/updates Customer + Lead + Conversation. book_appointment confirms a slot. Every fact Demi learned is persisted.",
-    href: `${REPO_TREE}/backend/apps/calls/services/persistence.py`,
+    stage: "Quotes",
+    body: "Review AI-drafted quote details before sending or editing them for larger jobs that need human approval.",
   },
   {
-    stage: "Dashboard updates live",
-    code: "GET /api/leads/ · GET /api/calls/",
-    body: "Server component re-fetches, action pill flips to Qualified / Quote Sent / Booked / Won.",
-    href: `${REPO_TREE}/frontend/app/dashboard`,
+    stage: "Support tickets",
+    body: "Track customer issues across chat, email, WhatsApp, and SMS so nothing gets lost between channels.",
   },
 ];
 
-const ROADMAP = {
-  done: [
-    "Django data model (Business, Channel, Customer, Lead, Conversation, Message, Call, Quote, LineItem)",
-    "Vapi + Twilio webhook handlers with structured-JSON Claude extraction",
-    "OpenAI Vision pipeline → drafted quote with line items, tax, total",
-    "Next.js dashboard: Overview, Leads, Calls, Quotes, Customers, Support, Settings",
-    "Support tickets app — WhatsApp / SMS / email / web-chat threads with status workflow and agent reply that posts back through the original channel",
-    "Lead-detail conversation timeline + extracted_fields inspector",
-    "seed_demo management command for instant believable data",
-    "Docker Compose 3-service stack with hot-reload",
-  ],
-  wip: [
-    "Stripe checkout for deposit collection on quote acceptance",
-    "Outbound SMS / WhatsApp via Twilio for quote delivery",
-    "Multi-tenant auth (today: single business, no login)",
-    "PDF rendering for the customer-facing quote",
-  ],
-  todo: [
-    "Subsidy lookup integration (solar / energy renovation)",
-    "Tech dispatch + GPS routing for booked jobs",
-    "Review request automation (Google + Trustpilot webhooks)",
-    "Eval harness for the Claude extraction prompt",
-  ],
-};
+const TOC = [
+  { id: "start", label: "Start setup", group: "Onboarding" },
+  { id: "providers", label: "AI providers", group: "Onboarding" },
+  { id: "channels", label: "Channels", group: "Configuration" },
+  { id: "knowledge", label: "Knowledge base", group: "Configuration" },
+  { id: "test", label: "Test Demi", group: "Go live" },
+  { id: "dashboard", label: "Review work", group: "Go live" },
+  { id: "support", label: "Get support", group: "Help" },
+];
 
-function buildToc(t: (k: string) => string) {
-  return [
-    { id: "quickstart", label: t("docs.toc.quickstart"), group: t("docs.tocStarted") },
-    { id: "architecture", label: t("docs.toc.architecture"), group: t("docs.tocStarted") },
-    { id: "stack", label: t("docs.toc.stack"), group: t("docs.tocConcepts") },
-    { id: "pipeline", label: t("docs.toc.pipeline"), group: t("docs.tocConcepts") },
-    { id: "voice", label: t("docs.toc.voice"), group: t("docs.tocIntegrations") },
-    { id: "demo-data", label: t("docs.toc.demoData"), group: t("docs.tocIntegrations") },
-    { id: "roadmap", label: t("docs.toc.roadmap"), group: t("docs.tocProject") },
-    { id: "license", label: t("docs.toc.license"), group: t("docs.tocProject") },
-  ];
-}
-
-export default async function DocsPage() {
-  const { t } = await getT();
-  const TOC = buildToc(t);
+export default function DocsPage() {
   const groups = Array.from(new Set(TOC.map((x) => x.group)));
 
   return (
     <>
       <MarketingTopbar
-        ossPill="AGPL-3.0"
         links={[
-          { href: "/", label: t("nav.how").startsWith("How") ? "Home" : "Home" },
-          { href: "#quickstart", label: t("docs.toc.quickstart") },
-          { href: "#stack", label: t("docs.toc.stack") },
-          { href: "#pipeline", label: t("docs.toc.pipeline") },
-          { href: "#roadmap", label: t("docs.toc.roadmap") },
+          { href: "/", label: "Home" },
+          { href: "#start", label: "Setup" },
+          { href: "#providers", label: "AI providers" },
+          { href: "#dashboard", label: "Dashboard" },
+          { href: "#support", label: "Support" },
         ]}
       />
 
       <main className="docs-main">
         <div className="docs-shell">
-          <aside className="docs-toc" aria-label="Documentation table of contents">
+          <aside className="docs-toc" aria-label="Help table of contents">
             <div className="docs-toc-inner">
-              {groups.map((g) => (
-                <div className="docs-toc-group" key={g}>
-                  <p className="docs-toc-group-label">{g}</p>
+              {groups.map((group) => (
+                <div className="docs-toc-group" key={group}>
+                  <p className="docs-toc-group-label">{group}</p>
                   <ul>
-                    {TOC.filter((t) => t.group === g).map((t) => (
-                      <li key={t.id}>
-                        <a href={`#${t.id}`} className="docs-toc-link">
-                          {t.label}
+                    {TOC.filter((item) => item.group === group).map((item) => (
+                      <li key={item.id}>
+                        <a href={`#${item.id}`} className="docs-toc-link">
+                          {item.label}
                         </a>
                       </li>
                     ))}
@@ -172,14 +114,9 @@ export default async function DocsPage() {
                 </div>
               ))}
               <div className="docs-toc-foot">
-                <a
-                  href={GITHUB_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="docs-toc-cta"
-                >
-                  {t("docs.toc.starGh")}
-                </a>
+                <Link href="/contact" className="docs-toc-cta">
+                  Contact support
+                </Link>
               </div>
             </div>
           </aside>
@@ -187,161 +124,103 @@ export default async function DocsPage() {
           <article className="docs-body">
             <header className="docs-hero">
               <span className="docs-hero-eyebrow">
-                <span className="dot" /> {t("docs.eyebrow")}
+                <span className="dot" /> Workmento Help
               </span>
-              <h1 className="docs-hero-title">{t("docs.title")}</h1>
-              <p className="docs-hero-sub">{t("docs.sub")}</p>
+              <h1 className="docs-hero-title">Getting started with Workmento.</h1>
+              <p className="docs-hero-sub">
+                Use this guide to configure Demi, connect your customer channels, and review the work Workmento captures for your team.
+              </p>
             </header>
 
-            <section id="quickstart" className="docs-section">
-              <h2 className="docs-h2">{t("docs.h.quickstart")}</h2>
-              <pre className="docs-code">
-                <code>{`# 1 — clone
-git clone https://github.com/workmento/workmento.git
-cd workmento
-
-# 2 — copy the env template (works without API keys)
-cp .env.example .env
-
-# 3 — bring it up
-docker compose up --build
-
-#   http://localhost:3000        Next.js dashboard
-#   http://localhost:8000/admin  Django admin
-#   http://localhost:8000/api    REST API`}</code>
-              </pre>
-              <div className="docs-next-cards">
-                <a href="#voice" className="docs-next-card">
-                  <strong>{t("docs.next.vapi")}</strong>
-                  <span>{t("docs.next.vapiSub")}</span>
-                </a>
-                <a href="#demo-data" className="docs-next-card">
-                  <strong>{t("docs.next.seed")}</strong>
-                  <span>{t("docs.next.seedSub")}</span>
-                </a>
-                <a
-                  href={`${REPO_TREE}/DEPLOY.md`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="docs-next-card"
-                >
-                  <strong>{t("docs.next.deploy")}</strong>
-                  <span>{t("docs.next.deploySub")}</span>
-                </a>
-              </div>
-            </section>
-
-            <section id="architecture" className="docs-section">
-              <h2 className="docs-h2">{t("docs.h.architecture")}</h2>
-              <p className="docs-p">{t("docs.archP")}</p>
-              <ArchitectureOverview />
-            </section>
-
-            <section id="stack" className="docs-section">
-              <h2 className="docs-h2">{t("docs.h.stack")}</h2>
-              <p className="docs-p">{t("docs.stackP")}</p>
+            <section id="start" className="docs-section">
+              <h2 className="docs-h2">Start with your business profile</h2>
+              <p className="docs-p">
+                Workmento works best when Demi has the same information your office team uses: where you serve, when you answer, what you sell, and when a customer should be escalated to a human.
+              </p>
               <div className="docs-stack-grid">
-                {STACK.map((s) => (
-                  <article className="docs-stack-card" key={s.title}>
-                    <span className="docs-stack-tag">{s.tag}</span>
-                    <h3 className="docs-stack-title">{s.title}</h3>
-                    <p className="docs-stack-body">{s.body}</p>
-                    <a
-                      href={s.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="docs-stack-code"
-                    >
-                      <code>{s.codeHint}</code>
-                      <span aria-hidden>↗</span>
-                    </a>
-                  </article>
+                {SETUP.slice(0, 1).map((item) => (
+                  <HelpCard key={item.title} {...item} />
                 ))}
               </div>
             </section>
 
-            <section id="pipeline" className="docs-section">
-              <h2 className="docs-h2">{t("docs.h.pipeline")}</h2>
-              <p className="docs-p">{t("docs.pipelineP")}</p>
+            <section id="providers" className="docs-section">
+              <h2 className="docs-h2">Choose and secure your AI provider</h2>
+              <p className="docs-p">
+                Workmento supports Claude, OpenAI, Gemini, and Groq so you can match Demi's quality, speed, and cost to your operation.
+              </p>
+              <div className="docs-stack-grid">
+                {SETUP.slice(1, 3).map((item) => (
+                  <HelpCard key={item.title} {...item} />
+                ))}
+              </div>
+            </section>
+
+            <section id="channels" className="docs-section">
+              <h2 className="docs-h2">Add customer channels</h2>
+              <p className="docs-p">
+                Connect the places customers already reach you, then define how Demi should respond when the request is urgent, high value, or outside your normal service area.
+              </p>
+              <div className="docs-stack-grid">
+                {SETUP.slice(3, 4).map((item) => (
+                  <HelpCard key={item.title} {...item} />
+                ))}
+              </div>
+            </section>
+
+            <section id="knowledge" className="docs-section">
+              <h2 className="docs-h2">Configure the knowledge base</h2>
+              <p className="docs-p">
+                Add the answers your customers need most: pricing rules, warranty limits, service descriptions, scheduling policy, and what information Demi must collect before booking.
+              </p>
+              <div className="docs-stack-grid">
+                {SETUP.slice(4, 5).map((item) => (
+                  <HelpCard key={item.title} {...item} />
+                ))}
+              </div>
+            </section>
+
+            <section id="test" className="docs-section">
+              <h2 className="docs-h2">Test Demi before launch</h2>
+              <p className="docs-p">
+                Use the test-call workflow to hear Demi answer, qualify, summarize, and hand off a realistic customer request before routing live traffic.
+              </p>
+              <div className="docs-stack-grid">
+                {SETUP.slice(5).map((item) => (
+                  <HelpCard key={item.title} {...item} />
+                ))}
+              </div>
+            </section>
+
+            <section id="dashboard" className="docs-section">
+              <h2 className="docs-h2">Review captured work in the dashboard</h2>
+              <p className="docs-p">
+                After Demi handles a conversation, use the dashboard to verify the outcome, update records, and decide what your team should do next.
+              </p>
               <ol className="docs-pipeline">
-                {PIPELINE.map((s, i) => (
-                  <li key={s.stage} className="docs-pipeline-step">
-                    <span className="docs-pipeline-num">{String(i + 1).padStart(2, "0")}</span>
+                {REVIEW.map((item, index) => (
+                  <li key={item.stage} className="docs-pipeline-step">
+                    <span className="docs-pipeline-num">{String(index + 1).padStart(2, "0")}</span>
                     <div>
-                      <div className="docs-pipeline-stage">{s.stage}</div>
-                      <a
-                        href={s.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="docs-pipeline-code"
-                      >
-                        <code>{s.code}</code>
-                        <span aria-hidden>↗</span>
-                      </a>
-                      <p className="docs-pipeline-body">{s.body}</p>
+                      <div className="docs-pipeline-stage">{item.stage}</div>
+                      <p className="docs-pipeline-body">{item.body}</p>
                     </div>
                   </li>
                 ))}
               </ol>
             </section>
 
-            <section id="voice" className="docs-section">
-              <h2 className="docs-h2">{t("docs.h.voice")}</h2>
-              <p className="docs-p">{t("docs.voiceP1")}</p>
-              <pre className="docs-code docs-code-mini">
-                <code>https://&lt;your-host&gt;/api/calls/webhooks/vapi/</code>
-              </pre>
+            <section id="support" className="docs-section">
+              <h2 className="docs-h2">Contact Workmento support</h2>
               <p className="docs-p">
-                {t("docs.voiceP2.pre")}{" "}
-                <code>/api/calls/vapi/chat/completions/</code>{t("docs.voiceP2.post")}
-              </p>
-            </section>
-
-            <section id="demo-data" className="docs-section">
-              <h2 className="docs-h2">{t("docs.h.demoData")}</h2>
-              <p className="docs-p">{t("docs.demoP")}</p>
-              <pre className="docs-code docs-code-mini">
-                <code>{`docker compose exec backend \\
-  python manage.py seed_demo --wipe`}</code>
-              </pre>
-            </section>
-
-            <section id="roadmap" className="docs-section">
-              <h2 className="docs-h2">{t("docs.h.roadmap")}</h2>
-              <p className="docs-p">{t("docs.roadmapP")}</p>
-              <div className="docs-roadmap">
-                <RoadmapCol title={t("docs.roadmap.shipped")} tone="done" items={ROADMAP.done} />
-                <RoadmapCol title={t("docs.roadmap.wip")} tone="wip" items={ROADMAP.wip} />
-                <RoadmapCol title={t("docs.roadmap.todo")} tone="todo" items={ROADMAP.todo} />
-              </div>
-            </section>
-
-            <section id="license" className="docs-section">
-              <h2 className="docs-h2">{t("docs.h.license")}</h2>
-              <p className="docs-p">
-                {t("docs.licenseP.pre")}
-                <a
-                  href={`${GITHUB_URL}/blob/main/LICENSE`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  GNU AGPL-3.0
-                </a>
-                {t("docs.licenseP.mid")}
-                <a href="mailto:contact@workmento.com">contact@workmento.com</a>
-                {t("docs.licenseP.post")}
+                If you need help with setup, provider keys, channels, knowledge-base tuning, or dashboard review, send a support ticket and include the business area you are configuring.
               </p>
               <div className="docs-cta">
-                <a
-                  href={GITHUB_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn btn-primary"
-                >
-                  {t("docs.cloneCta")}
-                </a>
+                <Link href="/contact" className="btn btn-primary">
+                  Contact support
+                </Link>
                 <Link href="/login" className="btn btn-ghost">
-                  {t("docs.signinCta")}
+                  Sign in to dashboard
                 </Link>
               </div>
             </section>
@@ -354,29 +233,12 @@ docker compose up --build
   );
 }
 
-function RoadmapCol({
-  title,
-  tone,
-  items,
-}: {
-  title: string;
-  tone: "done" | "wip" | "todo";
-  items: string[];
-}) {
-  const symbol = tone === "done" ? "✓" : tone === "wip" ? "·" : "○";
+function HelpCard({ tag, title, body }: { tag: string; title: string; body: string }) {
   return (
-    <div className={`docs-roadmap-col tone-${tone}`}>
-      <h3>
-        {title} <span className="docs-roadmap-count">{items.length}</span>
-      </h3>
-      <ul>
-        {items.map((it) => (
-          <li key={it}>
-            <span className="docs-roadmap-bullet">{symbol}</span>
-            {it}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <article className="docs-stack-card">
+      <span className="docs-stack-tag">{tag}</span>
+      <h3 className="docs-stack-title">{title}</h3>
+      <p className="docs-stack-body">{body}</p>
+    </article>
   );
 }

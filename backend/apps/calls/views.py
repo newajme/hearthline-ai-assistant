@@ -181,6 +181,8 @@ def chat_completions(request):
 
     try:
         result = handle_conversation_turn(claude_messages, caller_phone=caller_phone, call_id=call_id)
+        if result.get("configuration_error"):
+            return JsonResponse({"error": result["configuration_error"]}, status=409)
         text = result["text"]
         end_call = result["end_call"]
     except Exception as exc:  # noqa: BLE001 — Vapi must always get a 200 + spoken text, otherwise the live call drops mid-sentence

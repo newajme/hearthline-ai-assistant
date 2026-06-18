@@ -22,7 +22,7 @@ export default async function TicketDetailPage({
         <div className="app-content">
           <div className="empty-card">
             <p>
-              <Link href="/dashboard/support">← Back to Support</Link>
+              <Link href="/dashboard/support" className="btn btn-back">← Back to support</Link>
             </p>
           </div>
         </div>
@@ -43,7 +43,7 @@ export default async function TicketDetailPage({
           <p>{ticket.sender_id}</p>
         </div>
         <div className="app-pagebar-actions">
-          <Link href="/dashboard/support" className="btn btn-ghost">← Back</Link>
+          <Link href="/dashboard/support" className="btn btn-back">← Back to support</Link>
         </div>
       </div>
 

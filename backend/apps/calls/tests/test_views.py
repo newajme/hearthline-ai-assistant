@@ -2,6 +2,7 @@
 from unittest.mock import patch
 
 from django.test import TestCase
+from django.test import override_settings
 from django.urls import reverse
 
 from apps.core.models import Business
@@ -17,7 +18,7 @@ class ChatCompletionsAuthTests(TestCase):
 
     def test_accepts_when_no_secret_configured(self):
         # Dev mode: VAPI_WEBHOOK_SECRET unset → endpoint open.
-        with patch("apps.calls.agent.receptionist.handle_conversation_turn") as mock_turn:
+        with patch("apps.calls.views.handle_conversation_turn") as mock_turn:
             mock_turn.return_value = {"text": "Hi, this is Demi.", "end_call": False}
             res = self.client.post(
                 self.url,
@@ -35,7 +36,7 @@ class ChatCompletionsAuthTests(TestCase):
 
     def test_accepts_when_bearer_matches(self):
         with self.settings(VAPI_WEBHOOK_SECRET="topsecret"), \
-             patch("apps.calls.agent.receptionist.handle_conversation_turn") as mock_turn:
+             patch("apps.calls.views.handle_conversation_turn") as mock_turn:
             mock_turn.return_value = {"text": "ok", "end_call": False}
             res = self.client.post(
                 self.url,
@@ -44,6 +45,24 @@ class ChatCompletionsAuthTests(TestCase):
                 HTTP_AUTHORIZATION="Bearer topsecret",
             )
         self.assertEqual(res.status_code, 200)
+
+    @override_settings(ANTHROPIC_API_KEY="anthropic-env", OPENAI_API_KEY="", GEMINI_API_KEY="", GROQ_API_KEY="")
+    def test_selected_provider_without_key_returns_structured_configuration_error(self):
+        Business.objects.all().delete()
+        Business.objects.create(name="OpenAI Co", slug="openai-co", llm_provider="openai")
+
+        res = self.client.post(
+            self.url,
+            data='{"messages":[{"role":"user","content":"hello"}]}',
+            content_type="application/json",
+        )
+
+        self.assertEqual(res.status_code, 409)
+        body = res.json()
+        self.assertEqual(body["error"]["code"], "ai_provider_unconfigured")
+        self.assertEqual(body["error"]["provider"], "openai")
+        self.assertEqual(body["error"]["message"], "Connect your AI provider before testing Demi.")
+        self.assertNotIn("Demi here", str(body))
 
 
 class VapiWebhookTests(TestCase):

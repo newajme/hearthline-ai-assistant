@@ -1,6 +1,6 @@
 import { fetchJson, type Business, type Page } from "../lib";
-import { getAdminUrl } from "../../lib/api";
 import SettingsTabs from "./SettingsTabs";
+import type { UserProfile } from "./UserProfileForm";
 
 const EMPTY_BUSINESS: Business = {
   id: 0,
@@ -35,9 +35,23 @@ const EMPTY_BUSINESS: Business = {
   channels: [],
 };
 
+const EMPTY_PROFILE: UserProfile = {
+  id: 0,
+  username: "",
+  display_name: "",
+  email: "",
+  avatar_url: "",
+  initials: "U",
+  avatar_storage: "external_url_only",
+};
+
 export default async function SettingsPage() {
-  const data = await fetchJson<Page<Business>>("/businesses/");
+  const [data, profileData] = await Promise.all([
+    fetchJson<Page<Business>>("/businesses/"),
+    fetchJson<{ profile: UserProfile }>("/auth/profile/"),
+  ]);
   const biz = data?.results?.[0] ?? EMPTY_BUSINESS;
+  const profile = profileData?.profile ?? EMPTY_PROFILE;
   const isNew = biz.id === 0;
 
   return (
@@ -47,18 +61,7 @@ export default async function SettingsPage() {
           <h1>Settings</h1>
           <p>Business profile, channels, and integrations.</p>
         </div>
-        <div className="app-pagebar-actions">
-          {!isNew && (
-            <a
-              href={getAdminUrl(`/core/business/${biz.id}/change/`)}
-              target="_blank"
-              rel="noreferrer"
-              className="btn btn-ghost"
-            >
-              Advanced ↗
-            </a>
-          )}
-        </div>
+        <div className="app-pagebar-actions" />
       </div>
 
       <div className="app-content">
@@ -68,7 +71,7 @@ export default async function SettingsPage() {
             <span>Fill in the profile below and hit save to create one.</span>
           </div>
         )}
-        <SettingsTabs business={biz} />
+        <SettingsTabs business={biz} profile={profile} />
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-export type FaqCategory = "Setup" | "Product" | "Pricing" | "Security" | "Open source";
+export type FaqCategory = "Setup" | "Product" | "Pricing" | "Security" | "Integrations" | "Support";
 
 export type FaqItem = {
   q: string;
@@ -34,9 +34,9 @@ export const FAQS: FaqItem[] = [
   },
   {
     q: "Which CRMs do you sync with?",
-    category: "Setup",
+    category: "Integrations",
     aText:
-      "HubSpot, Pipedrive, Salesforce, Zoho, and ServiceTitan have first-class integrations. Anything else can be wired through Zapier or the REST API — every interaction is just a Lead row.",
+      "HubSpot, Pipedrive, Salesforce, Zoho, and ServiceTitan have first-class integrations. Other tools can be connected through supported workflow integrations or a custom API connection.",
   },
   {
     q: "What happens if Demi can't answer something?",
@@ -54,20 +54,24 @@ export const FAQS: FaqItem[] = [
     q: "How is pricing structured?",
     category: "Pricing",
     aText:
-      "For self-host: free under AGPL-3.0. For done-for-you setup: a flat platform fee plus per-minute call usage. Most home-service teams land between $390–$890 / month all-in. Book a demo for an exact quote.",
+      "Pricing depends on the channels you use, call volume, AI provider, and setup needs. Book a demo for a quote based on your business and expected usage.",
   },
   {
     q: "Can I try Workmento before paying?",
     category: "Pricing",
     aText:
-      "Yes. The whole stack is open-source — clone the repo and run it locally with one Docker command, no credit card. For done-for-you setup we run a 14-day pilot before invoicing.",
+      "Yes. We can walk through a demo, configure a pilot workflow, and let your team review how Demi handles realistic calls before committing to a rollout.",
   },
   {
-    q: "Can I host Workmento myself?",
-    category: "Open source",
+    q: "Which AI providers can I use?",
+    category: "Setup",
     aText:
-      "Yes — the whole stack is open source under AGPL-3.0. A commercial license is available for white-labeling, reselling, or running closed-source forks. See the docs for the self-host quick start.",
-    aHtml:
-      'Yes — the whole stack is open source under AGPL-3.0. A commercial license is available for white-labeling, reselling, or running closed-source forks. See the <a href="/docs">docs</a> for the self-host quick start.',
+      "Workmento supports Claude, OpenAI, Gemini, and Groq. You can choose a provider during setup and update it later from your settings.",
+  },
+  {
+    q: "How do I get support during setup?",
+    category: "Support",
+    aText:
+      "Use the contact page or live chat to send your question. Include the channel, provider, or dashboard area you're configuring so the team can help faster.",
   },
 ];

@@ -5,13 +5,15 @@ import { useState } from "react";
 
 import ThemeToggle from "../ThemeToggle";
 import LanguageSwitcher from "../LanguageSwitcher";
-import { getAdminUrl } from "../lib/adminUrl";
 
 type SessionUser = {
   id: number;
   username: string;
   email: string;
   first_name: string;
+  display_name: string;
+  avatar_url: string;
+  initials: string;
   is_staff: boolean;
 };
 
@@ -73,6 +75,7 @@ function DashBell() {
 }
 
 function initials(user: SessionUser): string {
+  if (user.initials) return user.initials;
   const src = (user.first_name || user.username || user.email || "U").trim();
   const parts = src.split(/[\s._-]+/).filter(Boolean);
   if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
@@ -95,12 +98,14 @@ function DashUser({ user }: { user: SessionUser }) {
     router.refresh();
   }
 
-  const display = user.first_name || user.username || user.email;
+  const display = user.display_name || user.first_name || user.username || user.email;
 
   return (
     <div className="dash-pop">
       <button className="dash-user-btn" onClick={() => setOpen((o) => !o)}>
-        <span className="dash-user-avatar">{initials(user)}</span>
+        <span className="dash-user-avatar">
+          {user.avatar_url ? <img src={user.avatar_url} alt="" /> : initials(user)}
+        </span>
         <span className="dash-user-meta">
           <span className="dash-user-name">{display}</span>
           <span className="dash-user-role">{user.is_staff ? "Admin" : "Member"}</span>
@@ -110,21 +115,11 @@ function DashUser({ user }: { user: SessionUser }) {
       {open && (
         <>
           <span className="dash-pop-overlay" onClick={() => setOpen(false)} />
-          <div className="dash-pop-menu dash-pop-menu-right">
-            <div className="dash-pop-head" style={{ fontWeight: 600 }}>{user.email || user.username}</div>
-            <a href="/dashboard/settings" className="dash-pop-item">Settings</a>
-            <a href="/dashboard/customers" className="dash-pop-item">Customers</a>
-            {user.is_staff && (
-              <a
-                href={getAdminUrl()}
-                target="_blank"
-                rel="noreferrer"
-                className="dash-pop-item"
-              >
-                Django admin ↗
-              </a>
-            )}
-            <hr />
+            <div className="dash-pop-menu dash-pop-menu-right">
+              <div className="dash-pop-head" style={{ fontWeight: 600 }}>{user.email || user.username}</div>
+              <a href="/dashboard/settings" className="dash-pop-item">Settings</a>
+              <a href="/dashboard/customers" className="dash-pop-item">Customers</a>
+              <hr />
             <a href="/" className="dash-pop-item">← Back to landing</a>
             <button
               type="button"

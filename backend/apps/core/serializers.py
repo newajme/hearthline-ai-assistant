@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Business, Channel
+from .models import Business, Channel, UserProfile
 
 
 class ChannelSerializer(serializers.ModelSerializer):
@@ -116,3 +116,42 @@ class BusinessSerializer(serializers.ModelSerializer):
             else:
                 setattr(instance, field, incoming)
         return super().update(instance, validated_data)
+
+
+def _initials(display_name: str, email: str, username: str) -> str:
+    src = (display_name or username or email or "U").strip()
+    parts = [part for part in src.replace("_", " ").replace(".", " ").split() if part]
+    if len(parts) >= 2:
+        return (parts[0][0] + parts[-1][0]).upper()
+    return src[:2].upper()
+
+
+class UserProfileSerializer(serializers.Serializer):
+    display_name = serializers.CharField(required=False, allow_blank=True, max_length=150)
+    email = serializers.EmailField(read_only=True)
+    avatar_url = serializers.URLField(required=False, allow_blank=True, max_length=500)
+    initials = serializers.CharField(read_only=True)
+    avatar_storage = serializers.CharField(read_only=True)
+
+    def to_representation(self, user):
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+        display_name = (user.first_name or "").strip()
+        return {
+            "id": user.id,
+            "username": user.username,
+            "display_name": display_name,
+            "email": user.email,
+            "avatar_url": profile.avatar_url,
+            "initials": _initials(display_name, user.email, user.username),
+            "avatar_storage": "external_url_only",
+        }
+
+    def update(self, user, validated_data):
+        if "display_name" in validated_data:
+            user.first_name = validated_data["display_name"].strip()
+            user.save(update_fields=["first_name"])
+        if "avatar_url" in validated_data:
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            profile.avatar_url = validated_data["avatar_url"].strip()
+            profile.save(update_fields=["avatar_url", "updated_at"])
+        return user

@@ -114,7 +114,7 @@ export default function NewQuoteForm({
         <div>
           <h1>New estimate</h1>
           <p>
-            <Link href="/dashboard/quotes" style={{ color: "var(--muted)" }}>← All quotes</Link>
+            <Link href="/dashboard/quotes" className="btn btn-back">← Back to quotes</Link>
             {" · Draft a new estimate from scratch."}
           </p>
         </div>

@@ -62,6 +62,9 @@ export type SessionUser = {
   username: string;
   email: string;
   first_name: string;
+  display_name: string;
+  avatar_url: string;
+  initials: string;
   is_staff: boolean;
 };
 

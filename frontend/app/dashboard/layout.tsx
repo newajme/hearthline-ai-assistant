@@ -38,6 +38,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     apiJson<BusinessPage>("/businesses/"),
   ]);
   const sidebarName =
+    user.display_name ||
     [user.first_name, ""].filter(Boolean).join(" ").trim() ||
     user.username ||
     user.email ||
@@ -48,7 +49,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <div className="app-shell">
       <Sidebar
         counts={{ leads, calls, quotes, businesses, tickets }}
-        user={{ name: sidebarName, business: sidebarBusiness }}
+        user={{ name: sidebarName, business: sidebarBusiness, avatarUrl: user.avatar_url, initials: user.initials }}
         personaName={personaName}
       />
       <div className="app-main">

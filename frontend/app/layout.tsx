@@ -19,11 +19,11 @@ const SITE_URL = "https://workmento.com";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Workmento — The 24/7 AI front desk for home-service teams",
+    default: "Workmento — AI customer operations for home-service teams",
     template: "%s · Workmento",
   },
   description:
-    "Phone, SMS, WhatsApp, email, chat — every customer touchpoint qualified, quoted, and dispatched without anyone picking up the phone.",
+    "AI receptionist and customer-operations platform for phone, SMS, WhatsApp, email, and chat across home-service teams.",
   applicationName: "Workmento",
   generator: "Next.js",
   publisher: "Workmento",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     "Vapi",
     "Twilio AI",
     "missed call automation",
-    "open source AI receptionist",
+    "AI customer operations",
     "Demi AI",
   ],
   category: "business",
@@ -44,15 +44,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Workmento",
-    title: "Workmento — The 24/7 AI front desk for home-service teams",
+    title: "Workmento — AI customer operations for home-service teams",
     description:
-      "Phone, SMS, WhatsApp, email, chat — every customer touchpoint qualified, quoted, and dispatched without anyone picking up the phone.",
+      "AI receptionist and customer-operations platform for phone, SMS, WhatsApp, email, and chat across home-service teams.",
     url: SITE_URL,
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Workmento — The 24/7 AI front desk for home-service teams",
+    title: "Workmento — AI customer operations for home-service teams",
     description:
       "Demi answers, qualifies, and books — so your crew sleeps and your calendar fills itself.",
   },
@@ -96,7 +96,7 @@ const ORG_JSONLD = {
   url: SITE_URL,
   logo: `${SITE_URL}/branding/workmento-mark.png`,
   description:
-    "Open-source 24/7 AI front desk for home-service teams — phone, SMS, WhatsApp, email, chat.",
+    "AI customer operations and 24/7 front desk for home-service teams across phone, SMS, WhatsApp, email, and chat.",
 };
 
 const WEBSITE_JSONLD = {
