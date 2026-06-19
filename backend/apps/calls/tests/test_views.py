@@ -1,5 +1,6 @@
 """Smoke tests for the Vapi-facing webhook + custom-LLM endpoints."""
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 from django.test import override_settings
@@ -63,6 +64,34 @@ class ChatCompletionsAuthTests(TestCase):
         self.assertEqual(body["error"]["provider"], "openai")
         self.assertEqual(body["error"]["message"], "Connect your AI provider before testing Demi.")
         self.assertNotIn("Demi here", str(body))
+
+    @override_settings(ANTHROPIC_API_KEY="", OPENAI_API_KEY="sk-test-openai", GEMINI_API_KEY="", GROQ_API_KEY="")
+    def test_openai_provider_with_key_uses_openai_client(self):
+        Business.objects.all().delete()
+        business = Business.objects.create(name="OpenAI Co", slug="openai-co", llm_provider="openai")
+        fake_client = object()
+        fake_openai = SimpleNamespace(OpenAI=MagicMock(return_value=fake_client))
+
+        with patch.dict("sys.modules", {"openai": fake_openai}), \
+             patch("apps.calls.agent.receptionist.run_openai_loop") as mock_loop:
+            from apps.calls.agent.receptionist import _openai_client
+
+            self.assertEqual(business.llm_provider, "openai")
+            self.assertEqual(business.resolved_openai_key, "sk-test-openai")
+            self.assertIs(_openai_client(business), fake_client)
+
+            mock_loop.return_value = {"text": "Hi, this is Demi.", "end_call": False}
+            res = self.client.post(
+                self.url,
+                data='{"messages":[{"role":"user","content":"hello"}]}',
+                content_type="application/json",
+            )
+
+        self.assertEqual(res.status_code, 200)
+        self.assertNotIn("ai_provider_unconfigured", str(res.json()))
+        mock_loop.assert_called_once()
+        self.assertIs(mock_loop.call_args.args[0], fake_client)
+        fake_openai.OpenAI.assert_any_call(api_key="sk-test-openai")
 
 
 class VapiWebhookTests(TestCase):

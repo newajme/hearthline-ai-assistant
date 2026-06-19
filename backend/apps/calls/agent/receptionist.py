@@ -117,6 +117,12 @@ def _openai_client(business=None):
     key = (business.resolved_openai_key if business else "") or settings.OPENAI_API_KEY
     if not key:
         return None
+    try:
+        import openai  # noqa: WPS433
+        return openai.OpenAI(api_key=key)
+    except ImportError:
+        logger.warning("openai SDK not installed")
+        return None
 
 
 def _configuration_error(provider_name: str, provider_label: str, message: str) -> dict[str, Any]:
@@ -131,12 +137,6 @@ def _configuration_error(provider_name: str, provider_label: str, message: str) 
             "provider_label": provider_label,
         },
     }
-    try:
-        import openai  # noqa: WPS433
-        return openai.OpenAI(api_key=key)
-    except ImportError:
-        logger.warning("openai SDK not installed")
-        return None
 
 
 _BIZ_CACHE: dict[str, tuple[float, Business]] = {}
